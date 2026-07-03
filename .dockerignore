@@ -10,3 +10,6 @@
 # Composer
 !/composer.json
 !/composer.lock
+
+# Entrypoint
+!/docker-entrypoint.sh
