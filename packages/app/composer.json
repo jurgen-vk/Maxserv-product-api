@@ -2,6 +2,15 @@
   "name": "maxserv/app",
   "description": "MaxServ core module",
   "license": "GPL-2.0-or-later",
+  "require": {
+    "php": "^8.5",
+    "guzzlehttp/guzzle": "^7.0",
+    "symfony/http-foundation": "^7.2",
+    "symfony/mercure": "^0.6",
+    "symfony/messenger": "^7.2",
+    "ext-pdo": "*",
+    "maxserv/core": "*"
+  },
   "autoload": {
     "psr-4": {
       "MaxServ\\App\\": "src/"

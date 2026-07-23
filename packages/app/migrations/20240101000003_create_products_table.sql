@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS products (
+  id                  INT             PRIMARY KEY,
+  title               VARCHAR(255)    NOT NULL,
+  description         TEXT,
+  price               DECIMAL(10, 2)  NOT NULL,
+  discount_percentage DECIMAL(5, 2)   NOT NULL DEFAULT 0,
+  rating              DECIMAL(3, 2)   NOT NULL DEFAULT 0,
+  stock               INT             NOT NULL DEFAULT 0,
+  category_id         INT             NOT NULL,
+  brand_id            INT             NULL,
+  CONSTRAINT fk_products_category FOREIGN KEY (category_id) REFERENCES categories(id),
+  CONSTRAINT fk_products_brand    FOREIGN KEY (brand_id)    REFERENCES brands(id),
+  INDEX idx_products_category_id (category_id),
+  INDEX idx_products_brand_id (brand_id),
+  INDEX idx_products_price (price),
+  INDEX idx_products_rating (rating)
+);

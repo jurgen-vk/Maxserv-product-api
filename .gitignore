@@ -6,25 +6,22 @@
 !/README.md
 !/public
 !/public/index.php
+!/public/.htaccess
 
 # Composer
 !/composer.json
 !/composer.lock
 
+# npm
+!/package-lock.json
+
 # Docker
 !/Dockerfile
 !/docker-compose.yml
 !/.dockerignore
-!/docker-entrypoint.sh
 
 # Configuration
-!/config
-!/config/*.yaml
 !.env.example
-
-# Templates
-!/templates
-!/templates/**/*
 
 # Packages
 !/packages
@@ -32,3 +29,16 @@
 !/packages/core/**/*
 !/packages/app
 !/packages/app/**/*
+
+# Generated at build time by packages/app/vite-plugins/css-component-glob.js
+/packages/app/assets/css/_components.generated.css
+
+# Vite's own dependency pre-bundling cache, wherever it lands
+/packages/*/node_modules
+
+# CLI scripts
+!/bin
+!/bin/console
+
+# Node manifest
+!/package.json

@@ -6,9 +6,59 @@ services:
     autoconfigure: true
     public: false
 
+  _instanceof:
+    MaxServ\App\Interface\ImporterInterface:
+      tags: ['app.resource_importer']
+
+  # ==========================================================================
+  # Autodiscovery
+  # ==========================================================================
+
   MaxServ\App\:
     resource: '../src/*'
 
   MaxServ\App\Controller\:
     resource: '../src/Controller'
     public: true
+
+  # ==========================================================================
+  # Import
+  # ==========================================================================
+
+  MaxServ\App\Service\ImportService:
+    arguments:
+      $importers: !tagged_iterator app.resource_importer
+
+  # ==========================================================================
+  # Guzzle
+  # ==========================================================================
+
+  GuzzleHttp\Client:
+    arguments:
+      $config:
+        connect_timeout: 10
+        timeout: 30
+
+  # ==========================================================================
+  # Messenger
+  # ==========================================================================
+
+  messenger.transport.imports:
+    class: Symfony\Component\Messenger\Transport\TransportInterface
+    factory: ['@MaxServ\Core\Messenger\DatabaseTransportFactory', 'createDefault']
+    arguments:
+      $queueName: 'imports'
+    public: true
+    tags:
+      - name: 'messenger.receiver'
+        alias: 'imports'
+
+  messenger.retry_strategy.imports:
+    class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
+    arguments:
+      $maxRetries: 3
+      $delayMilliseconds: 1000
+      $multiplier: 2
+    tags:
+      - name: 'app.messenger.retry_strategy'
+        transport: 'imports'

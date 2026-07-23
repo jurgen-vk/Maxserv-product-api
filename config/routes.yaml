@@ -1,3 +1,0 @@
-index:
-  path: /
-  controller: MaxServ\App\Controller\IndexController::index

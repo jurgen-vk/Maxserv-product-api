@@ -1,0 +1,90 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MaxServ\App\Importer;
+
+use GuzzleHttp\Client;
+use MaxServ\App\Hydrator\MediaHydrator;
+use MaxServ\App\Hydrator\ProductHydrator;
+use MaxServ\App\Interface\ImporterInterface;
+use MaxServ\App\Interface\ImportProgressReporterInterface;
+use MaxServ\App\Repository\BrandRepository;
+use MaxServ\App\Repository\CategoryRepository;
+use MaxServ\App\Repository\ProductRepository;
+
+class ProductImporter implements ImporterInterface
+{
+  public function __construct(
+    private readonly Client $client,
+    private readonly ProductRepository $productRepo,
+    private readonly CategoryRepository $categoryRepo,
+    private readonly BrandRepository $brandRepo,
+    private readonly ProductHydrator $hydrator,
+    private readonly MediaHydrator $mediaHydrator,
+  ) {}
+
+  public function supports(string $type): bool
+  {
+    return $type === 'products';
+  }
+
+  public function import(ImportProgressReporterInterface $reporter): int
+  {
+    $count = 0;
+    $skip = 0;
+    $limit = 100;
+
+    $categories = [];
+    foreach ($this->categoryRepo->findAll() as $category) {
+      $categories[$category->name] = $category;
+    }
+    $brands = [];
+    foreach ($this->brandRepo->findAll() as $brand) {
+      $brands[$brand->name] = $brand;
+    }
+
+    do {
+      $response = $this->client->get('https://dummyjson.com/products', [
+        'query' => ['limit' => $limit, 'skip' => $skip],
+      ]);
+
+      $data = json_decode($response->getBody()->getContents(), true);
+
+      $products = [];
+
+      foreach ($data['products'] as $item) {
+        $category = $categories[$item['category']]
+          ??= $this->categoryRepo->findOrCreateOneByName($item['category']);
+        $brand = !empty($item['brand'])
+          ? ($brands[$item['brand']] ??= $this->brandRepo->findOrCreateOneByName($item['brand']))
+          : null;
+
+        $media = $this->mediaHydrator->hydrateManyFromApi(
+          thumbnail: $item['thumbnail'] ?? null,
+          images: $item['images'] ?? [],
+          entityType: 'product',
+          entityId: (int) $item['id'],
+        );
+
+        $products[] = $this->hydrator->hydrateFromApi(
+          data: $item,
+          category: $category,
+          brand: $brand,
+          media: $media,
+        );
+
+        $count++;
+      }
+
+      $this->productRepo->saveMany($products);
+      $this->productRepo->saveManyMedia($products);
+
+      $reporter->report(processed: $count, total: $data['total']);
+
+      $skip += $limit;
+    } while ($skip < $data['total']);
+
+    return $count;
+  }
+}

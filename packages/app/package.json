@@ -1,0 +1,16 @@
+{
+  "name": "maxserv-app",
+  "private": true,
+  "dependencies": {
+    "alpinejs": "^3.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "tinyglobby": "^0.2.17",
+    "vite": "^8.1"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  }
+}

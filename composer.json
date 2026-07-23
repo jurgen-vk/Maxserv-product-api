@@ -9,18 +9,11 @@
     }
   ],
   "require": {
-    "php": "^8.2",
-    "guzzlehttp/guzzle": "^7.0",
-    "symfony/routing": "^7.2",
-    "symfony/config": "^7.2",
-    "symfony/yaml": "^7.2",
-    "symfony/http-foundation": "^7.2",
-    "symfony/dependency-injection": "^7.2",
-    "symfony/finder": "^7.2",
-    "ext-pdo": "*",
-    "twig/twig": "^3.0",
-    "maxserv/app": "*",
-    "maxserv/core": "*"
+    "php": "^8.5",
+    "maxserv/app": "*"
+  },
+  "scripts": {
+    "console": "docker compose exec --user www-data app php bin/console"
   },
   "minimum-stability": "dev",
   "prefer-stable": true

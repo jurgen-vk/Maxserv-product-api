@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MaxServ Products{% endblock %}</title>
+  {{ vite_css('assets/css/app.css') }}
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen" data-mercure-url="{{ mercurePublicUrl }}">
+
+  <header class="bg-gray-900 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex items-center h-16 gap-6">
+        <a href="/products" class="font-bold text-lg tracking-tight">MaxServ</a>
+        <nav class="flex items-center gap-4 text-sm">
+          <a href="/products" class="text-gray-300 hover:text-white transition-colors">Products</a>
+          <a href="/imports" class="text-gray-300 hover:text-white transition-colors">Imports</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-screen-2xl mx-auto px-4 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# Toast #}
+  <div x-data class="fixed bottom-6 right-6 z-50" x-show="$store.toast.visible" x-cloak>
+    <div class="flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white transition-all duration-300"
+      :class="$store.toast.type === 'error' ? 'bg-red-600' : 'bg-gray-900'">
+      <span x-text="$store.toast.message"></span>
+      <button @click="$store.toast.hide()" class="opacity-70 hover:opacity-100 ml-2">&times;</button>
+    </div>
+  </div>
+
+  {{ vite_js('assets/js/app.js') }}
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

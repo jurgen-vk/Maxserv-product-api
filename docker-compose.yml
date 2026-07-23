@@ -1,5 +1,3 @@
-version: '3.1'
-
 services:
   db:
     image: mysql:8.0.35
@@ -8,6 +6,12 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
+      start_period: 20s
+      interval: 2s
+      timeout: 5s
+      retries: 5
     ports:
       - "3306:3306"
     volumes:
@@ -21,21 +25,84 @@ services:
       - PMA_ARBITRARY=1
       - PMA_HOST=db
       - PMA_PORT=3306
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: migrate
+    user: www-data
+    command: ["php", "bin/console", "migrate:init"]
+    environment:
+      DB_HOST: db
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_DATABASE: ${MYSQL_DATABASE}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_ENV: ${APP_ENV:-dev}
+    depends_on:
+      db:
+        condition: service_healthy
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      target: runtime
     container_name: app
     environment:
       DB_HOST: db
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_DATABASE: ${MYSQL_DATABASE}
+      MERCURE_HUB_URL: ${MERCURE_HUB_URL}
+      MERCURE_PUBLIC_URL: ${MERCURE_PUBLIC_URL}
+      MERCURE_PUBLISHER_JWT: ${MERCURE_PUBLISHER_JWT}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_ENV: ${APP_ENV:-dev}
+      APP_URL: ${APP_URL}
+      VITE_SERVER_URL: ${VITE_SERVER_URL}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "8080:80"
-    volumes:
-      - ./:/var/www/html
+  messenger-imports:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: messenger-imports
+    restart: always
+    user: www-data
+    command: ["php", "bin/console", "messenger:consume", "imports", "--keepalive=300"]
+    environment:
+      DB_HOST: db
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_DATABASE: ${MYSQL_DATABASE}
+      MERCURE_HUB_URL: ${MERCURE_HUB_URL}
+      MERCURE_PUBLISHER_JWT: ${MERCURE_PUBLISHER_JWT}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_ENV: ${APP_ENV:-dev}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+  mercure:
+    image: dunglas/mercure
+    container_name: mercure
+    restart: always
+    environment:
+      SERVER_NAME: ${MERCURE_SERVER_NAME:-:80}
+      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY}
+      MERCURE_EXTRA_DIRECTIVES: |
+        anonymous
+        cors_origins ${APP_URL}
+    ports:
+      - "${MERCURE_PORT:-3000}:80"
 volumes:
   mysql_data:

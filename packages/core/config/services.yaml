@@ -1,10 +1,26 @@
-parameters: {}
+parameters:
+  messenger.table_name: 'messenger_messages'
+  messenger.auto_setup: false
 
 services:
   _defaults:
     autowire: true
     autoconfigure: true
     public: false
+
+  _instanceof:
+    Symfony\Component\DependencyInjection\EnvVarProcessorInterface:
+      tags: ['container.env_var_processor']
+    MaxServ\Core\Cache\CachableInterface:
+      tags: ['app.cachable']
+    MaxServ\Core\Render\Error\ErrorRendererInterface:
+      tags: ['core.error_renderer']
+    Symfony\Component\EventDispatcher\EventSubscriberInterface:
+      tags: ['kernel.event_subscriber']
+
+  # ==========================================================================
+  # Autodiscovery
+  # ==========================================================================
 
   MaxServ\Core\:
     resource: '../src/*'
@@ -18,8 +34,15 @@ services:
   Symfony\Component\Config\:
     resource: '../../../vendor/symfony/config/*'
 
+  Symfony\Component\Filesystem\:
+    resource: '../../../vendor/symfony/filesystem/*'
+
   logger:
     synthetic: true
+
+  # ==========================================================================
+  # Routing
+  # ==========================================================================
 
   Symfony\Component\Config\FileLocator:
     arguments:
@@ -29,18 +52,37 @@ services:
     arguments:
       $locator: '@Symfony\Component\Config\FileLocator'
 
-  symfony.yaml_router:
+  MaxServ\Core\Routing\AttributeRouteLoader: ~
+
+  Symfony\Component\Routing\Loader\AttributeClassLoader: '@MaxServ\Core\Routing\AttributeRouteLoader'
+
+  Symfony\Component\Routing\Loader\AttributeDirectoryLoader: ~
+
+  MaxServ\Core\Routing\RouteLoader: ~
+
+  app.router:
     class: Symfony\Component\Routing\Router
     arguments:
-      $loader: '@Symfony\Component\Routing\Loader\YamlFileLoader'
-      $resource: 'config/routes.yaml'
+      $loader: '@MaxServ\Core\Routing\RouteLoader'
+      $resource: 'routes'
       $context: '@Symfony\Component\Routing\RequestContext'
+      $options:
+        cache_dir: '%application.root%/var/cache/routing'
+        debug: '%app.is_dev%'
 
   MaxServ\Core\Routing\Router:
     public: true
     arguments:
       $container: '@service_container'
-      $router: '@symfony.yaml_router'
+      $router: '@app.router'
+
+  MaxServ\Core\Routing\RouteCacher:
+    arguments:
+      $router: '@app.router'
+
+  # ==========================================================================
+  # Database
+  # ==========================================================================
 
   MaxServ\Core\Database\Connection:
     arguments:
@@ -49,12 +91,194 @@ services:
       $password: '%db.password%'
       $database: '%db.database%'
 
+  # ==========================================================================
+  # Twig
+  # ==========================================================================
+
   Twig\Loader\FilesystemLoader:
     class: 'Twig\Loader\FilesystemLoader'
-    arguments:
-      - '%application.root%/templates'
+    arguments: []
 
   Twig\Environment:
     class: 'Twig\Environment'
     arguments:
       - '@Twig\Loader\FilesystemLoader'
+      - cache: '%application.root%/var/cache/twig'
+        auto_reload: '%app.is_dev%'
+    calls:
+      - method: addGlobal
+        arguments: ['mercurePublicUrl', '%mercure.public_url%']
+      - method: addExtension
+        arguments: ['@UserFrosting\ViteTwig\ViteTwigExtension']
+      - method: addExtension
+        arguments: ['@MaxServ\Core\Render\Extension\AssetExtension']
+
+  # ==========================================================================
+  # Vite
+  # ==========================================================================
+
+  UserFrosting\ViteTwig\ViteManifest:
+    arguments:
+      $manifestPath: '%application.root%/public/assets/.vite/manifest.json'
+      $basePath: '/assets/'
+      $serverUrl: '%vite.server_url%'
+      $devEnabled: '%app.is_dev%'
+
+  UserFrosting\ViteTwig\ViteTwigExtension:
+    arguments:
+      $manifest: '@UserFrosting\ViteTwig\ViteManifest'
+
+  # ==========================================================================
+  # Assets
+  # ==========================================================================
+
+  Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy: ~
+
+  Symfony\Component\Asset\UrlPackage:
+    arguments:
+      - '%app.url%'
+      - '@Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy'
+
+  Symfony\Component\Asset\PackageInterface: '@Symfony\Component\Asset\UrlPackage'
+
+  # ==========================================================================
+  # Mercure
+  # ==========================================================================
+
+  Symfony\Component\Mercure\Jwt\StaticTokenProvider:
+    arguments:
+      - '%mercure.publisher_jwt%'
+
+  Symfony\Component\Mercure\HubInterface:
+    class: Symfony\Component\Mercure\Hub
+    arguments:
+      - '%mercure.hub_url%'
+      - '@Symfony\Component\Mercure\Jwt\StaticTokenProvider'
+      - null
+      - '%mercure.public_url%'
+
+  # ==========================================================================
+  # Console
+  # ==========================================================================
+
+  Symfony\Component\Console\Application:
+    public: true
+    calls:
+      - method: setCommandLoader
+        arguments: ['@console.command_loader']
+
+  # ==========================================================================
+  # Cache
+  # ==========================================================================
+
+  MaxServ\Core\Container\ContainerCacher:
+    arguments:
+      $debug: '%app.is_dev%'
+
+  MaxServ\Core\Cache\Command\CacheWarmupCommand:
+    arguments:
+      $cachables: !tagged_iterator app.cachable
+
+  MaxServ\Core\Cache\Command\CacheClearCommand:
+    arguments:
+      $cachables: !tagged_iterator app.cachable
+
+  # ==========================================================================
+  # Error rendering
+  # ==========================================================================
+
+  MaxServ\Core\Render\Error\ErrorRenderer:
+    arguments:
+      $renderers: !tagged_iterator core.error_renderer
+      $debug: '%app.debug%'
+
+  # ==========================================================================
+  # Messenger
+  # ==========================================================================
+
+  MaxServ\Core\Messenger\DatabaseTransportFactory:
+    arguments:
+      $host: '%db.host%'
+      $user: '%db.user%'
+      $password: '%db.password%'
+      $database: '%db.database%'
+      $serializer: '@messenger.transport.serializer'
+      $tableName: '%messenger.table_name%'
+      $autoSetup: '%messenger.auto_setup%'
+
+  messenger.transport.serializer:
+    class: Symfony\Component\Messenger\Transport\Serialization\Serializer
+    factory: ['Symfony\Component\Messenger\Transport\Serialization\Serializer', 'create']
+
+  event_dispatcher:
+    class: Symfony\Component\EventDispatcher\EventDispatcher
+    public: true
+
+  messenger.receiver_locator:
+    class: Symfony\Component\DependencyInjection\ServiceLocator
+    arguments:
+      - []
+    tags: ['container.service_locator']
+
+  messenger.senders_locator:
+    class: Symfony\Component\Messenger\Transport\Sender\SendersLocator
+    arguments:
+      $sendersMap: []
+      $sendersLocator: '@messenger.receiver_locator'
+
+  Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware:
+    arguments:
+      $busName: 'messenger.bus.default'
+
+  Symfony\Component\Messenger\Middleware\SendMessageMiddleware:
+    arguments:
+      $sendersLocator: '@messenger.senders_locator'
+      $eventDispatcher: '@event_dispatcher'
+
+  messenger.bus.default.middleware.handle_message:
+    class: Symfony\Component\Messenger\Middleware\HandleMessageMiddleware
+    arguments:
+      - ~
+
+  messenger.bus.default:
+    class: Symfony\Component\Messenger\MessageBus
+    public: true
+    tags: ['messenger.bus']
+    arguments:
+      $middlewareHandlers:
+        - '@Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware'
+        - '@Symfony\Component\Messenger\Middleware\SendMessageMiddleware'
+        - '@messenger.bus.default.middleware.handle_message'
+
+  Symfony\Component\Messenger\MessageBusInterface: '@messenger.bus.default'
+
+  messenger.routable_message_bus:
+    class: Symfony\Component\Messenger\RoutableMessageBus
+    arguments:
+      - ~
+      - '@messenger.bus.default'
+
+  console.command.messenger_consume_messages:
+    class: Symfony\Component\Messenger\Command\ConsumeMessagesCommand
+    arguments:
+      - '@messenger.routable_message_bus'
+      - '@messenger.receiver_locator'
+      - '@event_dispatcher'
+      - ~
+      - []
+      - ~
+      - []
+
+  console.command.messenger_setup_transports:
+    class: Symfony\Component\Messenger\Command\SetupTransportsCommand
+    arguments:
+      - '@messenger.receiver_locator'
+      - []
+
+  Symfony\Component\Messenger\EventListener\SendFailedMessageForRetryListener:
+    arguments:
+      $sendersLocator: '@messenger.receiver_locator'
+      $retryStrategyLocator: !tagged_locator
+        tag: 'app.messenger.retry_strategy'
+        index_by: 'transport'
+      $eventDispatcher: '@event_dispatcher'
