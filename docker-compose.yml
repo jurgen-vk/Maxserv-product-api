@@ -104,5 +104,8 @@ services:
         cors_origins ${APP_URL}
     ports:
       - "${MERCURE_PORT:-3000}:80"
+    volumes:
+      - mercure_data:/data
 volumes:
   mysql_data:
+  mercure_data:

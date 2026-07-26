@@ -10,13 +10,13 @@ services:
 
   _instanceof:
     Symfony\Component\DependencyInjection\EnvVarProcessorInterface:
-      tags: ['container.env_var_processor']
+      tags: [ 'container.env_var_processor' ]
     MaxServ\Core\Cache\CachableInterface:
-      tags: ['app.cachable']
+      tags: [ 'app.cachable' ]
     MaxServ\Core\Render\Error\ErrorRendererInterface:
-      tags: ['core.error_renderer']
+      tags: [ 'core.error_renderer' ]
     Symfony\Component\EventDispatcher\EventSubscriberInterface:
-      tags: ['kernel.event_subscriber']
+      tags: [ 'kernel.event_subscriber' ]
 
   # ==========================================================================
   # Autodiscovery
@@ -96,8 +96,8 @@ services:
   # ==========================================================================
 
   Twig\Loader\FilesystemLoader:
-    class: 'Twig\Loader\FilesystemLoader'
-    arguments: []
+    class: 'MaxServ\Core\FileSystem\TwigFileSystemLoader'
+    arguments: [ ]
 
   Twig\Environment:
     class: 'Twig\Environment'
@@ -106,12 +106,12 @@ services:
       - cache: '%application.root%/var/cache/twig'
         auto_reload: '%app.is_dev%'
     calls:
-      - method: addGlobal
-        arguments: ['mercurePublicUrl', '%mercure.public_url%']
       - method: addExtension
-        arguments: ['@UserFrosting\ViteTwig\ViteTwigExtension']
+        arguments: [ '@UserFrosting\ViteTwig\ViteTwigExtension' ]
       - method: addExtension
-        arguments: ['@MaxServ\Core\Render\Extension\AssetExtension']
+        arguments: [ '@MaxServ\Core\Render\Extension\AssetExtension' ]
+      - method: addExtension
+        arguments: [ '@Symfony\Component\Mercure\Twig\MercureExtension' ]
 
   # ==========================================================================
   # Vite
@@ -157,6 +157,14 @@ services:
       - null
       - '%mercure.public_url%'
 
+  Symfony\Component\Mercure\HubRegistry:
+    arguments:
+      - '@Symfony\Component\Mercure\HubInterface'
+
+  Symfony\Component\Mercure\Twig\MercureExtension:
+    arguments:
+      - '@Symfony\Component\Mercure\HubRegistry'
+
   # ==========================================================================
   # Console
   # ==========================================================================
@@ -165,7 +173,7 @@ services:
     public: true
     calls:
       - method: setCommandLoader
-        arguments: ['@console.command_loader']
+        arguments: [ '@console.command_loader' ]
 
   # ==========================================================================
   # Cache
@@ -208,7 +216,7 @@ services:
 
   messenger.transport.serializer:
     class: Symfony\Component\Messenger\Transport\Serialization\Serializer
-    factory: ['Symfony\Component\Messenger\Transport\Serialization\Serializer', 'create']
+    factory: [ 'Symfony\Component\Messenger\Transport\Serialization\Serializer', 'create' ]
 
   event_dispatcher:
     class: Symfony\Component\EventDispatcher\EventDispatcher
@@ -217,13 +225,13 @@ services:
   messenger.receiver_locator:
     class: Symfony\Component\DependencyInjection\ServiceLocator
     arguments:
-      - []
-    tags: ['container.service_locator']
+      - [ ]
+    tags: [ 'container.service_locator' ]
 
   messenger.senders_locator:
     class: Symfony\Component\Messenger\Transport\Sender\SendersLocator
     arguments:
-      $sendersMap: []
+      $sendersMap: [ ]
       $sendersLocator: '@messenger.receiver_locator'
 
   Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware:
@@ -243,7 +251,7 @@ services:
   messenger.bus.default:
     class: Symfony\Component\Messenger\MessageBus
     public: true
-    tags: ['messenger.bus']
+    tags: [ 'messenger.bus' ]
     arguments:
       $middlewareHandlers:
         - '@Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware'
@@ -265,15 +273,15 @@ services:
       - '@messenger.receiver_locator'
       - '@event_dispatcher'
       - ~
-      - []
+      - [ ]
       - ~
-      - []
+      - [ ]
 
   console.command.messenger_setup_transports:
     class: Symfony\Component\Messenger\Command\SetupTransportsCommand
     arguments:
       - '@messenger.receiver_locator'
-      - []
+      - [ ]
 
   Symfony\Component\Messenger\EventListener\SendFailedMessageForRetryListener:
     arguments:

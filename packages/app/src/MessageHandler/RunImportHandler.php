@@ -35,7 +35,7 @@ class RunImportHandler
       $import->markFailed();
       $this->importRepository->save(import: $import);
 
-      $this->hub->publish(new Update(
+      $this->publishSafely(new Update(
         topics: "imports/{$message->importRunId}",
         data: json_encode(['id' => $message->importRunId, 'status' => 'failed']),
       ));
@@ -46,9 +46,20 @@ class RunImportHandler
     $import->markCompleted(count: $count);
     $this->importRepository->save(import: $import);
 
-    $this->hub->publish(new Update(
+    $this->publishSafely(new Update(
       topics: "imports/{$message->importRunId}",
       data: json_encode(['id' => $message->importRunId, 'status' => 'completed', 'count' => $count]),
     ));
+  }
+
+  private function publishSafely(Update $update): void
+  {
+    try {
+      $this->hub->publish($update);
+    } catch (\Throwable $exception) {
+      // A Mercure hiccup here shouldn't mask the import's own real result, or cause an
+      // already-finished import to be retried from scratch — this is purely a UI notification.
+      error_log($exception);
+    }
   }
 }

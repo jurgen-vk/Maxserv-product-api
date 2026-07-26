@@ -6,5 +6,5 @@ namespace MaxServ\App\Enum;
 
 enum MediaType: string
 {
-  case Image = 'image';
+    case Image = 'image';
 }

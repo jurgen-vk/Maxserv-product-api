@@ -40,7 +40,7 @@ class BrandRepository
 
     $result = [];
     foreach ($stmt->fetchAll(mode: PDO::FETCH_ASSOC) as $row) {
-      $result[(int) $row['id']] = new Brand(id: (int) $row['id'], name: $row['name']);
+      $result[] = new Brand(id: (int) $row['id'], name: $row['name']);
     }
     return $result;
   }

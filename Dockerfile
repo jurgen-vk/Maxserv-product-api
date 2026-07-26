@@ -44,7 +44,9 @@ COPY --from=assets /app/public/assets ./public/assets
 # cache — %env(...)% parameters are resolved lazily, at real request time, against whatever
 # the container's actual environment is then, not whatever existed here at build time.
 ENV APP_ENV=prod
+ENV MERCURE_HUB_URL=""
 ENV MERCURE_PUBLIC_URL=""
+ENV MERCURE_PUBLISHER_JWT=""
 ENV VITE_SERVER_URL=""
 ENV APP_URL=""
 

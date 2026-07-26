@@ -12,9 +12,8 @@ use Twig\Error\SyntaxError;
 readonly class TemplateRenderer
 {
     public function __construct(
-        private Environment $environment
-    ) {
-    }
+        private Environment $environment,
+    ) {}
 
     /**
      * @throws RuntimeError
@@ -23,6 +22,6 @@ readonly class TemplateRenderer
      */
     public function render(string $template, array $arguments): string
     {
-        return $this->environment->render($template, $arguments);
+        return $this->environment->render(name: $template, context: $arguments);
     }
 }

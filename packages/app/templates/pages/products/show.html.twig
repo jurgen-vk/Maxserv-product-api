@@ -18,8 +18,10 @@
         {% endif %}
       </div>
       <div class="text-right shrink-0">
-        <p class="text-gray-400 line-through text-sm font-mono">&euro;&nbsp;{{ product.price|number_format(2, '.', ',') }}</p>
-        <p class="text-3xl font-bold text-green-700 font-mono">&euro;&nbsp;{{ product.discountedPrice|number_format(2, '.', ',') }}</p>
+        <p class="text-gray-400 line-through text-sm font-mono">
+          &euro;&nbsp;{{ product.price|number_format(2, '.', ',') }}</p>
+        <p class="text-3xl font-bold text-green-700 font-mono">
+          &euro;&nbsp;{{ product.discountPrice|number_format(2, '.', ',') }}</p>
         <p class="text-xs text-green-600 mt-0.5">{{ product.discountPercentage|number_format(1) }}% off</p>
       </div>
     </div>
@@ -32,17 +34,17 @@
 
         <div class="relative rounded-lg overflow-hidden bg-gray-50">
           <img id="gallery-main" src="{{ imageUrls[0] }}" alt="{{ product.title }}"
-            class="w-full aspect-square object-contain">
+               class="w-full aspect-square object-contain">
 
           {% if imageUrls|length > 1 %}
             <button id="gallery-prev"
-              class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow hover:bg-white transition-colors">
+                    class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow hover:bg-white transition-colors">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
               </svg>
             </button>
             <button id="gallery-next"
-              class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow hover:bg-white transition-colors">
+                    class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-2 shadow hover:bg-white transition-colors">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
               </svg>
@@ -54,7 +56,7 @@
           <div class="flex gap-2 mt-2 overflow-x-auto pb-1">
             {% for url in imageUrls %}
               <img src="{{ url }}" alt="{{ product.title }} {{ loop.index }}"
-                class="gallery-thumb shrink-0 w-16 h-16 object-contain bg-gray-50 rounded cursor-pointer ring-offset-1 transition-all
+                   class="gallery-thumb shrink-0 w-16 h-16 object-contain bg-gray-50 rounded cursor-pointer ring-offset-1 transition-all
                   {{ loop.first ? 'ring-2 ring-gray-900' : 'opacity-60 hover:opacity-100' }}">
             {% endfor %}
           </div>
@@ -87,28 +89,28 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-  const galleryImages = {{ imageUrls|json_encode|raw }};
-  let current = 0;
+  <script>
+    const galleryImages = {{ imageUrls|json_encode|raw }};
+    let current = 0;
 
-  const mainImg = document.getElementById('gallery-main');
-  const thumbs = document.querySelectorAll('.gallery-thumb');
+    const mainImg = document.getElementById("gallery-main");
+    const thumbs = document.querySelectorAll(".gallery-thumb");
 
-  function setActive(index) {
-    current = (index + galleryImages.length) % galleryImages.length;
-    mainImg.src = galleryImages[current];
-    thumbs.forEach((t, i) => {
-      t.classList.toggle('ring-2', i === current);
-      t.classList.toggle('ring-gray-900', i === current);
-      t.classList.toggle('opacity-60', i !== current);
-      t.classList.toggle('opacity-100', i === current);
-    });
-  }
+    function setActive(index) {
+      current = (index + galleryImages.length) % galleryImages.length;
+      mainImg.src = galleryImages[current];
+      thumbs.forEach((t, i) => {
+        t.classList.toggle("ring-2", i === current);
+        t.classList.toggle("ring-gray-900", i === current);
+        t.classList.toggle("opacity-60", i !== current);
+        t.classList.toggle("opacity-100", i === current);
+      });
+    }
 
-  const prev = document.getElementById('gallery-prev');
-  const next = document.getElementById('gallery-next');
-  if (prev) prev.addEventListener('click', () => setActive(current - 1));
-  if (next) next.addEventListener('click', () => setActive(current + 1));
-  thumbs.forEach((t, i) => t.addEventListener('click', () => setActive(i)));
-</script>
+    const prev = document.getElementById("gallery-prev");
+    const next = document.getElementById("gallery-next");
+    if (prev) prev.addEventListener("click", () => setActive(current - 1));
+    if (next) next.addEventListener("click", () => setActive(current + 1));
+    thumbs.forEach((t, i) => t.addEventListener("click", () => setActive(i)));
+  </script>
 {% endblock %}

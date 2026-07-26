@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController
 {
-  #[Route('/', name: 'index')]
-  public function index(Request $request, array $parameters): RedirectResponse
-  {
-    return new RedirectResponse('/products', 301);
-  }
+    #[Route(path: '/', name: 'home_index', methods: ['GET'])]
+    public function index(Request $request, array $parameters): RedirectResponse
+    {
+        return new RedirectResponse(url: '/products', status: 301);
+    }
 }

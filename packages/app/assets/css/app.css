@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./_components.generated.css";
+
 @source "../../templates/**/*.twig";
 
 [x-cloak] {

@@ -26,7 +26,7 @@
           {% set qs = qs ~ '&' ~ k ~ '=' ~ v|url_encode %}
         {% endif %}
       {% endfor %}
-      {% set qs = qs ~ '&' ~ paginator.countParam ~ '=' ~ paginator.perPage %}
+      {% set qs = qs ~ '&' ~ paginator.perPageParam ~ '=' ~ paginator.perPage %}
 
       {% if paginator.hasPreviousPage %}
         <a href="{{ baseUrl }}?{{ paginator.pageParam }}={{ paginator.page - 1 }}{{ qs }}"

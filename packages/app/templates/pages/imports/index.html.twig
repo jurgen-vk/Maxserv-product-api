@@ -3,7 +3,7 @@
 {% block title %}Imports{% endblock %}
 
 {% block content %}
-  <div x-data="importsList({{ imports|json_encode|raw }})">
+  <div x-data="importsList({{ imports|json_encode|raw }}, {{ mercure('imports/{id}')|json_encode|raw }})">
     <h1 class="text-lg font-semibold text-gray-900 mb-4">Imports</h1>
 
     <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">

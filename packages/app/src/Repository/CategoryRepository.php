@@ -40,7 +40,7 @@ class CategoryRepository
 
     $result = [];
     foreach ($stmt->fetchAll(mode: PDO::FETCH_ASSOC) as $row) {
-      $result[(int) $row['id']] = new Category(id: (int) $row['id'], name: $row['name']);
+      $result[] = new Category(id: (int) $row['id'], name: $row['name']);
     }
     return $result;
   }

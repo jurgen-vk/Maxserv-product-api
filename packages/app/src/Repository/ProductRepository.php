@@ -6,28 +6,26 @@ namespace MaxServ\App\Repository;
 
 use MaxServ\App\Dto\Pagination\PaginatedResult;
 use MaxServ\App\Dto\Pagination\Paginator;
-use MaxServ\App\Entity\Media;
 use MaxServ\App\Entity\Product;
-use MaxServ\App\Enum\MediaType;
 use MaxServ\App\Filter\ProductFilter;
 use MaxServ\App\Hydrator\ProductHydrator;
+use MaxServ\App\Utility\QueryUtility;
 use MaxServ\Core\Database\Connection;
 use PDO;
 
 class ProductRepository
 {
-  public function __construct(
-    private readonly Connection $connection,
-    private readonly MediaRepository $mediaRepository,
-    private readonly CategoryRepository $categoryRepository,
-    private readonly BrandRepository $brandRepository,
-    private readonly ProductHydrator $hydrator,
-  ) {
-  }
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly MediaRepository $mediaRepository,
+        private readonly CategoryRepository $categoryRepository,
+        private readonly BrandRepository $brandRepository,
+        private readonly ProductHydrator $hydrator,
+    ) {}
 
-  public function save(Product $product): void
-  {
-    $sql = '
+    public function save(Product $product): void
+    {
+        $sql = '
       INSERT INTO products
         (id, title, description, price, discount_percentage, rating, stock, category_id, brand_id)
       VALUES
@@ -44,32 +42,29 @@ class ProductRepository
         brand_id            = new_row.brand_id
     ';
 
-    $this->connection->pdo->prepare($sql)->execute([
-      ':id'                 => $product->id,
-      ':title'              => $product->title,
-      ':description'        => $product->description,
-      ':price'              => $product->price,
-      ':discountPercentage' => $product->discountPercentage,
-      ':rating'             => $product->rating,
-      ':stock'              => $product->stock,
-      ':categoryId'         => $product->category->id,
-      ':brandId'            => $product->brand?->id,
-    ]);
+        $this->connection->pdo->prepare($sql)->execute([
+            ':id' => $product->id,
+            ':title' => $product->title,
+            ':description' => $product->description,
+            ':price' => $product->price,
+            ':discountPercentage' => $product->discountPercentage,
+            ':rating' => $product->rating,
+            ':stock' => $product->stock,
+            ':categoryId' => $product->category->id,
+            ':brandId' => $product->brand?->id,
+        ]);
 
-    $product->id ??= (int) $this->connection->pdo->lastInsertId();
-  }
-
-  public function saveMany(array $products): void
-  {
-    if (empty($products)) {
-      return;
+        $product->id ??= (int)$this->connection->pdo->lastInsertId();
     }
 
-    $placeholders = implode(
-      separator: ', ',
-      array: array_fill(start_index: 0, count: count($products), value: '(?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    );
-    $sql = "
+    public function saveMany(array $products): void
+    {
+        if (empty($products)) {
+            return;
+        }
+
+        $placeholders = QueryUtility::buildPositionalPlaceholders(count($products), 9);
+        $sql = "
       INSERT INTO products
         (id, title, description, price, discount_percentage, rating, stock, category_id, brand_id)
       VALUES
@@ -86,118 +81,122 @@ class ProductRepository
         brand_id            = new_row.brand_id
     ";
 
-    $values = [];
-    foreach ($products as $product) {
-      array_push(
-        $values,
-        $product->id,
-        $product->title,
-        $product->description,
-        $product->price,
-        $product->discountPercentage,
-        $product->rating,
-        $product->stock,
-        $product->category->id,
-        $product->brand?->id,
-      );
+        $values = [];
+        foreach ($products as $product) {
+            array_push(
+                $values,
+                $product->id,
+                $product->title,
+                $product->description,
+                $product->price,
+                $product->discountPercentage,
+                $product->rating,
+                $product->stock,
+                $product->category->id,
+                $product->brand?->id,
+            );
+        }
+
+        $this->connection->pdo->prepare($sql)->execute($values);
     }
 
-    $this->connection->pdo->prepare($sql)->execute($values);
-  }
+    public function saveManyMedia(array $products): void
+    {
+        if (empty($products)) {
+            return;
+        }
 
-  public function saveManyMedia(array $products): void
-  {
-    if (empty($products)) {
-      return;
+        $entityIds = array_map(callback: fn(Product $p) => $p->id, array: $products);
+        $media = array_merge(...array_map(callback: fn(Product $p) => $p->media, array: $products));
+
+        $this->mediaRepository->deleteByEntities(entityType: 'product', entityIds: $entityIds);
+        $this->mediaRepository->saveMany(media: $media);
     }
 
-    $entityIds = array_map(callback: fn(Product $p) => $p->id, array: $products);
-    $media = array_merge(...array_map(callback: fn(Product $p) => $p->media, array: $products));
-
-    $this->mediaRepository->deleteByEntities(entityType: 'product', entityIds: $entityIds);
-    $this->mediaRepository->saveMany(media: $media);
-  }
-
-  public function searchPaginated(ProductFilter $filter, Paginator $paginator): PaginatedResult
-  {
-    $countStmt = $this->connection->pdo->prepare(
-      "SELECT COUNT(*) FROM products {$filter->whereClause}"
-    );
-    $countStmt->execute($filter->bindings);
-    $paginator->total = (int) $countStmt->fetchColumn();
-
-    $stmt = $this->connection->pdo->prepare(
-      "SELECT products.*,
-        (SELECT url FROM media
-         WHERE entity_type = 'product' AND entity_id = products.id
-         ORDER BY sort_order LIMIT 1) AS thumbnail
-       FROM products
-       {$filter->whereClause}
-       ORDER BY {$filter->orderBy}
-       LIMIT :limit OFFSET :offset"
-    );
-
-    foreach ($filter->bindings as $key => $value) {
-      $stmt->bindValue($key, $value);
-    }
-    $stmt->bindValue(':limit', $paginator->perPage, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $paginator->offset, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if (empty($rows)) {
-      return new PaginatedResult(items: [], paginator: $paginator);
+    public function findManyMedia(array $productIds): array
+    {
+        return $this->mediaRepository->findFirstByEntities('product', $productIds);
     }
 
-    $categoryIds = array_values(array_map('intval', array_unique(array_column($rows, 'category_id'))));
-    $brandIds = array_values(array_map('intval', array_filter(array_unique(array_column($rows, 'brand_id')))));
+    public function searchPaginated(ProductFilter $filter, int|string|null $page, int|string|null $perPage): PaginatedResult
+    {
+        $countStmt = $this->connection->pdo->prepare("SELECT COUNT(*) FROM products WHERE {$filter->filters}");
+        $countStmt->execute($filter->bindings);
+        $paginator = new Paginator(page: $page, perPage: $perPage, total: (int) $countStmt->fetchColumn());
 
-    $categories = $this->categoryRepository->findMany($categoryIds);
-    $brands = $this->brandRepository->findMany($brandIds);
+        $stmt = $this->connection->pdo->prepare(
+            "SELECT products.* FROM products
+             WHERE {$filter->filters}
+             ORDER BY {$filter->sorts}
+             LIMIT {$paginator->perPage} OFFSET {$paginator->offset}"
+        );
+        $stmt->execute($filter->bindings);
 
-    $items = array_map(
-      fn(array $row) => $this->hydrator->hydrateFromDatabase(
-        row: $row,
-        category: $categories[(int) $row['category_id']],
-        brand: isset($row['brand_id']) ? ($brands[(int) $row['brand_id']] ?? null) : null,
-        media: $row['thumbnail'] !== null ? [new Media(
-          id: null,
-          entityType: 'product',
-          entityId: (int) $row['id'],
-          url: $row['thumbnail'],
-          mediaType: MediaType::Image,
-          sortOrder: 0,
-        )] : [],
-      ),
-      $rows
-    );
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    return new PaginatedResult(items: $items, paginator: $paginator);
-  }
+        if (empty($rows)) {
+            return new PaginatedResult(items: [], paginator: $paginator);
+        }
 
-  public function find(int $id): ?Product
-  {
-    $stmt = $this->connection->pdo->prepare("SELECT * FROM products WHERE id = :id");
-    $stmt->execute([':id' => $id]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $productIds = [];
+        $categoryIds = [];
+        $brandIds = [];
 
-    if ($row === false) {
-      return null;
+        foreach ($rows as $row) {
+            $productIds[] = (int) $row['id'];
+
+            $categoryId = (int) $row['category_id'];
+            if (!in_array($categoryId, $categoryIds)) {
+                $categoryIds[] = $categoryId;
+            }
+
+            if ($row['brand_id'] !== null) {
+                $brandId = (int) $row['brand_id'];
+                if (!in_array($brandId, $brandIds)) {
+                    $brandIds[] = $brandId;
+                }
+            }
+        }
+
+        $categoriesById = array_column($this->categoryRepository->findMany($categoryIds), null, 'id');
+        $brandsById = array_column($this->brandRepository->findMany($brandIds), null, 'id');
+        $mediaByProductId = array_column($this->findManyMedia($productIds), null, 'entityId');
+
+        $items = [];
+        foreach ($rows as $row) {
+            $items[] = $this->hydrator->hydrateFromDatabase(
+                row: $row,
+                category: $categoriesById[(int) $row['category_id']],
+                brand: isset($row['brand_id']) ? ($brandsById[(int) $row['brand_id']] ?? null) : null,
+                media: isset($mediaByProductId[(int) $row['id']]) ? [$mediaByProductId[(int) $row['id']]] : [],
+            );
+        }
+
+        return new PaginatedResult(items: $items, paginator: $paginator);
     }
 
-    $categories = $this->categoryRepository->findMany([(int) $row['category_id']]);
-    $brands = isset($row['brand_id'])
-      ? $this->brandRepository->findMany([(int) $row['brand_id']])
-      : [];
+    public function find(int $id): ?Product
+    {
+        $stmt = $this->connection->pdo->prepare("SELECT * FROM products WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $media = $this->mediaRepository->findByEntity(entityType: 'product', entityId: $id);
+        if ($row === false) {
+            return null;
+        }
 
-    return $this->hydrator->hydrateFromDatabase(
-      row: $row,
-      category: $categories[(int) $row['category_id']],
-      brand: isset($row['brand_id']) ? ($brands[(int) $row['brand_id']] ?? null) : null,
-      media: $media,
-    );
-  }
+        $category = $this->categoryRepository->findMany([(int)$row['category_id']])[0];
+        $brand = isset($row['brand_id'])
+            ? ($this->brandRepository->findMany([(int)$row['brand_id']])[0] ?? null)
+            : null;
+
+        $media = $this->mediaRepository->findByEntity(entityType: 'product', entityId: $id);
+
+        return $this->hydrator->hydrateFromDatabase(
+            row: $row,
+            category: $category,
+            brand: $brand,
+            media: $media,
+        );
+    }
 }

@@ -6,6 +6,7 @@ namespace MaxServ\App\Repository;
 
 use MaxServ\App\Entity\Media;
 use MaxServ\App\Hydrator\MediaHydrator;
+use MaxServ\App\Utility\QueryUtility;
 use MaxServ\Core\Database\Connection;
 use PDO;
 
@@ -51,10 +52,7 @@ class MediaRepository
       return;
     }
 
-    $placeholders = implode(
-      separator: ', ',
-      array: array_fill(start_index: 0, count: count($media), value: '(?, ?, ?, ?, ?, ?)')
-    );
+    $placeholders = QueryUtility::buildPositionalPlaceholders(count($media), 6);
     $sql = "
       INSERT INTO media
         (id, entity_type, entity_id, url, media_type, sort_order)
@@ -103,5 +101,31 @@ class MediaRepository
       callback: fn(array $row) => $this->hydrator->hydrateFromDatabase(row: $row),
       array: $stmt->fetchAll(mode: PDO::FETCH_ASSOC)
     );
+  }
+
+  public function findFirstByEntities(string $entityType, array $entityIds): array
+  {
+    if (empty($entityIds)) {
+      return [];
+    }
+
+    [$placeholders, $bindings] = QueryUtility::buildNamedPlaceholders('entityId', $entityIds);
+
+    $stmt = $this->connection->pdo->prepare(
+      "SELECT * FROM (
+           SELECT *, ROW_NUMBER() OVER (PARTITION BY entity_id ORDER BY sort_order) AS rn
+           FROM media
+           WHERE entity_type = :entityType AND entity_id IN ($placeholders)
+       ) ranked
+       WHERE rn = 1"
+    );
+    $stmt->execute([':entityType' => $entityType, ...$bindings]);
+
+    $media = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+      $media[] = $this->hydrator->hydrateFromDatabase($row);
+    }
+
+    return $media;
   }
 }
