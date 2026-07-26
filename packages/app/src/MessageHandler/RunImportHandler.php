@@ -15,51 +15,55 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler(bus: 'messenger.bus.default')]
 class RunImportHandler
 {
-  public function __construct(
-    private readonly ImportRepository $importRepository,
-    private readonly ImportService $importService,
-    private readonly HubInterface $hub,
-  ) {}
+    public function __construct(
+        private readonly ImportRepository $importRepository,
+        private readonly ImportService $importService,
+        private readonly HubInterface $hub,
+    ) {}
 
-  public function __invoke(RunImportMessage $message): void
-  {
-    $import = $this->importRepository->find(id: $message->importRunId);
-    $import->markRunning();
-    $this->importRepository->save(import: $import);
+    public function __invoke(RunImportMessage $message): void
+    {
+        $import = $this->importRepository->find(id: $message->importRunId);
+        $import->markRunning();
+        $this->importRepository->save(import: $import);
 
-    $reporter = new MercureProgressReporter(hub: $this->hub, importId: $message->importRunId);
+        $reporter = new MercureProgressReporter(hub: $this->hub, importId: $message->importRunId);
 
-    try {
-      $count = $this->importService->run(type: $message->type, reporter: $reporter);
-    } catch (\Throwable $exception) {
-      $import->markFailed();
-      $this->importRepository->save(import: $import);
+        try {
+            $count = $this->importService->run(type: $message->type, reporter: $reporter);
+        } catch (\Throwable $exception) {
+            $import->markFailed();
+            $this->importRepository->save(import: $import);
 
-      $this->publishSafely(new Update(
-        topics: "imports/{$message->importRunId}",
-        data: json_encode(['id' => $message->importRunId, 'status' => 'failed']),
-      ));
+            $this->publishSafely(
+                new Update(
+                    topics: "imports/{$message->importRunId}",
+                    data: json_encode(['id' => $message->importRunId, 'status' => 'failed']),
+                ),
+            );
 
-      throw $exception;
+            throw $exception;
+        }
+
+        $import->markCompleted(count: $count);
+        $this->importRepository->save(import: $import);
+
+        $this->publishSafely(
+            new Update(
+                topics: "imports/{$message->importRunId}",
+                data: json_encode(['id' => $message->importRunId, 'status' => 'completed', 'count' => $count]),
+            ),
+        );
     }
 
-    $import->markCompleted(count: $count);
-    $this->importRepository->save(import: $import);
-
-    $this->publishSafely(new Update(
-      topics: "imports/{$message->importRunId}",
-      data: json_encode(['id' => $message->importRunId, 'status' => 'completed', 'count' => $count]),
-    ));
-  }
-
-  private function publishSafely(Update $update): void
-  {
-    try {
-      $this->hub->publish($update);
-    } catch (\Throwable $exception) {
-      // A Mercure hiccup here shouldn't mask the import's own real result, or cause an
-      // already-finished import to be retried from scratch — this is purely a UI notification.
-      error_log($exception);
+    private function publishSafely(Update $update): void
+    {
+        try {
+            $this->hub->publish($update);
+        } catch (\Throwable $exception) {
+            // A Mercure hiccup here shouldn't mask the import's own real result, or cause an
+            // already-finished import to be retried from scratch — this is purely a UI notification.
+            error_log((string)$exception);
+        }
     }
-  }
 }
