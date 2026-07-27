@@ -10,40 +10,51 @@ use Symfony\Component\Messenger\Bridge\Doctrine\Transport\DoctrineTransport;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
-final class DatabaseTransportFactory
+final readonly  class DatabaseTransportFactory
 {
     public function __construct(
-        private readonly string $host,
-        private readonly string $user,
-        private readonly string $password,
-        private readonly string $database,
-        private readonly SerializerInterface $serializer,
-        private readonly string $tableName,
-        private readonly bool $autoSetup,
-    ) {
-    }
+        private string $host,
+        private string $user,
+        private string $password,
+        private string $database,
+        private SerializerInterface $serializer,
+        private string $tableName,
+        private bool $autoSetup,
+    ) {}
 
     public function create(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
-        $dbalConnection = DriverManager::getConnection([
-            'driver' => 'pdo_mysql',
-            'host' => $this->host,
-            'user' => $this->user,
-            'password' => $this->password,
-            'dbname' => $this->database,
-        ]);
+        $dbalConnection = DriverManager::getConnection(
+            params: [
+                'driver' => 'pdo_mysql',
+                'host' => $this->host,
+                'user' => $this->user,
+                'password' => $this->password,
+                'dbname' => $this->database,
+            ],
+        );
 
-        $configuration = BridgeConnection::buildConfiguration($dsn, $options);
+        $configuration = BridgeConnection::buildConfiguration(dsn: $dsn, options: $options);
 
-        return new DoctrineTransport(new BridgeConnection($configuration, $dbalConnection), $serializer);
+        return new DoctrineTransport(
+            connection: new BridgeConnection(
+                configuration: $configuration,
+                driverConnection: $dbalConnection,
+            ),
+            serializer: $serializer,
+        );
     }
 
     public function createDefault(string $queueName): TransportInterface
     {
-        return $this->create('doctrine://default', [
-            'table_name' => $this->tableName,
-            'queue_name' => $queueName,
-            'auto_setup' => $this->autoSetup,
-        ], $this->serializer);
+        return $this->create(
+            dsn: 'doctrine://default',
+            options: [
+                'table_name' => $this->tableName,
+                'queue_name' => $queueName,
+                'auto_setup' => $this->autoSetup,
+            ],
+            serializer: $this->serializer,
+        );
     }
 }

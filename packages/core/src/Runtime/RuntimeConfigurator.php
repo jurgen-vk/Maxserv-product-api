@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace MaxServ\Core\Runtime;
 
-final class RuntimeConfigurator
+final readonly class RuntimeConfigurator
 {
     public static function configure(): void
     {
-        $debug = getenv('APP_DEBUG') === 'true';
-        $isDev = getenv('APP_ENV') !== 'prod';
-        // $logErrors = getenv('APP_LOG_ERRORS') !== 'false'; // fail-safe: on unless explicitly disabled, matching APP_ENV's own fail-closed pattern
+        $debug = getenv(name: 'APP_DEBUG') === 'true';
+        $isDev = getenv(name: 'APP_ENV') !== 'prod';
+        $logErrors = getenv('APP_LOG_ERRORS') !== 'false';
 
-        ini_set('display_errors', $debug ? '1' : '0');
-        // ini_set('log_errors', $logErrors ? '1' : '0'); // paused — not a priority right now
-        ini_set('opcache.validate_timestamps', $isDev ? '1' : '0');
+        ini_set(option: 'display_errors', value: $debug ? '1' : '0');
+        ini_set(option: 'log_errors', value: $logErrors ? '1' : '0');
+        ini_set(option: 'opcache.validate_timestamps', value: $isDev ? '1' : '0');
     }
 }

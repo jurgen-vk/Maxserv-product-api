@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'migrate:install', description: 'Create the migrations tracking table, without running any migrations')]
-class MigrateInstallCommand extends Command
+final class MigrateInstallCommand extends Command
 {
     public function __construct(
         private readonly Migrator $migrator,
@@ -24,7 +24,8 @@ class MigrateInstallCommand extends Command
     {
         $this->migrator->install();
 
-        (new SymfonyStyle($input, $output))->success('Migrations table is ready.');
+        (new SymfonyStyle(input: $input, output: $output))
+            ->success(message: 'Migrations table is ready.');
 
         return Command::SUCCESS;
     }

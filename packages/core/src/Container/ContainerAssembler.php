@@ -9,20 +9,26 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Finder\Finder;
 
-final class ContainerAssembler
+final readonly class ContainerAssembler
 {
     public function build(): ContainerBuilder
     {
         $container = new ContainerBuilder();
-        ContainerConfigurator::configure($container);
+        ContainerConfigurator::configure(container: $container);
 
-        $loader = new YamlFileLoader($container, new FileLocator(APPLICATION_ROOT . '/packages'));
+        $loader = new YamlFileLoader(
+            container: $container,
+            locator: new FileLocator(paths: APPLICATION_ROOT . '/packages'),
+        );
 
         $finder = new Finder();
-        $serviceFiles = $finder->files()->in(APPLICATION_ROOT . '/packages')->name('services.yaml');
+        $serviceFiles = $finder
+            ->files()
+            ->in(dirs: APPLICATION_ROOT . '/packages')
+            ->name(patterns: 'services.yaml');
 
         foreach ($serviceFiles as $serviceFile) {
-            $loader->load($serviceFile->getPathname());
+            $loader->load(resource: $serviceFile->getPathname());
         }
 
         $container->compile();

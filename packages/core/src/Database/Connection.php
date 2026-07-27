@@ -6,7 +6,7 @@ namespace MaxServ\Core\Database;
 
 use PDO;
 
-class Connection
+final class Connection
 {
     private ?PDO $pdoBacking = null;
 
@@ -15,8 +15,7 @@ class Connection
         private readonly string $user,
         private readonly string $password,
         private readonly string $database,
-    ) {
-    }
+    ) {}
 
     public PDO $pdo {
         get => $this->pdoBacking ??= $this->makeConnection();
@@ -25,10 +24,10 @@ class Connection
     private function makeConnection(): PDO
     {
         return new PDO(
-            "mysql:host=$this->host;dbname=$this->database",
-            $this->user,
-            $this->password,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+            dsn: "mysql:host=$this->host;dbname=$this->database",
+            username: $this->user,
+            password: $this->password,
+            options: [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
         );
     }
 }

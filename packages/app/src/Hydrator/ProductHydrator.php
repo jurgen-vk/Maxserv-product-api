@@ -8,7 +8,7 @@ use MaxServ\App\Entity\Brand;
 use MaxServ\App\Entity\Category;
 use MaxServ\App\Entity\Product;
 
-class ProductHydrator
+final readonly class ProductHydrator
 {
     public function hydrateFromDatabase(
         array $row,

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'template:clear', description: 'Clear the Twig template cache')]
-class TemplateClearCommand extends Command
+final class TemplateClearCommand extends Command
 {
     public function __construct(
         private readonly TemplateCacher $cacher,
@@ -24,7 +24,8 @@ class TemplateClearCommand extends Command
     {
         $this->cacher->clear();
 
-        (new SymfonyStyle($input, $output))->success('Template cache cleared.');
+        (new SymfonyStyle(input: $input, output: $output))
+            ->success(message: 'Template cache cleared.');
 
         return Command::SUCCESS;
     }

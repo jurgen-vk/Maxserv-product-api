@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-readonly class ImportController
+final readonly class ImportController
 {
 
     public function __construct(
@@ -36,7 +36,7 @@ readonly class ImportController
         return new Response(
             content: $this->templateRenderer->render(
                 template: 'pages.imports',
-                arguments: ['imports' => $imports],
+                data: ['imports' => $imports],
             ),
         );
     }

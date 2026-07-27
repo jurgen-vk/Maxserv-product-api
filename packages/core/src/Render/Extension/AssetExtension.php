@@ -8,12 +8,11 @@ use Symfony\Component\Asset\PackageInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class AssetExtension extends AbstractExtension
+final class AssetExtension extends AbstractExtension
 {
     public function __construct(
         private readonly PackageInterface $assets,
-    ) {
-    }
+    ) {}
 
     public function getFunctions(): array
     {

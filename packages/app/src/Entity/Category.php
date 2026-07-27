@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Entity;
 
-class Category
+final class Category
 {
     public function __construct(
         public int $id,

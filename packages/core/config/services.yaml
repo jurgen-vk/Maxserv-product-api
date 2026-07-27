@@ -1,6 +1,4 @@
-parameters:
-  messenger.table_name: 'messenger_messages'
-  messenger.auto_setup: false
+parameters: {}
 
 services:
   _defaults:
@@ -11,8 +9,8 @@ services:
   _instanceof:
     Symfony\Component\DependencyInjection\EnvVarProcessorInterface:
       tags: [ 'container.env_var_processor' ]
-    MaxServ\Core\Cache\CachableInterface:
-      tags: [ 'app.cachable' ]
+    MaxServ\Core\Cache\CacheableInterface:
+      tags: [ 'app.cacheable' ]
     MaxServ\Core\Render\Error\ErrorRendererInterface:
       tags: [ 'core.error_renderer' ]
     Symfony\Component\EventDispatcher\EventSubscriberInterface:
@@ -157,6 +155,13 @@ services:
       - null
       - '%mercure.public_url%'
 
+  # Decorates the Hub above so anything still typing plain HubInterface gets safe
+  # publishing as a fallback — new code should inject SafeHub directly instead, to
+  # get access to publishSafely().
+  MaxServ\Core\Mercure\SafeHub:
+    decorates: Symfony\Component\Mercure\HubInterface
+    arguments: ['@.inner']
+
   Symfony\Component\Mercure\HubRegistry:
     arguments:
       - '@Symfony\Component\Mercure\HubInterface'
@@ -185,11 +190,11 @@ services:
 
   MaxServ\Core\Cache\Command\CacheWarmupCommand:
     arguments:
-      $cachables: !tagged_iterator app.cachable
+      $cacheables: !tagged_iterator app.cacheable
 
   MaxServ\Core\Cache\Command\CacheClearCommand:
     arguments:
-      $cachables: !tagged_iterator app.cachable
+      $cacheables: !tagged_iterator app.cacheable
 
   # ==========================================================================
   # Error rendering
@@ -199,6 +204,16 @@ services:
     arguments:
       $renderers: !tagged_iterator core.error_renderer
       $debug: '%app.debug%'
+
+  # ==========================================================================
+  # Event
+  # ==========================================================================
+
+  event_dispatcher:
+    class: Symfony\Component\EventDispatcher\EventDispatcher
+    public: true
+
+  Symfony\Contracts\EventDispatcher\EventDispatcherInterface: '@event_dispatcher'
 
   # ==========================================================================
   # Messenger
@@ -211,16 +226,12 @@ services:
       $password: '%db.password%'
       $database: '%db.database%'
       $serializer: '@messenger.transport.serializer'
-      $tableName: '%messenger.table_name%'
-      $autoSetup: '%messenger.auto_setup%'
+      $tableName: 'messenger_messages'
+      $autoSetup: false
 
   messenger.transport.serializer:
     class: Symfony\Component\Messenger\Transport\Serialization\Serializer
     factory: [ 'Symfony\Component\Messenger\Transport\Serialization\Serializer', 'create' ]
-
-  event_dispatcher:
-    class: Symfony\Component\EventDispatcher\EventDispatcher
-    public: true
 
   messenger.receiver_locator:
     class: Symfony\Component\DependencyInjection\ServiceLocator

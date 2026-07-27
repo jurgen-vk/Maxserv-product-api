@@ -6,7 +6,7 @@ namespace MaxServ\App\Extractor;
 
 use MaxServ\App\Entity\Import;
 
-class ImportExtractor
+final class ImportExtractor
 {
     public function extract(Import $import): array
     {

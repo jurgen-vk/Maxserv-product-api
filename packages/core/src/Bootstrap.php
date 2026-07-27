@@ -10,18 +10,18 @@ use MaxServ\Core\Container\ContainerProvider;
 use MaxServ\Core\Runtime\RuntimeConfigurator;
 use Symfony\Component\DependencyInjection\Container;
 
-final class Bootstrap
+final readonly class Bootstrap
 {
-    public readonly Container $container;
+    public Container $container;
 
     public function boot(): void
     {
         RuntimeConfigurator::configure();
 
-        $isDev = getenv('APP_ENV') !== 'prod';
+        $isDev = getenv(name: 'APP_ENV') !== 'prod';
         $this->container = (new ContainerProvider(
-            new ContainerAssembler(),
-            new ContainerCacher($isDev),
+            assembler: new ContainerAssembler(),
+            cacher: new ContainerCacher($isDev),
         ))->retrieve();
     }
 }

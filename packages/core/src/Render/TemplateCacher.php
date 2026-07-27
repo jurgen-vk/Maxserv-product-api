@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace MaxServ\Core\Render;
 
-use MaxServ\Core\Cache\CachableInterface;
+use MaxServ\Core\Cache\CacheableInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-final class TemplateCacher implements CachableInterface
+final class TemplateCacher implements CacheableInterface
 {
     public function __construct(
         private readonly Environment $twig,
         private readonly FilesystemLoader $loader,
         private readonly Filesystem $filesystem,
-    ) {
-    }
+    ) {}
 
     public function cache(): array
     {

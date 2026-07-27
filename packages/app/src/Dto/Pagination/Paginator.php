@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Dto\Pagination;
 
-class Paginator
+final class Paginator
 {
-    private const DEFAULT_PAGE = 1;
-    private const DEFAULT_PER_PAGE = 25;
-
     public function __construct(
         int|string|null $page,
         int|string|null $perPage,
@@ -18,6 +15,9 @@ class Paginator
         $this->perPage = $perPage;
         $this->page = $page;
     }
+
+    private const int DEFAULT_PAGE = 1;
+    private const int DEFAULT_PER_PAGE = 25;
 
     public private(set) int $perPage {
         set(int|string|null $value) {
@@ -36,7 +36,7 @@ class Paginator
     }
 
     public int $totalPages {
-        get => $this->perPage > 0 ? max(1, (int) ceil($this->total / $this->perPage)) : 1;
+        get => $this->perPage > 0 ? max(1, (int)ceil($this->total / $this->perPage)) : 1;
     }
 
     public bool $hasPreviousPage {

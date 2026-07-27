@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'migrate', description: 'Run pending database migrations')]
-class MigrateCommand extends Command
+final class MigrateCommand extends Command
 {
     public function __construct(
         private readonly Migrator $migrator,
@@ -23,15 +23,18 @@ class MigrateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = new SymfonyStyle(input: $input, output: $output);
 
         foreach ($this->migrator->run() as $filename => $status) {
-            $io->writeln("  [$status] $filename");
+            $io->writeln(messages: "  [$status] $filename");
         }
 
-        $this->getApplication()->find('messenger:setup-transports')->run(new ArrayInput([]), $output);
+        $this
+            ->getApplication()
+            ->find(name: 'messenger:setup-transports')
+            ->run(input: new ArrayInput([]), output: $output);
 
-        $io->success('Migrations complete.');
+        $io->success(message: 'Migrations complete.');
 
         return Command::SUCCESS;
     }

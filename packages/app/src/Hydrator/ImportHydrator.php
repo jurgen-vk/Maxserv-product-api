@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use MaxServ\App\Entity\Import;
 use MaxServ\App\Enum\ImportStatus;
 
-class ImportHydrator
+final readonly class ImportHydrator
 {
     public function hydrateFromDatabase(array $row): Import
     {
@@ -16,8 +16,10 @@ class ImportHydrator
             id: (int)$row['id'],
             type: $row['type'],
             status: ImportStatus::from($row['status']),
-            startedAt: new DateTimeImmutable($row['started_at']),
-            completedAt: $row['completed_at'] !== null ? new DateTimeImmutable($row['completed_at']) : null,
+            startedAt: new DateTimeImmutable(datetime: $row['started_at']),
+            completedAt: $row['completed_at'] !== null
+                ? new DateTimeImmutable(datetime: $row['completed_at'])
+                : null,
             count: (int)$row['count'],
         );
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Entity;
 
-class Brand
+final class Brand
 {
     public function __construct(
         public int $id,

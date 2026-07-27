@@ -10,29 +10,31 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Router as SymfonyRouter;
 use Throwable;
 
-readonly class Router
+final readonly class Router
 {
     public function __construct(
         private Container $container,
         private SymfonyRouter $router,
         private ErrorRenderer $errorRenderer,
-    ) {
-    }
+    ) {}
 
     public function match(): void
     {
         $request = Request::createFromGlobals();
-        $format = $request->getPreferredFormat('html');
+        $format = $request->getPreferredFormat(default: 'html');
 
         try {
-            $parameters = $this->router->matchRequest($request);
+            $parameters = $this->router->matchRequest(request: $request);
 
-            [$controllerClass, $action] = explode('::', $parameters['_controller']);
-            $controller = $this->container->get($controllerClass);
+            [$controllerClass, $action] = explode(
+                separator: '::',
+                string: $parameters['_controller'],
+            );
+            $controller = $this->container->get(id: $controllerClass);
 
             $response = $controller->$action($request, $parameters);
         } catch (Throwable $exception) {
-            $response = $this->errorRenderer->render($exception, $format);
+            $response = $this->errorRenderer->render(exception: $exception, format: $format);
         }
 
         $response->send();

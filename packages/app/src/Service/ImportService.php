@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Service;
 
-use MaxServ\App\Interface\ImportProgressReporterInterface;
 use RuntimeException;
 
-class ImportService
+final readonly class ImportService
 {
-  public function __construct(
-    private readonly iterable $importers,
-  ) {}
+    public function __construct(
+        private iterable $importers,
+    ) {}
 
-  public function run(string $type, ImportProgressReporterInterface $reporter): int
-  {
-    foreach ($this->importers as $importer) {
-      if ($importer->supports(type: $type)) {
-        return $importer->import(reporter: $reporter);
-      }
+    public function run(string $type, int $importId): int
+    {
+        foreach ($this->importers as $importer) {
+            if ($importer->supports(type: $type)) {
+                return $importer->import(importId: $importId);
+            }
+        }
+
+        throw new RuntimeException("No importer supports type: $type");
     }
-
-    throw new RuntimeException("No importer supports type: $type");
-  }
 }

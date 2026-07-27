@@ -6,68 +6,84 @@ namespace MaxServ\App\Filter;
 
 use Symfony\Component\HttpFoundation\Request;
 
-final class ProductFilter
+final readonly class ProductFilter
 {
     public function __construct(
-        public readonly ?string $category = null,
-        public readonly ?string $brand = null,
-        public readonly ?string $search = null,
-        public readonly string $sortBy = 'title',
-        public readonly string $order = 'ASC',
-        public readonly ?float $minPrice = null,
-        public readonly ?float $maxPrice = null,
-        public readonly ?float $minRating = null,
+        public ?string $category = null,
+        public ?string $brand = null,
+        public ?string $search = null,
+        public string $sortBy = 'title',
+        public string $order = 'ASC',
+        public ?float $minPrice = null,
+        public ?float $maxPrice = null,
+        public ?float $minRating = null,
     ) {
         $conditions = [];
         $bindings = [];
 
         foreach (get_object_vars($this) as $property => $value) {
-            if ($value === null || in_array($property, ['sortBy', 'order'], true)) {
+            if ($value === null || in_array(needle: $property, haystack: ['sortBy', 'order'])) {
                 continue;
             }
 
-            $method = 'apply' . ucfirst($property);
+            $method = 'apply' . ucfirst(string: $property);
             [$sql, $binding] = $this->$method($value);
             $conditions[] = $sql;
             $bindings = [...$bindings, ...$binding];
         }
 
-        $this->filters = $conditions !== [] ? implode(' AND ', $conditions) : 'TRUE';
+        $this->filters = $conditions !== [] ? implode(separator: ' AND ', array: $conditions) : 'TRUE';
         $this->bindings = $bindings;
         $this->sorts = $this->buildSort();
     }
 
-    private const SORTABLE_COLUMNS = [
+    private const array SORTABLE_COLUMNS = [
         'title' => 'products.title',
         'price' => 'products.price',
         'rating' => 'products.rating',
         'stock' => 'products.stock',
     ];
 
-    private const SEARCHABLE_COLUMNS = ['products.title'];
+    private const array SEARCHABLE_COLUMNS = ['products.title'];
 
-    public readonly string $filters;
-    public readonly array $bindings;
-    public readonly string $sorts;
+    public string $filters;
+    public array $bindings;
+    public string $sorts;
 
     public static function fromRequest(Request $request): self
     {
         return new self(
-            category: $request->query->getString('category') ?: null,
-            brand: $request->query->getString('brand') ?: null,
-            search: $request->query->getString('search') ?: null,
-            sortBy: $request->query->getString('sort', 'title'),
-            order: $request->query->getString('order', 'ASC'),
-            minPrice: $request->query->filter('minPrice', null, \FILTER_VALIDATE_FLOAT, \FILTER_NULL_ON_FAILURE),
-            maxPrice: $request->query->filter('maxPrice', null, \FILTER_VALIDATE_FLOAT, \FILTER_NULL_ON_FAILURE),
-            minRating: $request->query->filter('minRating', null, \FILTER_VALIDATE_FLOAT, \FILTER_NULL_ON_FAILURE),
+            category: $request->query->getString(key: 'category') ?: null,
+            brand: $request->query->getString(key: 'brand') ?: null,
+            search: $request->query->getString(key: 'search') ?: null,
+            sortBy: $request->query->getString(key: 'sort', default: 'title'),
+            order: $request->query->getString(key: 'order', default: 'ASC'),
+            minPrice: $request->query->filter(
+                key: 'minPrice',
+                filter: \FILTER_VALIDATE_FLOAT,
+                options: \FILTER_NULL_ON_FAILURE,
+            ),
+            maxPrice: $request->query->filter(
+                key: 'maxPrice',
+                filter: \FILTER_VALIDATE_FLOAT,
+                options: \FILTER_NULL_ON_FAILURE,
+            ),
+            minRating: $request->query->filter(
+                key: 'minRating',
+                filter: \FILTER_VALIDATE_FLOAT,
+                options: \FILTER_NULL_ON_FAILURE,
+            ),
         );
     }
 
     private function applyCategory(string $value): array
     {
         return [
-            'EXISTS (SELECT 1 FROM categories WHERE categories.id = products.category_id AND categories.name = :category)',
+            'EXISTS (
+                SELECT 1 FROM categories 
+                WHERE categories.id = products.category_id 
+                AND categories.name = :category
+            )',
             [':category' => $value],
         ];
     }
@@ -75,15 +91,25 @@ final class ProductFilter
     private function applyBrand(string $value): array
     {
         return [
-            'EXISTS (SELECT 1 FROM brands WHERE brands.id = products.brand_id AND brands.name = :brand)',
+            'EXISTS (
+                SELECT 1 FROM brands 
+                WHERE brands.id = products.brand_id 
+                AND brands.name = :brand
+            )',
             [':brand' => $value],
         ];
     }
 
     private function applySearch(string $value): array
     {
-        $conditions = array_map(fn($column) => "$column LIKE :search", self::SEARCHABLE_COLUMNS);
-        return ['(' . implode(' OR ', $conditions) . ')', [':search' => '%' . $value . '%']];
+        $conditions = array_map(
+            callback: fn($column) => "$column LIKE :search",
+            array: self::SEARCHABLE_COLUMNS,
+        );
+        return [
+            '(' . implode(separator: ' OR ', array: $conditions) . ')',
+            [':search' => '%' . $value . '%'],
+        ];
     }
 
     private function applyMinPrice(float $value): array

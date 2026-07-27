@@ -8,5 +8,5 @@ interface ImporterInterface
 {
   public function supports(string $type): bool;
 
-  public function import(ImportProgressReporterInterface $reporter): int;
+  public function import(int $importId): int;
 }

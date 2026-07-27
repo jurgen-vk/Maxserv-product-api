@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'route:cache', description: 'Warm up the route cache')]
-class RouteCacheCommand extends Command
+final class RouteCacheCommand extends Command
 {
     public function __construct(
         private readonly RouteCacher $cacher,
@@ -24,7 +24,8 @@ class RouteCacheCommand extends Command
     {
         $this->cacher->cache();
 
-        (new SymfonyStyle($input, $output))->success('Route cache warmed.');
+        (new SymfonyStyle(input: $input, output: $output))
+            ->success(message: 'Route cache warmed.');
 
         return Command::SUCCESS;
     }

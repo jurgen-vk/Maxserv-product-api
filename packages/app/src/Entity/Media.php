@@ -6,7 +6,7 @@ namespace MaxServ\App\Entity;
 
 use MaxServ\App\Enum\MediaType;
 
-class Media
+final class Media
 {
     public function __construct(
         public ?int $id,

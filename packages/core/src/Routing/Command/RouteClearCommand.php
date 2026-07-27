@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'route:clear', description: 'Clear the route cache')]
-class RouteClearCommand extends Command
+final class RouteClearCommand extends Command
 {
     public function __construct(
         private readonly RouteCacher $cacher,
@@ -24,7 +24,8 @@ class RouteClearCommand extends Command
     {
         $this->cacher->clear();
 
-        (new SymfonyStyle($input, $output))->success('Route cache cleared.');
+        (new SymfonyStyle(input: $input, output: $output))
+            ->success(message: 'Route cache cleared.');
 
         return Command::SUCCESS;
     }

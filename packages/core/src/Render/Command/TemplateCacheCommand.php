@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'template:cache', description: 'Warm up the Twig template cache')]
-class TemplateCacheCommand extends Command
+final class TemplateCacheCommand extends Command
 {
     public function __construct(
         private readonly TemplateCacher $cacher,
@@ -24,7 +24,8 @@ class TemplateCacheCommand extends Command
     {
         $this->cacher->cache();
 
-        (new SymfonyStyle($input, $output))->success('Template cache warmed.');
+        (new SymfonyStyle(input: $input, output: $output))
+            ->success(message: 'Template cache warmed.');
 
         return Command::SUCCESS;
     }

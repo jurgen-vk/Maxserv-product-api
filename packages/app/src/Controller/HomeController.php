@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-class HomeController
+final readonly class HomeController
 {
     #[Route(path: '/', name: 'home_index', methods: ['GET'])]
     public function index(Request $request, array $parameters): RedirectResponse

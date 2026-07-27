@@ -7,7 +7,7 @@ namespace MaxServ\Core\Render\Error;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class JsonErrorRenderer implements ErrorRendererInterface
+final readonly class JsonErrorRenderer implements ErrorRendererInterface
 {
     public function supports(string $format): bool
     {
@@ -16,6 +16,6 @@ class JsonErrorRenderer implements ErrorRendererInterface
 
     public function render(int $status, string $message): Response
     {
-        return new JsonResponse(['error' => $message], $status);
+        return new JsonResponse(data: ['error' => $message], status: $status);
     }
 }

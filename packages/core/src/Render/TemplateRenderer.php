@@ -20,8 +20,8 @@ readonly class TemplateRenderer
      * @throws SyntaxError
      * @throws LoaderError
      */
-    public function render(string $template, array $arguments): string
+    public function render(string $template, array $data): string
     {
-        return $this->environment->render(name: $template, context: $arguments);
+        return $this->environment->render(name: $template, context: $data);
     }
 }

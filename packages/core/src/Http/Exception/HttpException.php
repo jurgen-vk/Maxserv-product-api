@@ -6,7 +6,7 @@ namespace MaxServ\Core\Http\Exception;
 
 use RuntimeException;
 
-class HttpException extends RuntimeException
+final class HttpException extends RuntimeException
 {
     public function __construct(
         private readonly int $statusCode,

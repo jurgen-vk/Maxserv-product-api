@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MaxServ\Core\Cache;
 
-interface CachableInterface
+interface CacheableInterface
 {
     public function cache(): mixed;
 

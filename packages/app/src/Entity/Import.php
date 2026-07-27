@@ -7,7 +7,7 @@ namespace MaxServ\App\Entity;
 use DateTimeImmutable;
 use MaxServ\App\Enum\ImportStatus;
 
-class Import
+final class Import
 {
     public function __construct(
         public string $type,

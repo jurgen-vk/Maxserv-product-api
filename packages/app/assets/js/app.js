@@ -97,7 +97,7 @@ Alpine.store("import", {
     const tableRes = await fetch(tableUrl);
     const fragments = await tableRes.json();
     if (fragments._table != null) {
-      document.getElementById("products-table-container").outerHTML = fragments.table;
+      document.getElementById("products-table-container").outerHTML = fragments._table;
     }
   }
 });

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'container:clear', description: 'Clear the cached DI container')]
-class ContainerClearCommand extends Command
+final class ContainerClearCommand extends Command
 {
     public function __construct(
         private readonly ContainerProvider $provider,
@@ -24,7 +24,7 @@ class ContainerClearCommand extends Command
     {
         $this->provider->clear();
 
-        (new SymfonyStyle($input, $output))->success('Container cache cleared.');
+        (new SymfonyStyle(input: $input, output: $output))->success('Container cache cleared.');
 
         return Command::SUCCESS;
     }

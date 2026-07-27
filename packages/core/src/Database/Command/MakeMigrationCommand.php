@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
 #[AsCommand(name: 'make:migration', description: 'Scaffold a new, timestamped migration file for a package')]
-class MakeMigrationCommand extends Command
+final class MakeMigrationCommand extends Command
 {
     protected function configure(): void
     {
@@ -22,7 +22,7 @@ class MakeMigrationCommand extends Command
             ->addArgument(
                 name: 'name',
                 mode: InputArgument::REQUIRED,
-                description: 'Short description, e.g. add_sku_to_products',
+                description: 'Short description, e.g. create_products_table',
             )
             ->addOption(
                 name: 'package',
@@ -33,38 +33,54 @@ class MakeMigrationCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = new SymfonyStyle(input: $input, output: $output);
 
         $packages = [];
-        foreach ((new Finder())->directories()->in(APPLICATION_ROOT . '/packages')->depth('== 0') as $dir) {
+        $dirs = (new Finder())
+            ->directories()
+            ->in(dirs: APPLICATION_ROOT . '/packages')
+            ->depth(levels: '== 0');
+
+        foreach ($dirs as $dir) {
             $packages[] = $dir->getFilename();
         }
 
-        $package = $input->getOption('package');
+        $package = $input->getOption(name: 'package');
+        $availablePackagesList = '- ' . implode(separator: "\n - ", array: $packages);
 
         if ($package === null) {
-            $io->error('The --package option is required. Available packages: ' . implode(', ', $packages));
+            $io->error(
+                message: "The --package option is required. Available packages:\n$availablePackagesList",
+            );
 
             return Command::FAILURE;
         }
 
-        if (!in_array($package, $packages, strict: true)) {
-            $io->error("Unknown package \"$package\". Available packages: " . implode(', ', $packages));
+        if (!in_array(needle: $package, haystack: $packages, strict: true)) {
+            $io->error(
+                message: "Unknown package \"$package\". Available packages:\n$availablePackagesList",
+            );
 
             return Command::FAILURE;
         }
 
         $directory = APPLICATION_ROOT . "/packages/$package/migrations";
-        if (!is_dir($directory)) {
-            mkdir($directory, recursive: true);
+        if (!is_dir(filename: $directory)) {
+            mkdir(directory: $directory, recursive: true);
         }
 
-        $filename = date('YmdHis') . '_' . $input->getArgument('name') . '.sql';
-        $path = "$directory/$filename";
+        $name = $input->getArgument(name: 'name');
+        $now = new \DateTimeImmutable();
 
-        file_put_contents($path, "-- $filename\n");
+        do {
+            $filename = $now->format(format: 'Y_m_d_Hisv') . "_$name.sql";
+            $path = "$directory/$filename";
+            $now = $now->modify(modifier: '+1 millisecond');
+        } while (file_exists(filename: $path));
 
-        $io->success("Created packages/$package/migrations/$filename");
+        file_put_contents(filename: $path, data: '');
+
+        $io->success(message: "Created packages/$package/migrations/$filename");
 
         return Command::SUCCESS;
     }

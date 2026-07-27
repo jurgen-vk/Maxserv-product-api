@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'migrate:reset', description: 'Drop every table without re-running migrations')]
-class MigrateResetCommand extends Command
+final class MigrateResetCommand extends Command
 {
     public function __construct(
         private readonly Migrator $migrator,
@@ -32,17 +32,24 @@ class MigrateResetCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = new SymfonyStyle(input: $input, output: $output);
 
-        if (!$input->getOption('force') && !$io->confirm('This will drop every table in the database. Continue?', false)) {
-            $io->warning('Aborted.');
+        if (!$input->getOption(name: 'force')) {
+            $confirmed = $io->confirm(
+                question: 'This will drop every table in the database. Continue?',
+                default: false,
+            );
 
-            return Command::SUCCESS;
+            if (!$confirmed) {
+                $io->warning(message: 'Aborted.');
+
+                return Command::SUCCESS;
+            }
         }
 
         $this->migrator->reset();
 
-        $io->success('Database reset. No migrations were re-run.');
+        $io->success(message: 'Database reset. No migrations were re-run.');
 
         return Command::SUCCESS;
     }

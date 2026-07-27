@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace MaxServ\App\MessageHandler;
 
+use MaxServ\App\Event\Import\ImportCompletedEvent;
+use MaxServ\App\Event\Import\ImportFailedEvent;
 use MaxServ\App\Message\RunImportMessage;
 use MaxServ\App\Repository\ImportRepository;
 use MaxServ\App\Service\ImportService;
-use MaxServ\App\Service\MercureProgressReporter;
-use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsMessageHandler(bus: 'messenger.bus.default')]
-class RunImportHandler
+final readonly class RunImportHandler
 {
     public function __construct(
-        private readonly ImportRepository $importRepository,
-        private readonly ImportService $importService,
-        private readonly HubInterface $hub,
+        private ImportRepository $importRepository,
+        private ImportService $importService,
+        private EventDispatcherInterface $eventDispatcher,
     ) {}
 
     public function __invoke(RunImportMessage $message): void
@@ -27,20 +27,13 @@ class RunImportHandler
         $import->markRunning();
         $this->importRepository->save(import: $import);
 
-        $reporter = new MercureProgressReporter(hub: $this->hub, importId: $message->importRunId);
-
         try {
-            $count = $this->importService->run(type: $message->type, reporter: $reporter);
+            $count = $this->importService->run(type: $message->type, importId: $message->importRunId);
         } catch (\Throwable $exception) {
             $import->markFailed();
             $this->importRepository->save(import: $import);
 
-            $this->publishSafely(
-                new Update(
-                    topics: "imports/{$message->importRunId}",
-                    data: json_encode(['id' => $message->importRunId, 'status' => 'failed']),
-                ),
-            );
+            $this->eventDispatcher->dispatch(new ImportFailedEvent(importId: $message->importRunId));
 
             throw $exception;
         }
@@ -48,22 +41,6 @@ class RunImportHandler
         $import->markCompleted(count: $count);
         $this->importRepository->save(import: $import);
 
-        $this->publishSafely(
-            new Update(
-                topics: "imports/{$message->importRunId}",
-                data: json_encode(['id' => $message->importRunId, 'status' => 'completed', 'count' => $count]),
-            ),
-        );
-    }
-
-    private function publishSafely(Update $update): void
-    {
-        try {
-            $this->hub->publish($update);
-        } catch (\Throwable $exception) {
-            // A Mercure hiccup here shouldn't mask the import's own real result, or cause an
-            // already-finished import to be retried from scratch — this is purely a UI notification.
-            error_log((string)$exception);
-        }
+        $this->eventDispatcher->dispatch(new ImportCompletedEvent(importId: $message->importRunId, count: $count));
     }
 }

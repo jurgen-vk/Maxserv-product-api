@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'container:cache', description: 'Build and cache the DI container')]
-class ContainerCacheCommand extends Command
+final class ContainerCacheCommand extends Command
 {
     public function __construct(
         private readonly ContainerProvider $provider,
@@ -24,7 +24,7 @@ class ContainerCacheCommand extends Command
     {
         $this->provider->cache();
 
-        (new SymfonyStyle($input, $output))->success('Container cached.');
+        (new SymfonyStyle(input: $input, output: $output))->success('Container cached.');
 
         return Command::SUCCESS;
     }

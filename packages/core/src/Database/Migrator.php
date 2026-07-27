@@ -9,12 +9,11 @@ use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 
-readonly class Migrator
+final readonly class Migrator
 {
     public function __construct(
         private Connection $connection,
-    ) {
-    }
+    ) {}
 
     public function install(): void
     {
@@ -23,20 +22,20 @@ readonly class Migrator
 
     public function isInitialized(): bool
     {
-        return (bool) $this->connection->pdo->query('SHOW TABLES')->fetchColumn();
+        return (bool)$this->connection->pdo->query(query: 'SHOW TABLES')->fetchColumn();
     }
 
     public function reset(): void
     {
         $pdo = $this->connection->pdo;
-        $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+        $pdo->exec(statement: 'SET FOREIGN_KEY_CHECKS = 0');
 
-        $tables = $pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
+        $tables = $pdo->query(query: 'SHOW TABLES')->fetchAll(mode: PDO::FETCH_COLUMN);
         foreach ($tables as $table) {
-            $pdo->exec('DROP TABLE IF EXISTS `' . $table . '`');
+            $pdo->exec(statement: 'DROP TABLE IF EXISTS `' . $table . '`');
         }
 
-        $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+        $pdo->exec(statement: 'SET FOREIGN_KEY_CHECKS = 1');
 
         $this->ensureTrackingTable();
     }
@@ -48,51 +47,53 @@ readonly class Migrator
         $pdo = $this->connection->pdo;
 
         $applied = $pdo
-            ->query('SELECT package, filename FROM migrations')
-            ->fetchAll(PDO::FETCH_ASSOC);
+            ->query(query: 'SELECT package, filename FROM migrations')
+            ->fetchAll(mode: PDO::FETCH_ASSOC);
         $appliedKeys = array_map(
-            static fn (array $row): string => $row['package'] . '/' . $row['filename'],
-            $applied,
+            callback: static fn(array $row): string => $row['package'] . '/' . $row['filename'],
+            array: $applied,
         );
 
         $files = iterator_to_array(
             (new Finder())
                 ->files()
-                ->in(APPLICATION_ROOT . '/packages')
-                ->path('migrations')
-                ->name('*.sql')
+                ->in(dirs: APPLICATION_ROOT . '/packages')
+                ->path(patterns: 'migrations')
+                ->name(patterns: '*.sql'),
         );
-        usort($files, static fn ($a, $b) => $a->getFilename() <=> $b->getFilename());
+
+        usort(
+            array: $files,
+            callback: static fn($a, $b) => $a->getFilename() <=> $b->getFilename(),
+        );
 
         foreach ($files as $file) {
             $package = $this->packageNameFromPath($file->getPathname());
             $filename = $file->getFilename();
 
-            if (in_array($package . '/' . $filename, $appliedKeys, strict: true)) {
-                yield $filename => 'skip';
+            if (in_array(needle: $package . '/' . $filename, haystack: $appliedKeys, strict: true)) {
+                yield $filename => 'Skip';
                 continue;
             }
 
-            // MySQL implicitly commits before DDL statements (CREATE TABLE, etc.), so wrapping
-            // these in an explicit PDO transaction can't provide real atomicity the way it
-            // would on a database with transactional DDL — the transaction ends the moment the
-            // statement runs, before commit()/rollBack() would ever be reached.
-            //
-            // INSERT IGNORE (not INSERT): the app and worker containers both run `migrate` on
-            // startup concurrently, so two processes can both see a migration as pending and
-            // both run it — harmless since the migrations themselves are idempotent
-            // (CREATE TABLE IF NOT EXISTS), but the second tracking-row insert would otherwise
-            // crash on the unique constraint instead of silently losing the race.
             try {
-                $pdo->exec($file->getContents());
-                $pdo
-                    ->prepare('INSERT IGNORE INTO migrations (package, filename) VALUES (:package, :filename)')
-                    ->execute([':package' => $package, ':filename' => $filename]);
+                $pdo->exec(statement: $file->getContents());
+                $statement = $pdo->prepare(
+                    query: '
+                      INSERT IGNORE INTO migrations (package, filename) 
+                      VALUES (:package, :filename)
+                    ',
+                );
+
+                $statement->execute(params: [':package' => $package, ':filename' => $filename]);
             } catch (Throwable $exception) {
-                throw new RuntimeException("Migration \"$filename\" failed: {$exception->getMessage()}", previous: $exception);
+                throw new RuntimeException(
+                    message: "Migration \"$filename\" failed: {$exception->getMessage()}",
+                    previous: $exception,
+                );
             }
 
-            yield $filename => 'done';
+            yield $filename => 'Done';
         }
     }
 
@@ -106,20 +107,26 @@ readonly class Migrator
     private function ensureTrackingTable(): void
     {
         $this->connection->pdo->exec(
-            'CREATE TABLE IF NOT EXISTS migrations (
+            statement: '
+              CREATE TABLE IF NOT EXISTS migrations (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 package VARCHAR(190) NOT NULL,
                 filename VARCHAR(255) NOT NULL,
                 run_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE KEY uniq_package_filename (package, filename)
-            )'
+              )
+            ',
         );
     }
 
     private function packageNameFromPath(string $path): string
     {
-        $relative = str_replace(APPLICATION_ROOT . '/packages/', '', str_replace('\\', '/', $path));
+        $relative = str_replace(
+            search: APPLICATION_ROOT . '/packages/',
+            replace: '',
+            subject: str_replace(search: '\\', replace: '/', subject: $path),
+        );
 
-        return explode('/', $relative)[0];
+        return explode(separator: '/', string: $relative)[0];
     }
 }

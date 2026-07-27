@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'migrate:fresh', description: 'Drop every table and re-run all migrations from scratch')]
-class MigrateFreshCommand extends Command
+final class MigrateFreshCommand extends Command
 {
     public function __construct(
         private readonly Migrator $migrator,
@@ -33,23 +33,33 @@ class MigrateFreshCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $io = new SymfonyStyle(input: $input, output: $output);
 
-        if (!$input->getOption('force') && !$io->confirm('This will drop every table in the database. Continue?', false)) {
-            $io->warning('Aborted.');
+        if (!$input->getOption(name: 'force')) {
+            $confirmed = $io->confirm(
+                question: 'This will drop every table in the database. Continue?',
+                default: false,
+            );
 
-            return Command::SUCCESS;
+            if (!$confirmed) {
+                $io->warning(message: 'Aborted.');
+
+                return Command::SUCCESS;
+            }
         }
 
-        $io->warning('Dropping all tables...');
+        $io->warning(message: 'Dropping all tables...');
 
         foreach ($this->migrator->fresh() as $filename => $status) {
-            $io->writeln("  [$status] $filename");
+            $io->writeln(messages: "  [$status] $filename");
         }
 
-        $this->getApplication()->find('messenger:setup-transports')->run(new ArrayInput([]), $output);
+        $this
+            ->getApplication()
+            ->find(name: 'messenger:setup-transports')
+            ->run(input: new ArrayInput([]), output: $output);
 
-        $io->success('Database is fresh.');
+        $io->success(message: 'Database is fresh.');
 
         return Command::SUCCESS;
     }

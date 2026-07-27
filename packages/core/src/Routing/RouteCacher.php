@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace MaxServ\Core\Routing;
 
-use MaxServ\Core\Cache\CachableInterface;
+use MaxServ\Core\Cache\CacheableInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\Router as SymfonyRouter;
 
-final class RouteCacher implements CachableInterface
+final readonly class RouteCacher implements CacheableInterface
 {
     public function __construct(
-        private readonly SymfonyRouter $router,
-        private readonly Filesystem $filesystem,
-    ) {
-    }
+        private SymfonyRouter $router,
+        private Filesystem $filesystem,
+    ) {}
 
     public function cache(): mixed
     {
@@ -26,6 +25,6 @@ final class RouteCacher implements CachableInterface
 
     public function clear(): void
     {
-        $this->filesystem->remove(APPLICATION_ROOT . '/var/cache/routing');
+        $this->filesystem->remove(files: APPLICATION_ROOT . '/var/cache/routing');
     }
 }

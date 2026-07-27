@@ -6,7 +6,7 @@ namespace MaxServ\Core\Render;
 
 use Twig\Error\LoaderError;
 
-readonly class FragmentRenderer
+final readonly class FragmentRenderer
 {
     public function __construct(
         private TemplateRenderer $templateRenderer,
@@ -22,7 +22,7 @@ readonly class FragmentRenderer
             try {
                 $rendered[$fragment] = $this->templateRenderer->render(
                     template: "$prefix.$fragment",
-                    arguments: $data,
+                    data: $data,
                 );
             } catch (LoaderError $exception) {
                 error_log(message: (string)$exception);

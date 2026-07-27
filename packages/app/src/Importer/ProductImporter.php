@@ -5,86 +5,98 @@ declare(strict_types=1);
 namespace MaxServ\App\Importer;
 
 use GuzzleHttp\Client;
+use MaxServ\App\Event\Import\ImportProgressEvent;
 use MaxServ\App\Hydrator\MediaHydrator;
 use MaxServ\App\Hydrator\ProductHydrator;
 use MaxServ\App\Interface\ImporterInterface;
-use MaxServ\App\Interface\ImportProgressReporterInterface;
 use MaxServ\App\Repository\BrandRepository;
 use MaxServ\App\Repository\CategoryRepository;
 use MaxServ\App\Repository\ProductRepository;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class ProductImporter implements ImporterInterface
+final readonly class ProductImporter implements ImporterInterface
 {
-  public function __construct(
-    private readonly Client $client,
-    private readonly ProductRepository $productRepo,
-    private readonly CategoryRepository $categoryRepo,
-    private readonly BrandRepository $brandRepo,
-    private readonly ProductHydrator $hydrator,
-    private readonly MediaHydrator $mediaHydrator,
-  ) {}
+    public function __construct(
+        private Client $client,
+        private ProductRepository $productRepo,
+        private CategoryRepository $categoryRepo,
+        private BrandRepository $brandRepo,
+        private ProductHydrator $hydrator,
+        private MediaHydrator $mediaHydrator,
+        private EventDispatcherInterface $eventDispatcher,
+    ) {}
 
-  public function supports(string $type): bool
-  {
-    return $type === 'products';
-  }
-
-  public function import(ImportProgressReporterInterface $reporter): int
-  {
-    $count = 0;
-    $skip = 0;
-    $limit = 100;
-
-    $categories = [];
-    foreach ($this->categoryRepo->findAll() as $category) {
-      $categories[$category->name] = $category;
-    }
-    $brands = [];
-    foreach ($this->brandRepo->findAll() as $brand) {
-      $brands[$brand->name] = $brand;
+    public function supports(string $type): bool
+    {
+        return $type === 'products';
     }
 
-    do {
-      $response = $this->client->get('https://dummyjson.com/products', [
-        'query' => ['limit' => $limit, 'skip' => $skip],
-      ]);
+    public function import(int $importId): int
+    {
+        $count = 0;
+        $skip = 0;
+        $limit = 100;
 
-      $data = json_decode($response->getBody()->getContents(), true);
+        $categories = [];
+        foreach ($this->categoryRepo->findAll() as $category) {
+            $categories[$category->name] = $category;
+        }
+        $brands = [];
+        foreach ($this->brandRepo->findAll() as $brand) {
+            $brands[$brand->name] = $brand;
+        }
 
-      $products = [];
+        do {
+            $response = $this->client->get(
+                uri: 'https://dummyjson.com/products',
+                options: [
+                    'query' => ['limit' => $limit, 'skip' => $skip],
+                ],
+            );
 
-      foreach ($data['products'] as $item) {
-        $category = $categories[$item['category']]
-          ??= $this->categoryRepo->findOrCreateOneByName($item['category']);
-        $brand = !empty($item['brand'])
-          ? ($brands[$item['brand']] ??= $this->brandRepo->findOrCreateOneByName($item['brand']))
-          : null;
+            $data = json_decode(json: $response->getBody()->getContents(), associative: true);
 
-        $media = $this->mediaHydrator->hydrateManyFromApi(
-          thumbnail: $item['thumbnail'] ?? null,
-          images: $item['images'] ?? [],
-          entityType: 'product',
-          entityId: (int) $item['id'],
-        );
+            $products = [];
 
-        $products[] = $this->hydrator->hydrateFromApi(
-          data: $item,
-          category: $category,
-          brand: $brand,
-          media: $media,
-        );
+            foreach ($data['products'] as $item) {
+                $category = $categories[$item['category']]
+                    ??= $this->categoryRepo->findOrCreateOneByName(name: $item['category']);
+                $brand = !empty($item['brand'])
+                    ? ($brands[$item['brand']]
+                        ??= $this->brandRepo->findOrCreateOneByName(name: $item['brand']))
+                    : null;
 
-        $count++;
-      }
+                $media = $this->mediaHydrator->hydrateManyFromApi(
+                    thumbnail: $item['thumbnail'] ?? null,
+                    images: $item['images'] ?? [],
+                    entityType: 'product',
+                    entityId: (int)$item['id'],
+                );
 
-      $this->productRepo->saveMany($products);
-      $this->productRepo->saveManyMedia($products);
+                $products[] = $this->hydrator->hydrateFromApi(
+                    data: $item,
+                    category: $category,
+                    brand: $brand,
+                    media: $media,
+                );
 
-      $reporter->report(processed: $count, total: $data['total']);
+                $count++;
+            }
 
-      $skip += $limit;
-    } while ($skip < $data['total']);
+            $this->productRepo->saveMany(products: $products);
+            $this->productRepo->saveManyMedia(products: $products);
 
-    return $count;
-  }
+            $this->eventDispatcher->dispatch(
+                event: new ImportProgressEvent(
+                    importId: $importId,
+                    processed: $count,
+                    total: $data['total'],
+                ),
+            );
+
+            $skip += $limit;
+        } while ($skip < $data['total']);
+
+        return $count;
+    }
 }

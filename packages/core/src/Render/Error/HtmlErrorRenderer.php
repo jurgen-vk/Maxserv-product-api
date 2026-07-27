@@ -8,12 +8,11 @@ use MaxServ\Core\Render\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Error\LoaderError;
 
-class HtmlErrorRenderer implements ErrorRendererInterface
+final readonly class HtmlErrorRenderer implements ErrorRendererInterface
 {
     public function __construct(
-        private readonly TemplateRenderer $templateRenderer,
-    ) {
-    }
+        private TemplateRenderer $templateRenderer,
+    ) {}
 
     public function supports(string $format): bool
     {
@@ -23,11 +22,17 @@ class HtmlErrorRenderer implements ErrorRendererInterface
     public function render(int $status, string $message): Response
     {
         try {
-            $html = $this->templateRenderer->render("error/{$status}.html.twig", ['code' => $status, 'message' => $message]);
+            $html = $this->templateRenderer->render(
+                template: "error/{$status}.html.twig",
+                data: ['code' => $status, 'message' => $message],
+            );
         } catch (LoaderError) {
-            $html = $this->templateRenderer->render('error/default.html.twig', ['code' => $status, 'message' => $message]);
+            $html = $this->templateRenderer->render(
+                template: 'error/default.html.twig',
+                data: ['code' => $status, 'message' => $message],
+            );
         }
 
-        return new Response($html, $status);
+        return new Response(content: $html, status: $status);
     }
 }

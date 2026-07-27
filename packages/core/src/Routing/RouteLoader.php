@@ -13,27 +13,45 @@ use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RouteCollection;
 
-class RouteLoader implements LoaderInterface
+final readonly class RouteLoader implements LoaderInterface
 {
     public function __construct(
-        private readonly AttributeDirectoryLoader $attributeLoader,
-        private readonly YamlFileLoader $yamlLoader,
-    ) {
-    }
+        private AttributeDirectoryLoader $attributeLoader,
+        private YamlFileLoader $yamlLoader,
+    ) {}
 
     public function load(mixed $resource, ?string $type = null): RouteCollection
     {
         $collection = new RouteCollection();
 
-        foreach ((new Finder())->directories()->in(APPLICATION_ROOT . '/packages')->name('Controller') as $dir) {
-            $collection->addCollection($this->attributeLoader->load($dir->getPathname()));
+        $controllerDirs = (new Finder())
+            ->directories()
+            ->in(dirs: APPLICATION_ROOT . '/packages')
+            ->name(patterns: 'Controller');
+
+        foreach ($controllerDirs as $dir) {
+            $collection->addCollection(
+                collection: $this->attributeLoader->load(path: $dir->getPathname()),
+            );
         }
 
-        foreach ((new Finder())->files()->in(APPLICATION_ROOT . '/packages')->name('routes.yaml') as $file) {
-            $collection->addCollection($this->yamlLoader->load($file->getPathname()));
+        $routeDirs = (new Finder())
+            ->files()
+            ->in(dirs: APPLICATION_ROOT . '/packages')
+            ->name(patterns: 'routes.yaml');
+
+        foreach ($routeDirs as $file) {
+            $collection->addCollection(
+                collection: $this->yamlLoader->load(file: $file->getPathname()),
+            );
         }
 
-        $collection->addResource(new DirectoryResource(APPLICATION_ROOT . '/packages', '/routes\.yaml$/'));
+        $collection->addResource(
+            resource: new DirectoryResource(
+                resource: APPLICATION_ROOT . '/packages',
+                pattern: '/routes\.yaml$/',
+            ),
+        );
 
         return $collection;
     }
@@ -43,12 +61,10 @@ class RouteLoader implements LoaderInterface
         return true;
     }
 
-    public function setResolver(LoaderResolverInterface $resolver): void
-    {
-    }
+    public function setResolver(LoaderResolverInterface $resolver): void {}
 
     public function getResolver(): LoaderResolverInterface
     {
-        throw new LogicException('Not needed.');
+        throw new LogicException(message: 'Not needed.');
     }
 }

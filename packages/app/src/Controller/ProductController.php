@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-readonly class ProductController
+final readonly class ProductController
 {
     public function __construct(
         private ProductRepository $productRepository,
@@ -58,7 +58,7 @@ readonly class ProductController
         return new Response(
             content: $this->templateRenderer->render(
                 template: 'pages.products',
-                arguments: $data,
+                data: $data,
             ),
         );
     }
@@ -78,7 +78,7 @@ readonly class ProductController
         return new Response(
             content: $this->templateRenderer->render(
                 template: 'pages.products.show',
-                arguments: [
+                data: [
                     'product' => $product,
                 ],
             ),
