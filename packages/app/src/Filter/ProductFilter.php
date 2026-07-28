@@ -35,6 +35,7 @@ final readonly class ProductFilter
         $this->filters = $conditions !== [] ? implode(separator: ' AND ', array: $conditions) : 'TRUE';
         $this->bindings = $bindings;
         $this->sorts = $this->buildSort();
+        $this->sortJoins = $this->buildSortJoins();
     }
 
     private const array SORTABLE_COLUMNS = [
@@ -42,6 +43,14 @@ final readonly class ProductFilter
         'price' => 'products.price',
         'rating' => 'products.rating',
         'stock' => 'products.stock',
+        'brand' => 'brands.name',
+        'category' => 'categories.name',
+        'discounted' => 'products.price * (1 - products.discount_percentage / 100)',
+    ];
+
+    private const array SORT_JOINS = [
+        'brand' => 'LEFT JOIN brands ON brands.id = products.brand_id',
+        'category' => 'LEFT JOIN categories ON categories.id = products.category_id',
     ];
 
     private const array SEARCHABLE_COLUMNS = ['products.title'];
@@ -49,6 +58,7 @@ final readonly class ProductFilter
     public string $filters;
     public array $bindings;
     public string $sorts;
+    public string $sortJoins;
 
     public static function fromRequest(Request $request): self
     {
@@ -132,5 +142,10 @@ final readonly class ProductFilter
         $column = self::SORTABLE_COLUMNS[$this->sortBy] ?? 'products.title';
         $direction = strtoupper($this->order) === 'DESC' ? 'DESC' : 'ASC';
         return "$column $direction";
+    }
+
+    private function buildSortJoins(): string
+    {
+        return self::SORT_JOINS[$this->sortBy] ?? '';
     }
 }

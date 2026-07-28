@@ -6,16 +6,6 @@ services:
     autoconfigure: true
     public: false
 
-  _instanceof:
-    Symfony\Component\DependencyInjection\EnvVarProcessorInterface:
-      tags: [ 'container.env_var_processor' ]
-    MaxServ\Core\Cache\CacheableInterface:
-      tags: [ 'app.cacheable' ]
-    MaxServ\Core\Render\Error\ErrorRendererInterface:
-      tags: [ 'core.error_renderer' ]
-    Symfony\Component\EventDispatcher\EventSubscriberInterface:
-      tags: [ 'kernel.event_subscriber' ]
-
   # ==========================================================================
   # Autodiscovery
   # ==========================================================================
@@ -110,6 +100,8 @@ services:
         arguments: [ '@MaxServ\Core\Render\Extension\AssetExtension' ]
       - method: addExtension
         arguments: [ '@Symfony\Component\Mercure\Twig\MercureExtension' ]
+      - method: addExtension
+        arguments: [ '@MaxServ\Core\Render\Extension\IconExtension' ]
 
   # ==========================================================================
   # Vite

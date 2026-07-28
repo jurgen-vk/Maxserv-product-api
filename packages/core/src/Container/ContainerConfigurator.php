@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace MaxServ\Core\Container;
 
+use MaxServ\Core\Cache\CacheableInterface;
 use MaxServ\Core\DependencyInjection\Compiler\TwigPathsPass;
+use MaxServ\Core\Render\Error\ErrorRendererInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\EnvVarProcessorInterface;
 use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\DependencyInjection\MessengerPass;
 
@@ -19,6 +23,7 @@ final readonly class ContainerConfigurator
     {
         self::registerParameters(container: $container);
         self::registerAttributeConfigurators(container: $container);
+        self::registerAutoconfiguration(container: $container);
         self::registerCompilerPasses(container: $container);
     }
 
@@ -54,6 +59,25 @@ final readonly class ContainerConfigurator
             configurator: static fn(ChildDefinition $definition)
                 => $definition->addTag(name: 'console.command'),
         );
+    }
+
+    private static function registerAutoconfiguration(ContainerBuilder $container): void
+    {
+        $container
+            ->registerForAutoconfiguration(interface: EnvVarProcessorInterface::class)
+            ->addTag(name: 'container.env_var_processor');
+
+        $container
+            ->registerForAutoconfiguration(interface: CacheableInterface::class)
+            ->addTag(name: 'app.cacheable');
+
+        $container
+            ->registerForAutoconfiguration(interface: ErrorRendererInterface::class)
+            ->addTag(name: 'core.error_renderer');
+
+        $container
+            ->registerForAutoconfiguration(interface: EventSubscriberInterface::class)
+            ->addTag(name: 'kernel.event_subscriber');
     }
 
     private static function registerCompilerPasses(ContainerBuilder $container): void

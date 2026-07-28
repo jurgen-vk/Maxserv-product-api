@@ -149,6 +149,7 @@ final readonly class ProductRepository
         $stmt = $this->connection->pdo->prepare(
             query: "
               SELECT products.* FROM products
+              {$filter->sortJoins}
               WHERE {$filter->filters}
               ORDER BY {$filter->sorts}
               LIMIT {$paginator->perPage} OFFSET {$paginator->offset}

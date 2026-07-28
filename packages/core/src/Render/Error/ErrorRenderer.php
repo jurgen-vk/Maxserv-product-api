@@ -47,7 +47,7 @@ final readonly class ErrorRenderer
     private function findSupporting(string $format): ?ErrorRendererInterface
     {
         return array_find(
-            array: $this->renderers,
+            array: iterator_to_array($this->renderers),
             callback: static fn($renderer) => $renderer->supports(format: $format),
         );
     }

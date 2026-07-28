@@ -42,12 +42,18 @@ Variables expected:
         <th class="text-left px-4 py-3 font-semibold text-gray-600">
           {{ _self.sortLink('Title', 'title', filter, filterParams, paginator) }}
         </th>
-        <th class="text-left px-4 py-3 font-semibold text-gray-600">Brand</th>
-        <th class="text-left px-4 py-3 font-semibold text-gray-600">Category</th>
+        <th class="text-left px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Brand', 'brand', filter, filterParams, paginator) }}
+        </th>
+        <th class="text-left px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Category', 'category', filter, filterParams, paginator) }}
+        </th>
         <th class="text-right px-4 py-3 font-semibold text-gray-600">
           {{ _self.sortLink('Price', 'price', filter, filterParams, paginator) }}
         </th>
-        <th class="text-right px-4 py-3 font-semibold text-gray-600">Discounted</th>
+        <th class="text-right px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Discounted', 'discounted', filter, filterParams, paginator) }}
+        </th>
         <th class="text-right px-4 py-3 font-semibold text-gray-600">
           {{ _self.sortLink('Rating', 'rating', filter, filterParams, paginator) }}
         </th>

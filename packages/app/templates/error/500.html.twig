@@ -1,4 +1,4 @@
-{% extends 'layout/base.html.twig' %}
+{% extends 'layouts/base.html.twig' %}
 
 {% block title %}Something went wrong{% endblock %}
 
@@ -6,8 +6,10 @@
   <div class="max-w-lg mx-auto text-center py-24">
     <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">500</p>
     <h1 class="text-2xl font-semibold text-gray-900 mb-3">Something went wrong</h1>
-    <p class="text-gray-500 mb-8 whitespace-pre-wrap text-left bg-gray-50 border border-gray-200 rounded-lg p-4 text-xs font-mono">{{ message }}</p>
-    <a href="/products" class="inline-block bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-gray-700 transition-colors">
+    <p
+      class="text-gray-500 mb-8 whitespace-pre-wrap text-left bg-gray-50 border border-gray-200 rounded-lg p-4 text-xs font-mono">{{ message }}</p>
+    <a href="/products"
+       class="inline-block bg-gray-900 text-white text-sm px-4 py-2 rounded hover:bg-gray-700 transition-colors">
       Back to products
     </a>
   </div>
