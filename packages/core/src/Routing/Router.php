@@ -18,9 +18,8 @@ final readonly class Router
         private ErrorRenderer $errorRenderer,
     ) {}
 
-    public function match(): void
+    public function match(Request $request): void
     {
-        $request = Request::createFromGlobals();
         $format = $request->getPreferredFormat(default: 'html');
 
         try {

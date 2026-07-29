@@ -28,15 +28,23 @@ final readonly class ImportController
     #[Route(path: '/imports', name: 'imports_index', methods: ['GET'])]
     public function index(Request $request, array $parameters): Response
     {
+        $result = $this->importRepository->findAllPaginated(
+            page: $request->query->get(key: 'page'),
+            perPage: $request->query->get(key: 'perPage'),
+        );
+
         $imports = [];
-        foreach ($this->importRepository->findAll() as $import) {
+        foreach ($result->items as $import) {
             $imports[$import->id] = $this->extractor->extract(import: $import);
         }
 
         return new Response(
             content: $this->templateRenderer->render(
                 template: 'pages.imports',
-                data: ['imports' => $imports],
+                data: [
+                    'imports' => $imports,
+                    'paginator' => $result->paginator,
+                ],
             ),
         );
     }

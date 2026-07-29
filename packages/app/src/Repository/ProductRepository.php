@@ -6,6 +6,7 @@ namespace MaxServ\App\Repository;
 
 use MaxServ\App\Dto\Pagination\PaginatedResult;
 use MaxServ\App\Dto\Pagination\Paginator;
+use MaxServ\App\Dto\Product\ProductPriceRange;
 use MaxServ\App\Entity\Product;
 use MaxServ\App\Filter\ProductFilter;
 use MaxServ\App\Hydrator\ProductHydrator;
@@ -130,20 +131,39 @@ final readonly class ProductRepository
         );
     }
 
+    public function count(?ProductFilter $filter = null): int
+    {
+        $filters = $filter?->filters ?? 'TRUE';
+        $stmt = $this->connection->pdo->prepare(
+            query: "SELECT COUNT(*) FROM products WHERE {$filters}",
+        );
+        $stmt->execute(params: $filter?->bindings);
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function priceRange(): ProductPriceRange
+    {
+        $stmt = $this->connection->pdo->query(
+            query: 'SELECT MIN(price) AS min_price, MAX(price) AS max_price FROM products',
+        );
+        $row = $stmt->fetch(mode: PDO::FETCH_ASSOC);
+
+        return new ProductPriceRange(
+            min: $row['min_price'] !== null ? (float)$row['min_price'] : null,
+            max: $row['max_price'] !== null ? (float)$row['max_price'] : null,
+        );
+    }
+
     public function searchPaginated(
         ProductFilter $filter,
         int|string|null $page,
         int|string|null $perPage,
     ): PaginatedResult {
-        $countStmt = $this->connection->pdo->prepare(
-            query: "SELECT COUNT(*) FROM products WHERE {$filter->filters}",
-        );
-        $countStmt->execute(params: $filter->bindings);
-
         $paginator = new Paginator(
             page: $page,
             perPage: $perPage,
-            total: (int)$countStmt->fetchColumn(),
+            total: $this->count(filter: $filter),
         );
 
         $stmt = $this->connection->pdo->prepare(

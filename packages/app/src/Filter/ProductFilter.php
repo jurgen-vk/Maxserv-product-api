@@ -18,22 +18,7 @@ final readonly class ProductFilter
         public ?float $maxPrice = null,
         public ?float $minRating = null,
     ) {
-        $conditions = [];
-        $bindings = [];
-
-        foreach (get_object_vars($this) as $property => $value) {
-            if ($value === null || in_array(needle: $property, haystack: ['sortBy', 'order'])) {
-                continue;
-            }
-
-            $method = 'apply' . ucfirst(string: $property);
-            [$sql, $binding] = $this->$method($value);
-            $conditions[] = $sql;
-            $bindings = [...$bindings, ...$binding];
-        }
-
-        $this->filters = $conditions !== [] ? implode(separator: ' AND ', array: $conditions) : 'TRUE';
-        $this->bindings = $bindings;
+        [$this->filters, $this->bindings] = $this->buildFilters();
         $this->sorts = $this->buildSort();
         $this->sortJoins = $this->buildSortJoins();
     }
@@ -135,6 +120,27 @@ final readonly class ProductFilter
     private function applyMinRating(float $value): array
     {
         return ['products.rating >= :minRating', [':minRating' => $value]];
+    }
+
+    private function buildFilters(): array
+    {
+        $conditions = [];
+        $bindings = [];
+
+        foreach (get_object_vars($this) as $property => $value) {
+            if ($value === null || in_array(needle: $property, haystack: ['sortBy', 'order'])) {
+                continue;
+            }
+
+            $method = 'apply' . ucfirst(string: $property);
+            [$sql, $binding] = $this->$method($value);
+            $conditions[] = $sql;
+            $bindings = [...$bindings, ...$binding];
+        }
+
+        $filters = $conditions !== [] ? implode(separator: ' AND ', array: $conditions) : 'TRUE';
+
+        return [$filters, $bindings];
     }
 
     private function buildSort(): string

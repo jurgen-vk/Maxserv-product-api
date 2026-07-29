@@ -20,7 +20,8 @@ final readonly class ImportHydrator
             completedAt: $row['completed_at'] !== null
                 ? new DateTimeImmutable(datetime: $row['completed_at'])
                 : null,
-            count: (int)$row['count'],
+            processed: (int)$row['processed'],
+            total: (int)$row['total'],
         );
     }
 }

@@ -26,19 +26,22 @@ final readonly class ProductController
         private FragmentRenderer $fragmentRenderer,
     ) {}
 
-    #[Route(path: '/products', name: 'products', methods: ['GET'])]
+    #[Route(path: '/products', name: 'products_index', methods: ['GET'])]
     public function index(Request $request, array $parameters): Response
     {
         $filter = ProductFilter::fromRequest(request: $request);
         $result = $this->productRepository->searchPaginated(
             filter: $filter,
-            page: $request->query->get('page'),
-            perPage: $request->query->get('perPage'),
+            page: $request->query->get(key: 'page'),
+            perPage: $request->query->get(key: 'perPage'),
         );
+        $priceRange = $this->productRepository->priceRange();
 
         $data = [
             'items' => $result->items,
             'paginator' => $result->paginator,
+            'minPrice' => $priceRange->min,
+            'maxPrice' => $priceRange->max,
             'filter' => $filter,
             'categories' => $this->categoryRepository->findAll(),
             'brands' => $this->brandRepository->findAll(),
@@ -63,7 +66,7 @@ final readonly class ProductController
         );
     }
 
-    #[Route(path: '/products/{id}', name: 'product_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/products/{id}', name: 'products_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Request $request, array $parameters): Response
     {
         $product = $this->productRepository->find(id: (int)$parameters['id']);

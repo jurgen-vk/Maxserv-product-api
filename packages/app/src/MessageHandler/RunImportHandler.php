@@ -6,6 +6,7 @@ namespace MaxServ\App\MessageHandler;
 
 use MaxServ\App\Event\Import\ImportCompletedEvent;
 use MaxServ\App\Event\Import\ImportFailedEvent;
+use MaxServ\App\Event\Import\ImportStartedEvent;
 use MaxServ\App\Message\RunImportMessage;
 use MaxServ\App\Repository\ImportRepository;
 use MaxServ\App\Service\ImportService;
@@ -27,20 +28,22 @@ final readonly class RunImportHandler
         $import->markRunning();
         $this->importRepository->save(import: $import);
 
+        $this->eventDispatcher->dispatch(event: new ImportStartedEvent(import: $import));
+
         try {
-            $count = $this->importService->run(type: $message->type, importId: $message->importRunId);
+            $this->importService->run(type: $message->type, import: $import);
         } catch (\Throwable $exception) {
             $import->markFailed();
             $this->importRepository->save(import: $import);
 
-            $this->eventDispatcher->dispatch(new ImportFailedEvent(importId: $message->importRunId));
+            $this->eventDispatcher->dispatch(event: new ImportFailedEvent(import: $import));
 
             throw $exception;
         }
 
-        $import->markCompleted(count: $count);
+        $import->markCompleted();
         $this->importRepository->save(import: $import);
 
-        $this->eventDispatcher->dispatch(new ImportCompletedEvent(importId: $message->importRunId, count: $count));
+        $this->eventDispatcher->dispatch(event: new ImportCompletedEvent(import: $import));
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Repository;
 
+use MaxServ\App\Dto\Pagination\PaginatedResult;
+use MaxServ\App\Dto\Pagination\Paginator;
 use MaxServ\App\Entity\Import;
 use MaxServ\App\Hydrator\ImportHydrator;
 use MaxServ\App\Utility\QueryUtility;
@@ -34,16 +36,17 @@ final readonly class ImportRepository
     {
         $sql = '
       INSERT INTO imports
-        (id, type, status, started_at, completed_at, count)
+        (id, type, status, started_at, completed_at, processed, total)
       VALUES
-        (:id, :type, :status, :startedAt, :completedAt, :count)
+        (:id, :type, :status, :startedAt, :completedAt, :processed, :total)
       AS new_row
       ON DUPLICATE KEY UPDATE
         type         = new_row.type,
         status       = new_row.status,
         started_at   = new_row.started_at,
         completed_at = new_row.completed_at,
-        count        = new_row.count
+        processed    = new_row.processed,
+        total        = new_row.total
     ';
 
         $this->connection->pdo->prepare(query: $sql)->execute(params: [
@@ -52,7 +55,8 @@ final readonly class ImportRepository
             ':status' => $import->status->value,
             ':startedAt' => $import->startedAt->format(format: 'Y-m-d H:i:s'),
             ':completedAt' => $import->completedAt?->format(format: 'Y-m-d H:i:s'),
-            ':count' => $import->count,
+            ':processed' => $import->processed,
+            ':total' => $import->total,
         ]);
 
         $import->id ??= (int)$this->connection->pdo->lastInsertId();
@@ -95,12 +99,12 @@ final readonly class ImportRepository
 
         $placeholders = QueryUtility::buildPositionalPlaceholders(
             rowCount: count($imports),
-            columnCount: 6,
+            columnCount: 7,
         );
 
         $sql = "
           INSERT INTO imports
-            (id, type, status, started_at, completed_at, count)
+            (id, type, status, started_at, completed_at, processed, total)
           VALUES
             $placeholders
           AS new_row
@@ -109,7 +113,8 @@ final readonly class ImportRepository
             status       = new_row.status,
             started_at   = new_row.started_at,
             completed_at = new_row.completed_at,
-            count        = new_row.count
+            processed    = new_row.processed,
+            total        = new_row.total
         ";
 
         $values = [];
@@ -121,7 +126,8 @@ final readonly class ImportRepository
                 $import->status->value,
                 $import->startedAt->format('Y-m-d H:i:s'),
                 $import->completedAt?->format('Y-m-d H:i:s'),
-                $import->count,
+                $import->processed,
+                $import->total,
             );
         }
 
@@ -155,15 +161,29 @@ final readonly class ImportRepository
         );
     }
 
-    public function findAll(): array
+    public function findAllPaginated(int|string|null $page, int|string|null $perPage): PaginatedResult
     {
-        $stmt = $this->connection->pdo->query(
-            query: 'SELECT * FROM imports ORDER BY started_at DESC',
+        $countStmt = $this->connection->pdo->query(query: 'SELECT COUNT(*) FROM imports');
+
+        $paginator = new Paginator(
+            page: $page,
+            perPage: $perPage,
+            total: (int)$countStmt->fetchColumn(),
         );
 
-        return array_map(
+        $stmt = $this->connection->pdo->query(
+            query: "
+              SELECT * FROM imports
+              ORDER BY started_at DESC
+              LIMIT {$paginator->perPage} OFFSET {$paginator->offset}
+            ",
+        );
+
+        $items = array_map(
             callback: fn(array $row) => $this->hydrator->hydrateFromDatabase(row: $row),
             array: $stmt->fetchAll(mode: PDO::FETCH_ASSOC),
         );
+
+        return new PaginatedResult(items: $items, paginator: $paginator);
     }
 }

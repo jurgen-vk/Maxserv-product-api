@@ -16,7 +16,8 @@ final class ImportExtractor
             'status' => $import->status->value,
             'startedAt' => $import->startedAt->format(format: DATE_ATOM),
             'completedAt' => $import->completedAt?->format(format: DATE_ATOM),
-            'count' => $import->count,
+            'processed' => $import->processed,
+            'total' => $import->total,
         ];
     }
 }

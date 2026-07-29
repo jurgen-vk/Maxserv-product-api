@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Interface;
 
+use MaxServ\App\Entity\Import;
+
 interface ImporterInterface
 {
   public function supports(string $type): bool;
 
-  public function import(int $importId): int;
+  public function import(Import $import): void;
 }

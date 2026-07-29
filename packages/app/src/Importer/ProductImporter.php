@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace MaxServ\App\Importer;
 
 use GuzzleHttp\Client;
+use MaxServ\App\Entity\Import;
 use MaxServ\App\Event\Import\ImportProgressEvent;
 use MaxServ\App\Hydrator\MediaHydrator;
 use MaxServ\App\Hydrator\ProductHydrator;
 use MaxServ\App\Interface\ImporterInterface;
 use MaxServ\App\Repository\BrandRepository;
 use MaxServ\App\Repository\CategoryRepository;
+use MaxServ\App\Repository\ImportRepository;
 use MaxServ\App\Repository\ProductRepository;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -21,6 +23,7 @@ final readonly class ProductImporter implements ImporterInterface
         private ProductRepository $productRepo,
         private CategoryRepository $categoryRepo,
         private BrandRepository $brandRepo,
+        private ImportRepository $importRepository,
         private ProductHydrator $hydrator,
         private MediaHydrator $mediaHydrator,
         private EventDispatcherInterface $eventDispatcher,
@@ -31,7 +34,7 @@ final readonly class ProductImporter implements ImporterInterface
         return $type === 'products';
     }
 
-    public function import(int $importId): int
+    public function import(Import $import): void
     {
         $count = 0;
         $skip = 0;
@@ -86,17 +89,14 @@ final readonly class ProductImporter implements ImporterInterface
             $this->productRepo->saveMany(products: $products);
             $this->productRepo->saveManyMedia(products: $products);
 
+            $import->markProgress(processed: $count, total: $data['total']);
+            $this->importRepository->save(import: $import);
+
             $this->eventDispatcher->dispatch(
-                event: new ImportProgressEvent(
-                    importId: $importId,
-                    processed: $count,
-                    total: $data['total'],
-                ),
+                event: new ImportProgressEvent(import: $import),
             );
 
             $skip += $limit;
         } while ($skip < $data['total']);
-
-        return $count;
     }
 }

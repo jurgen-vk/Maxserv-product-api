@@ -41,7 +41,7 @@
             <td class="px-4 py-3 text-gray-500">
               {{ import.completedAt ? import.completedAt|date('Y-m-d H:i:s') : '—' }}
             </td>
-            <td class="px-4 py-3 text-gray-500" x-text="imports[{{ import.id }}].count"></td>
+            <td class="px-4 py-3 text-gray-500" x-text="imports[{{ import.id }}].processed"></td>
           </tr>
         {% else %}
           <tr>
@@ -51,5 +51,12 @@
         </tbody>
       </table>
     </div>
+
+    {% if paginator.total > 0 %}
+      {% include 'components.ui.pagination' with {
+        paginator: paginator,
+        baseUrl: '/imports'
+      } %}
+    {% endif %}
   </div>
 {% endblock %}

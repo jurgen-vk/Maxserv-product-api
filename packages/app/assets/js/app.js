@@ -44,8 +44,10 @@ Alpine.store("import", {
       const {imports} = await res.json();
       const [{id: importId}] = imports;
 
+      const mercureUrl = document.querySelector('meta[name="mercure-url"]').content;
+
       const source = new EventSource(
-        document.body.dataset.mercureUrl + "?topic=" + encodeURIComponent("imports/" + importId)
+        mercureUrl + "?topic=" + encodeURIComponent("imports/" + importId)
       );
 
       source.onmessage = async (event) => {
@@ -59,7 +61,7 @@ Alpine.store("import", {
 
         if (update.status === "completed") {
           source.close();
-          Alpine.store("toast").show(update.count + " products imported successfully");
+          Alpine.store("toast").show(update.processed + " products imported successfully");
           await this.refreshTable();
           this.reset();
           return;

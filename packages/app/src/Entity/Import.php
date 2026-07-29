@@ -15,7 +15,8 @@ final class Import
         private(set) ImportStatus $status = ImportStatus::Pending,
         public readonly DateTimeImmutable $startedAt = new DateTimeImmutable(),
         private(set) ?DateTimeImmutable $completedAt = null,
-        private(set) int $count = 0,
+        private(set) int $processed = 0,
+        private(set) int $total = 0,
     ) {}
 
     public function markRunning(): void
@@ -23,11 +24,16 @@ final class Import
         $this->status = ImportStatus::Running;
     }
 
-    public function markCompleted(int $count): void
+    public function markProgress(int $processed, int $total): void
+    {
+        $this->processed = $processed;
+        $this->total = $total;
+    }
+
+    public function markCompleted(): void
     {
         $this->status = ImportStatus::Completed;
         $this->completedAt = new DateTimeImmutable();
-        $this->count = $count;
     }
 
     public function markFailed(): void

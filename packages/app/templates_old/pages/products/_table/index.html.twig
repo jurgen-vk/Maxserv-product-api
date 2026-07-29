@@ -1,0 +1,124 @@
+{#
+Variables expected:
+  items     — Product[]
+  paginator — Paginator DTO
+  filter    — ProductFilter
+#}
+{% set sortBase = '?sort=' ~ filter.sortBy ~ '&order=' ~ filter.order %}
+{% set filterParams = {
+  category:  filter.category ?? '',
+  brand:     filter.brand ?? '',
+  search:    filter.search ?? '',
+  minPrice:  filter.minPrice ?? '',
+  maxPrice:  filter.maxPrice ?? '',
+  minRating: filter.minRating ?? '',
+  sort:      filter.sortBy,
+  order:     filter.order,
+} %}
+
+{% macro sortLink(label, column, filter, filterParams, paginator) %}
+  {% set nextOrder = filter.sortBy == column and filter.order == 'ASC' ? 'DESC' : 'ASC' %}
+  {% set qs = '' %}
+  {% for k, v in filterParams %}
+    {% if k != 'sort' and k != 'order' %}
+      {% set qs = qs ~ '&' ~ k ~ '=' ~ v %}
+    {% endif %}
+  {% endfor %}
+  <a href="?sort={{ column }}&order={{ nextOrder }}{{ qs }}&{{ paginator.perPageParam }}={{ paginator.perPage }}"
+     class="inline-flex items-center gap-1 hover:text-gray-900">
+    {{ label }}
+    {% if filter.sortBy == column %}
+      <span class="text-gray-400">{{ filter.order == 'ASC' ? '↑' : '↓' }}</span>
+    {% endif %}
+  </a>
+{% endmacro %}
+
+<div id="products-table-container">
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 border-b border-gray-200">
+      <tr>
+        <th class="text-left px-4 py-3 w-14"></th>
+        <th class="text-left px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Title', 'title', filter, filterParams, paginator) }}
+        </th>
+        <th class="text-left px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Brand', 'brand', filter, filterParams, paginator) }}
+        </th>
+        <th class="text-left px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Category', 'category', filter, filterParams, paginator) }}
+        </th>
+        <th class="text-right px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Price', 'price', filter, filterParams, paginator) }}
+        </th>
+        <th class="text-right px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Discounted', 'discounted', filter, filterParams, paginator) }}
+        </th>
+        <th class="text-right px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Rating', 'rating', filter, filterParams, paginator) }}
+        </th>
+        <th class="text-right px-4 py-3 font-semibold text-gray-600">
+          {{ _self.sortLink('Stock', 'stock', filter, filterParams, paginator) }}
+        </th>
+      </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+      {% for product in items %}
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-4 py-3">
+            {% set thumbnail = product.media[0] ?? null %}
+            {% if thumbnail %}
+              <img src="{{ thumbnail.url }}" alt="{{ product.title }}"
+                   class="w-10 h-10 object-contain rounded bg-gray-50">
+            {% else %}
+              <div class="w-10 h-10 rounded bg-gray-100"></div>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3 font-medium">
+            <a href="/products/{{ product.id }}" class="text-gray-900 hover:text-blue-600 hover:underline">
+              {{ product.title }}
+            </a>
+          </td>
+          <td class="px-4 py-3 text-gray-500">{{ product.brand ? product.brand.name : '—' }}</td>
+          <td class="px-4 py-3">
+              <span class="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">
+                {{ product.category.name|capitalize }}
+              </span>
+          </td>
+          <td class="px-4 py-3 text-right font-mono text-gray-400 line-through text-xs">
+            &euro;&nbsp;{{ product.price|number_format(2, '.', ',') }}
+          </td>
+          <td class="px-4 py-3 text-right font-mono font-semibold text-green-700">
+            &euro;&nbsp;{{ product.discountPrice|number_format(2, '.', ',') }}
+          </td>
+          <td class="px-4 py-3 text-right tabular-nums text-gray-600">
+            {{ product.rating|number_format(1) }}
+          </td>
+          <td
+            class="px-4 py-3 text-right tabular-nums {{ product.stock < 10 ? 'text-red-500 font-semibold' : 'text-gray-600' }}">
+            {{ product.stock }}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="8" class="px-4 py-12 text-center text-gray-400">
+            No products found.
+            {% if filter.category or filter.brand or filter.search %}
+              <a href="/products" class="underline hover:text-gray-600">Clear filters</a> or
+            {% endif %}
+            <a href="#" @click.prevent="$store.import.start()" class="underline hover:text-gray-600">import products</a>.
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if paginator.total > 0 %}
+    {% include 'components/ui/pagination.html.twig' with {
+      paginator:   paginator,
+      extraParams: filterParams,
+      baseUrl:     '/products'
+    } %}
+  {% endif %}
+</div>

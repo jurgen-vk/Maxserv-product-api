@@ -68,6 +68,10 @@ services:
     arguments:
       $router: '@app.router'
 
+  Symfony\Bridge\Twig\Extension\RoutingExtension:
+    arguments:
+      $generator: '@app.router'
+
   # ==========================================================================
   # Database
   # ==========================================================================
@@ -78,6 +82,19 @@ services:
       $user: '%db.user%'
       $password: '%db.password%'
       $database: '%db.database%'
+
+  # ==========================================================================
+  # Session
+  # ==========================================================================
+
+  Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage: ~
+
+  Symfony\Component\HttpFoundation\Session\Session: ~
+
+  Symfony\Component\HttpFoundation\RequestStack: ~
+
+  MaxServ\Core\Http\Request\RequestFactory:
+    public: true
 
   # ==========================================================================
   # Twig
@@ -102,6 +119,10 @@ services:
         arguments: [ '@Symfony\Component\Mercure\Twig\MercureExtension' ]
       - method: addExtension
         arguments: [ '@MaxServ\Core\Render\Extension\IconExtension' ]
+      - method: addExtension
+        arguments: [ '@Symfony\Bridge\Twig\Extension\RoutingExtension' ]
+      - method: addGlobal
+        arguments: [ 'notifications', '@MaxServ\Core\Notification\Notifications' ]
 
   # ==========================================================================
   # Vite

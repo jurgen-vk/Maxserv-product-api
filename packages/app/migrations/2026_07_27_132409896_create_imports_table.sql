@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS imports (
   status       VARCHAR(20)  NOT NULL DEFAULT 'pending',
   started_at   DATETIME     NOT NULL,
   completed_at DATETIME     NULL,
-  count        INT          NOT NULL DEFAULT 0,
+  processed    INT          NOT NULL DEFAULT 0,
+  total        INT          NOT NULL DEFAULT 0,
   INDEX idx_imports_status (status)
 );

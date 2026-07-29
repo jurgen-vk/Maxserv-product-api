@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Service;
 
+use MaxServ\App\Entity\Import;
 use RuntimeException;
 
 final readonly class ImportService
@@ -12,11 +13,12 @@ final readonly class ImportService
         private iterable $importers,
     ) {}
 
-    public function run(string $type, int $importId): int
+    public function run(string $type, Import $import): void
     {
         foreach ($this->importers as $importer) {
             if ($importer->supports(type: $type)) {
-                return $importer->import(importId: $importId);
+                $importer->import(import: $import);
+                return;
             }
         }
 
