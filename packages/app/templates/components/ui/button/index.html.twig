@@ -1,0 +1,30 @@
+{% set variant = variant|default('primary') %}
+{% set type = type|default('button') %}
+{% set href = href|default(null) %}
+{% set disabled = disabled|default(false) %}
+{% set tag = href ? 'a' : 'button' %}
+
+{% set iconBefore %}{% block iconBefore %}{% endblock %}{% endset %}
+{% set label %}{% block label %}{% endblock %}{% endset %}
+{% set iconAfter %}{% block iconAfter %}{% endblock %}{% endset %}
+
+<{{ tag }} {{ attrs(defaults: {
+  class: 'btn',
+  'data-variant': variant,
+  type: tag == 'a' ? null : type,
+  href: href,
+  disabled: (tag == 'button' and disabled) ? true : null,
+  'aria-disabled': (tag == 'a' and disabled) ? 'true' : null,
+}, attributes: attributes) }}>
+{% if iconBefore|trim is not empty %}
+  <span class="icon-container icon--before">{{ iconBefore }}</span>
+{% endif %}
+
+{% if label|trim is not empty %}
+  <span class="label">{{ label }}</span>
+{% endif %}
+
+{% if iconAfter|trim is not empty %}
+  <span class="icon-container icon--after">{{ iconAfter }}</span>
+{% endif %}
+</{{ tag }}>

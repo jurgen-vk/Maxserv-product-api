@@ -1,0 +1,6 @@
+@layer main {
+  .l_main__nav {
+    --nav-header-height: 3.5rem;
+    --sidebar-anim-dur: 0.25s;
+  }
+}

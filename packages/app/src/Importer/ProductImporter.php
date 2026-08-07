@@ -50,6 +50,7 @@ final readonly class ProductImporter implements ImporterInterface
         }
 
         do {
+//            usleep(250000);
             $response = $this->client->get(
                 uri: 'https://dummyjson.com/products',
                 options: [

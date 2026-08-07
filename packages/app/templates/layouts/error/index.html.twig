@@ -1,0 +1,21 @@
+{% set themeMode = app.request.cookies.get('themeMode') %}
+<!DOCTYPE html>
+<html lang="en"{% if themeMode %} data-theme-mode="{{ themeMode }}"{% endif %}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MaxServ{% endblock %}</title>
+  <meta name="mercure-url" content="{{ mercure() }}">
+  <meta name="theme-mode" content="{{ themeMode }}">
+  {{ vite_css('assets/css/app.css') }}
+</head>
+<body>
+<main class="error-shell">
+  {% block content %}{% endblock %}
+</main>
+
+{% include 'components.ui.notification.container' %}
+
+{{ vite_js('assets/js/app.js') }}
+</body>
+</html>

@@ -1,0 +1,10 @@
+{% set themeMode = app.request.cookies.get('themeMode') %}
+
+<div class="c_ui_theme-mode-toggle">
+  {% embed 'components.ui.toggle' with {
+    checked: themeMode == 'dark'
+  } only %}
+    {% block left %} {{ icon('lucide:sun') }} {% endblock %}
+    {% block right %} {{ icon('lucide:moon') }} {% endblock %}
+  {% endembed %}
+</div>

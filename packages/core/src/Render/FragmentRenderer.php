@@ -13,21 +13,27 @@ final readonly class FragmentRenderer
         private string $defaultRoot = 'pages',
     ) {}
 
-    public function render(string $page, array $fragments, array $data, ?string $root = null): array
+    public function render(string $page, string $fragment, array $data, ?string $root = null): ?string
     {
         $prefix = ($root ?? $this->defaultRoot) . '.' . $page;
 
+        try {
+            return $this->templateRenderer->render(
+                template: "$prefix.$fragment",
+                data: $data,
+            );
+        } catch (LoaderError $exception) {
+            error_log(message: (string)$exception);
+
+            return null;
+        }
+    }
+
+    public function renderMany(string $page, array $fragments, array $data, ?string $root = null): array
+    {
         $rendered = [];
         foreach ($fragments as $fragment) {
-            try {
-                $rendered[$fragment] = $this->templateRenderer->render(
-                    template: "$prefix.$fragment",
-                    data: $data,
-                );
-            } catch (LoaderError $exception) {
-                error_log(message: (string)$exception);
-                $rendered[$fragment] = null;
-            }
+            $rendered[$fragment] = $this->render(page: $page, fragment: $fragment, data: $data, root: $root);
         }
 
         return $rendered;

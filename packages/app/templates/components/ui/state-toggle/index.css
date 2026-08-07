@@ -1,0 +1,20 @@
+@layer main {
+  .state-toggle {
+    display: grid;
+
+    > * {
+      grid-area: 1 / 1;
+    }
+
+    [data-state-pane] {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    &[data-state='idle'] [data-state-pane='idle'],
+    &[data-state='loading'] [data-state-pane='loading'] {
+      visibility: visible;
+      pointer-events: auto;
+    }
+  }
+}

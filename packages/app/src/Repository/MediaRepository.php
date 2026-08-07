@@ -21,16 +21,17 @@ final readonly class MediaRepository
     {
         $sql = '
             INSERT INTO media
-                (id, entity_type, entity_id, url, media_type, sort_order)
+                (id, entity_type, entity_id, url, media_type, sort_order, role)
             VALUES
-                (:id, :entityType, :entityId, :url, :mediaType, :sortOrder)
+                (:id, :entityType, :entityId, :url, :mediaType, :sortOrder, :role)
             AS new_row
             ON DUPLICATE KEY UPDATE
                 entity_type = new_row.entity_type,
                 entity_id   = new_row.entity_id,
                 url         = new_row.url,
                 media_type  = new_row.media_type,
-                sort_order  = new_row.sort_order
+                sort_order  = new_row.sort_order,
+                role        = new_row.role
         ';
 
         $this->connection->pdo->prepare(query: $sql)->execute(params: [
@@ -40,6 +41,7 @@ final readonly class MediaRepository
             ':url' => $media->url,
             ':mediaType' => $media->mediaType->value,
             ':sortOrder' => $media->sortOrder,
+            ':role' => $media->role?->value,
         ]);
 
         $media->id ??= (int)$this->connection->pdo->lastInsertId();
@@ -53,12 +55,12 @@ final readonly class MediaRepository
 
         $placeholders = QueryUtility::buildPositionalPlaceholders(
             rowCount: count($media),
-            columnCount: 6,
+            columnCount: 7,
         );
 
         $sql = "
             INSERT INTO media
-                (id, entity_type, entity_id, url, media_type, sort_order)
+                (id, entity_type, entity_id, url, media_type, sort_order, role)
             VALUES
                 $placeholders
             AS new_row
@@ -67,7 +69,8 @@ final readonly class MediaRepository
                 entity_id   = new_row.entity_id,
                 url         = new_row.url,
                 media_type  = new_row.media_type,
-                sort_order  = new_row.sort_order
+                sort_order  = new_row.sort_order,
+                role        = new_row.role
         ";
 
         $values = [];
@@ -80,6 +83,7 @@ final readonly class MediaRepository
                 $m->url,
                 $m->mediaType->value,
                 $m->sortOrder,
+                $m->role?->value,
             );
         }
 
@@ -124,7 +128,7 @@ final readonly class MediaRepository
         );
     }
 
-    public function findFirstByEntities(string $entityType, array $entityIds): array
+    public function findThumbnailsByEntities(string $entityType, array $entityIds): array
     {
         if (empty($entityIds)) {
             return [];
@@ -134,12 +138,8 @@ final readonly class MediaRepository
 
         $stmt = $this->connection->pdo->prepare(
             query: "
-              SELECT * FROM (
-                SELECT *, ROW_NUMBER() OVER (PARTITION BY entity_id ORDER BY sort_order) AS rn
-                FROM media
-                WHERE entity_type = :entityType AND entity_id IN ($placeholders)
-              ) ranked
-              WHERE rn = 1
+              SELECT * FROM media
+              WHERE entity_type = :entityType AND entity_id IN ($placeholders) AND role = 'thumbnail'
             ",
         );
         $stmt->execute(params: [':entityType' => $entityType, ...$bindings]);

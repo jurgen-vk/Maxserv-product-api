@@ -6,7 +6,9 @@ namespace MaxServ\App\Hydrator;
 
 use MaxServ\App\Entity\Brand;
 use MaxServ\App\Entity\Category;
+use MaxServ\App\Entity\Media;
 use MaxServ\App\Entity\Product;
+use MaxServ\App\Enum\MediaRole;
 
 final readonly class ProductHydrator
 {
@@ -16,6 +18,8 @@ final readonly class ProductHydrator
         ?Brand $brand,
         array $media = [],
     ): Product {
+        [$thumbnail, $rest] = $this->splitThumbnail(media: $media);
+
         return new Product(
             id: (int)$row['id'],
             title: $row['title'],
@@ -26,12 +30,15 @@ final readonly class ProductHydrator
             stock: (int)$row['stock'],
             category: $category,
             brand: $brand,
-            media: $media,
+            thumbnail: $thumbnail,
+            media: $rest,
         );
     }
 
     public function hydrateFromApi(array $data, Category $category, ?Brand $brand, array $media = []): Product
     {
+        [$thumbnail, $rest] = $this->splitThumbnail(media: $media);
+
         return new Product(
             id: isset($data['id']) ? (int)$data['id'] : null,
             title: $data['title'],
@@ -42,7 +49,25 @@ final readonly class ProductHydrator
             stock: (int)($data['stock'] ?? 0),
             category: $category,
             brand: $brand,
-            media: $media,
+            thumbnail: $thumbnail,
+            media: $rest,
         );
+    }
+
+    /** @return array{0: ?Media, 1: array<Media>} */
+    private function splitThumbnail(array $media): array
+    {
+        $thumbnail = null;
+        $rest = [];
+
+        foreach ($media as $item) {
+            if ($item->role === MediaRole::Thumbnail && $thumbnail === null) {
+                $thumbnail = $item;
+                continue;
+            }
+            $rest[] = $item;
+        }
+
+        return [$thumbnail, $rest];
     }
 }

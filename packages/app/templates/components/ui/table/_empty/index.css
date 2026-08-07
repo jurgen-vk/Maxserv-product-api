@@ -1,0 +1,37 @@
+@layer main {
+  .table-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-inline: 1.25rem;
+    padding-block: 3rem;
+    text-align: center;
+
+    svg {
+      inline-size: 1.875rem;
+      block-size: 1.875rem;
+      color: var(--color-primary-add-6);
+    }
+
+    h3 {
+      /* smaller than a normal h3 — this is a quiet inline note, not a
+         section heading */
+      font-size: var(--h5-font);
+      font-weight: var(--h5-weight);
+      letter-spacing: var(--h5-letter-spacing);
+      color: var(--color-text-1);
+    }
+
+    p {
+      max-inline-size: 34ch;
+      font-size: var(--text-sm);
+      color: var(--color-text-13);
+    }
+
+    .action {
+      margin-block-start: 0.25rem;
+    }
+  }
+}

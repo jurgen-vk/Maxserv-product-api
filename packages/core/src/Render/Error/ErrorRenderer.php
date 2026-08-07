@@ -21,7 +21,17 @@ final readonly class ErrorRenderer
 
     public function render(Throwable $exception, string $format): Response
     {
-        [$status, $message] = $this->resolve(exception: $exception);
+        $status = $this->statusOf(exception: $exception);
+
+        if ($status >= 500) {
+            error_log(message: (string) $exception);
+        }
+
+        $message = match (true) {
+            $status < 500 => $exception->getMessage(),
+            $this->debug => (string) $exception,
+            default => 'Something went wrong',
+        };
 
         $renderer = $this->findSupporting(format: $format)
             ?? $this->findSupporting(format: 'html');
@@ -33,14 +43,13 @@ final readonly class ErrorRenderer
         return $renderer->render(status: $status, message: $message);
     }
 
-    private function resolve(Throwable $exception): array
+    private function statusOf(Throwable $exception): int
     {
         return match (true) {
-            $exception instanceof HttpException => [$exception->getStatusCode(), $exception->getMessage()],
-            $exception instanceof ResourceNotFoundException => [404, $exception->getMessage()],
-            $exception instanceof MethodNotAllowedException => [405, $exception->getMessage()],
-            $this->debug => [500, (string)$exception],
-            default => [500, 'Something went wrong'],
+            $exception instanceof HttpException => $exception->getStatusCode(),
+            $exception instanceof ResourceNotFoundException => 404,
+            $exception instanceof MethodNotAllowedException => 405,
+            default => 500,
         };
     }
 

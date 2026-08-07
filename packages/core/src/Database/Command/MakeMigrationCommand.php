@@ -26,8 +26,9 @@ final class MakeMigrationCommand extends Command
             )
             ->addOption(
                 name: 'package',
-                mode: InputOption::VALUE_REQUIRED,
+                mode: InputOption::VALUE_OPTIONAL,
                 description: 'Which package this migration belongs to (e.g. core, app)',
+                default: 'app',
             );
     }
 
@@ -47,14 +48,6 @@ final class MakeMigrationCommand extends Command
 
         $package = $input->getOption(name: 'package');
         $availablePackagesList = '- ' . implode(separator: "\n - ", array: $packages);
-
-        if ($package === null) {
-            $io->error(
-                message: "The --package option is required. Available packages:\n$availablePackagesList",
-            );
-
-            return Command::FAILURE;
-        }
 
         if (!in_array(needle: $package, haystack: $packages, strict: true)) {
             $io->error(

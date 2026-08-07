@@ -17,7 +17,12 @@ final class AssetExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction(name: 'asset', callable: [$this->assets, 'getUrl']),
+            new TwigFunction(name: 'asset', callable: [$this, 'getAssetUrl']),
         ];
+    }
+
+    public function getAssetUrl(string $path): string
+    {
+        return $this->assets->getUrl(path: 'assets/' . ltrim($path, '/'));
     }
 }

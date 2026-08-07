@@ -1,0 +1,11 @@
+{% set isSorted = filter.sortBy == column %}
+{% set nextOrder = (isSorted and filter.order|upper == 'ASC') ? 'DESC' : 'ASC' %}
+
+<th {{ attrs(defaults: { class: isSorted ? 'is-sorted' : '' }, attributes: attributes) }}>
+  <a href="#" class="sort-link link" data-column="{{ column }}" data-order="{{ nextOrder }}">
+    {{ label }}
+    {% if isSorted %}
+      {{ icon(filter.order|upper == 'ASC' ? 'lucide:arrow-up' : 'lucide:arrow-down') }}
+    {% endif %}
+  </a>
+</th>

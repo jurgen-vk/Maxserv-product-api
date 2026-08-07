@@ -1,0 +1,9 @@
+{% set currentPath = app.request.pathinfo %}
+{% set isActive = href and (currentPath == href or currentPath starts with (href ~ '/')) %}
+
+<div class="l_main__nav__sidebar__link">
+  <a href="{{ href }}" class="item{{ isActive ? ' is-active' : '' }}">
+    <span class="icon-slot">{{ icon|raw }}</span>
+    <span class="label">{{ label }}</span>
+  </a>
+</div>

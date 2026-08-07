@@ -1,0 +1,11 @@
+@layer main {
+  .notification-container {
+    position: fixed;
+    inset-block-start: 1.5rem;
+    inset-inline-end: 1.5rem;
+    z-index: var(--z-add-2); /* z-2: above everything else on the page */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

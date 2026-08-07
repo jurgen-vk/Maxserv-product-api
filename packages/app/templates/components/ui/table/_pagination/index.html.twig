@@ -1,0 +1,61 @@
+{% set extraParams = extraParams|default({}) %}
+
+<div {{ attrs(defaults: { class: 'pagination' }, attributes: attributes) }}>
+  <p class="summary">
+    {% if paginator.total > 0 %}
+      Showing {{ paginator.offset + 1 }}–{{ min(paginator.offset + paginator.perPage, paginator.total) }} of {{ paginator.total }}
+    {% else %}
+      No results
+    {% endif %}
+  </p>
+
+  <div class="controls">
+    <label class="per-page">
+      <span>Per page</span>
+      <select class="per-page-select">
+        {% for option in [10, 25, 50, 100] %}
+          <option value="{{ option }}"{{ option == paginator.perPage ? ' selected' : '' }}>{{ option }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    {% if paginator.totalPages > 1 %}
+      <nav class="pages" aria-label="Pagination">
+        {% if paginator.hasPreviousPage %}
+          <a href="{{ path(routeName, extraParams|merge({ page: paginator.page - 1, perPage: paginator.perPage })) }}"
+             class="page-link link" data-page="{{ paginator.page - 1 }}" aria-label="Previous page">
+            {{ icon('lucide:chevron-left') }}
+          </a>
+        {% endif %}
+
+        {% set start = max(1, paginator.page - 2) %}
+        {% set end = min(paginator.totalPages, paginator.page + 2) %}
+
+        {% if start > 1 %}
+          <a href="{{ path(routeName, extraParams|merge({ page: 1, perPage: paginator.perPage })) }}"
+             class="page-link link" data-page="1">1</a>
+          {% if start > 2 %}<span class="ellipsis">…</span>{% endif %}
+        {% endif %}
+
+        {% for p in start..end %}
+          <a href="{{ path(routeName, extraParams|merge({ page: p, perPage: paginator.perPage })) }}"
+             class="page-link link{{ p == paginator.page ? ' is-active' : '' }}"
+             data-page="{{ p }}">{{ p }}</a>
+        {% endfor %}
+
+        {% if end < paginator.totalPages %}
+          {% if end < paginator.totalPages - 1 %}<span class="ellipsis">…</span>{% endif %}
+          <a href="{{ path(routeName, extraParams|merge({ page: paginator.totalPages, perPage: paginator.perPage })) }}"
+             class="page-link link" data-page="{{ paginator.totalPages }}">{{ paginator.totalPages }}</a>
+        {% endif %}
+
+        {% if paginator.hasNextPage %}
+          <a href="{{ path(routeName, extraParams|merge({ page: paginator.page + 1, perPage: paginator.perPage })) }}"
+             class="page-link link" data-page="{{ paginator.page + 1 }}" aria-label="Next page">
+            {{ icon('lucide:chevron-right') }}
+          </a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,19 @@
+/* Small, generic, cross-component behavior classes with no component
+   identity of their own — never speculative, only added when a real
+   consumer needs them. */
+
+@layer utility {
+  .hidden {
+    display: none;
+  }
+
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

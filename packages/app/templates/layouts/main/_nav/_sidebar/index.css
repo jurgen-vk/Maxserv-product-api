@@ -1,0 +1,174 @@
+@layer main {
+  .nav-sidebar {
+    container-type: normal;
+    container-name: nav-sidebar;
+
+    position: static;
+    margin: 0;
+    border: none;
+
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-main-1);
+    border-right: 1px solid var(--color-primary-sub-8);
+    width: 4.5rem;
+    height: 100dvh;
+    transition: width var(--sidebar-anim-dur) var(--shoot);
+    overflow: hidden;
+    padding: 1.5rem 1rem;
+
+    --collapsed: true;
+
+    /*@media (--under-md) {*/
+    /*  padding: 1rem 1rem;*/
+    /*}*/
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    hr {
+      margin: 1rem 0;
+    }
+
+    .links {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      white-space: nowrap;
+
+      .theme-label {
+        color: var(--color-text-10);
+        max-width: initial;
+        transform: translateX(0);
+        opacity: 1;
+        transition: max-width var(--sidebar-anim-dur) ease,
+        opacity var(--sidebar-anim-dur) ease transform var(--sidebar-anim-dur) var(--shoot);
+      }
+    }
+
+    /* --- Collapsed state --- */
+
+    &:hover, &:focus-within, &[data-pinned='true'] {
+      width: 15rem;
+      --collapsed: false;
+    }
+
+    &:not(:hover):not(:focus-within):not([data-pinned='true']) {
+      .sidebar-pin {
+        display: none;
+      }
+
+      .footer {
+        justify-content: center;
+
+        .theme-label {
+          transform: translateX(-100%);
+          max-width: 0;
+          opacity: 0;
+        }
+      }
+
+      .label {
+        max-width: 0;
+        opacity: 0;
+      }
+    }
+
+    @media (--under-lg) {
+      display: none; /* overridden by the higher-specificity rule below once open */
+      position: fixed;
+      top: var(--nav-header-height);
+      left: 0;
+      bottom: 0;
+      width: 85%;
+      max-width: 320px;
+      height: auto;
+      margin: 0;
+      border: none;
+      box-shadow: var(--shadow-xl);
+      transform: translateX(-100%);
+      transition: transform 0.25s ease, display 0.25s allow-discrete, overlay 0.25s allow-discrete;
+
+      &:popover-open {
+        display: flex;
+        transform: translateX(0);
+      }
+
+      @starting-style {
+        &:popover-open {
+          transform: translateX(-100%);
+        }
+      }
+
+      &::backdrop {
+        top: var(--nav-header-height);
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgb(0 0 0 / 0.4);
+        transition: display 0.25s allow-discrete, overlay 0.25s allow-discrete, background-color 0.25s ease;
+      }
+
+      @starting-style {
+        &:popover-open::backdrop {
+          background-color: transparent;
+        }
+      }
+
+      /* mobile: logo already lives in the header, pinning is desktop-only */
+      .logo, .sidebar-pin, .header + hr {
+        display: none;
+      }
+
+      /* mobile never counts as "collapsed" — there's no rail state to
+         speak of, the sidebar is either an offscreen popover or a fully
+         open drawer, so nothing here should react to it */
+      --collapsed: false;
+
+      /* the rules below exist purely to reset the desktop
+         hover/focus/pin-driven mechanics above — mobile has no hover
+         concept and pinning doesn't apply, but those rules are now
+         unconditional defaults, so each reset here repeats the exact
+         same selector (matching specificity) rather than a plain one,
+         otherwise the higher-specificity desktop rule would still win
+         even inside this media query */
+      &:hover, &:focus-within, &[data-pinned='true'] {
+        width: 85%;
+        max-width: 320px;
+        transition-delay: 0s;
+      }
+
+      &:not(:hover):not(:focus-within):not([data-pinned='true']) .footer {
+        justify-content: space-between;
+      }
+
+      &:not(:hover):not(:focus-within):not([data-pinned='true']) .footer .theme-label {
+        transform: translateX(0);
+        max-width: initial;
+        opacity: 1;
+      }
+
+      &:not(:hover):not(:focus-within):not([data-pinned='true']) .footer .theme-mode-toggle {
+        display: flex;
+      }
+
+      &:not(:hover):not(:focus-within):not([data-pinned='true']) .label {
+        max-width: none;
+        opacity: 1;
+      }
+    }
+  }
+}

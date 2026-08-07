@@ -1,0 +1,90 @@
+@layer main {
+  .nav-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-header-height);
+    z-index: var(--z-add-2);
+    align-items: center;
+    padding: 0 1rem;
+    background-color: var(--color-main);
+    border-bottom: 1px solid var(--color-main-3);
+
+    @media (--under-lg) {
+      display: flex;
+    }
+
+    .hamburger-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      flex-shrink: 0;
+      border: none;
+      border-radius: var(--radius-default);
+      cursor: pointer;
+      background-color: transparent;
+      color: var(--color-text-1);
+      -webkit-tap-highlight-color: transparent;
+
+      .icon {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
+    .close-icon {
+      display: none;
+    }
+
+    .logo-link {
+      padding-left: 1rem;
+
+      .logo img {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
+    /*.logo {*/
+    /*  position: absolute;*/
+    /*  left: 50%;*/
+    /*  transform: translateX(-50%);*/
+    /*  display: flex;*/
+    /*  align-items: center;*/
+    /*  text-decoration: none;*/
+    /*  color: var(--color-text-1);*/
+
+    /*  .logo-mark {*/
+    /*    display: flex;*/
+    /*    width: 1.5rem;*/
+    /*    height: 1.5rem;*/
+    /*    flex-shrink: 0;*/
+    /*    align-items: center;*/
+    /*    justify-content: center;*/
+    /*    border-radius: var(--radius-default);*/
+    /*    margin-right: 0.5rem;*/
+    /*    font-size: 0.625rem;*/
+    /*    font-weight: 700;*/
+    /*    background-color: var(--color-primary);*/
+    /*    color: var(--color-text-light);*/
+    /*  }*/
+    /*}*/
+  }
+
+  /* icon swap driven entirely by the popover's own live state via a shared
+     ancestor — :has() only sees descendants, and header/sidebar are
+     siblings, so .app-nav is the closest common ancestor that can see both */
+  .app-nav:has(.nav-sidebar:popover-open) .nav-header {
+    .hamburger-icon {
+      display: none;
+    }
+
+    .close-icon {
+      display: block;
+    }
+  }
+}

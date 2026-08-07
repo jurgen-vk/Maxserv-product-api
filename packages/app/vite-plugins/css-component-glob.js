@@ -1,6 +1,7 @@
 import { globSync } from 'tinyglobby'
 import fs from 'node:fs'
 import path from 'node:path'
+import { normalizePath } from 'vite'
 
 /**
  * Regenerates `assets/css/_components.generated.css` — a flat list of literal `@import`
@@ -15,7 +16,10 @@ export function cssComponentGlob(root) {
   const generate = () => {
     const files = globSync('templates/**/*.css', { cwd: root, absolute: true })
     const imports = files
-      .map((file) => `@import "${path.relative(path.dirname(generatedFile), file)}";`)
+      .map((file) => {
+        const relativePath = normalizePath(path.relative(path.dirname(generatedFile), file))
+        return `@import "${relativePath}";`
+      })
       .join('\n')
 
     fs.writeFileSync(generatedFile, imports + '\n')

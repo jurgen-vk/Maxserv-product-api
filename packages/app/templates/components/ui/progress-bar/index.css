@@ -1,0 +1,46 @@
+@property --progress {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+@layer main {
+  .progress-bar {
+    block-size: 3px;
+    inline-size: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-default);
+    background-color: var(--color-main-5);
+
+    .fill {
+      position: relative;
+      block-size: 100%;
+      overflow: hidden;
+      border-radius: var(--radius-default);
+      width: var(--progress, 0%);
+      background: linear-gradient(90deg, var(--color-primary-sub-6), var(--color-primary));
+      transition: width 0.3s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        inline-size: 40%;
+        /* light mode: a soft white glint. dark mode: a soft dark highlight
+           instead — --color-main already flips direction between modes,
+           so this adapts automatically with zero redeclaration */
+        background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-main), transparent 45%), transparent);
+        animation: progress-bar-shimmer 1.6s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+@keyframes progress-bar-shimmer {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}

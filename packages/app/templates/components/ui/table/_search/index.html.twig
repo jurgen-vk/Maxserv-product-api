@@ -1,0 +1,29 @@
+{% set placeholder = placeholder|default('Search…') %}
+{% set value = value|default('') %}
+{% set name = name|default('search') %}
+
+<div {{ attrs(defaults: { class: 'ui-search' }, attributes: attributes) }}>
+  <label class="field">
+    {{ icon('lucide:search') }}
+    <input
+      type="text"
+      class="search-input"
+      name="{{ name }}"
+      value="{{ value }}"
+      placeholder="{{ placeholder }}"
+    >
+    <button
+      type="button"
+      class="clear{{ value ? '' : ' hidden' }}"
+      aria-label="Clear search"
+    >
+      {{ icon('lucide:x') }}
+    </button>
+  </label>
+  {% embed 'components.ui.button' with {
+    variant: 'neutral',
+    attributes: { class: 'search-button' },
+  } only %}
+    {% block label %}Search{% endblock %}
+  {% endembed %}
+</div>

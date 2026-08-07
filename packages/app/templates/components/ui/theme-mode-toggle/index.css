@@ -1,0 +1,7 @@
+@layer main {
+  .c_ui_theme-mode-toggle {
+    @container nav-sidebar style(--collapsed: true) {
+      --toggle-orientation: vertical;
+    }
+  }
+}

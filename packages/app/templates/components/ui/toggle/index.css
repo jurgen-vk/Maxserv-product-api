@@ -1,0 +1,135 @@
+@layer main {
+  .c_ui_toggle {
+    container-type: normal;
+    container-name: toggle;
+
+    position: relative;
+    display: inline-flex;
+    align-self: flex-start;
+    border-radius: var(--radius-default);
+    border: 1px solid var(--color-neutral-sub-8);
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.1rem;
+
+    --active-pos: 0;
+    --toggle-gap: 0.2rem;
+
+    /* --toggle-orientation is set explicitly by the attribute rules below,
+       or inherited ambiently from an ancestor (e.g. theme-mode-toggle
+       reacting to the sidebar's collapsed state) — either way, the
+       @container query further down is the single place that interprets
+       it, so there's only one source of truth for the actual geometry. */
+
+    &[data-orientation='vertical'] {
+      --toggle-orientation: vertical;
+    }
+
+    &[data-orientation='horizontal'] {
+      --toggle-orientation: horizontal;
+    }
+
+    .slider {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      gap: var(--toggle-gap);
+      width: 100%;
+      height: 100%;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: calc(50% - (var(--toggle-gap) / 2));
+        border-radius: var(--radius-tight);
+        z-index: var(--z-sub-1);
+
+        /* The exact same transition math still works flawlessly */
+        transform: translateX(calc(var(--active-pos) * (100% + var(--toggle-gap))));
+        transition: transform 0.3s var(--snap);
+      }
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-add-1);
+      padding: 0.3rem;
+    }
+
+    .toggle {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked ~ .slider {
+        --active-pos: 1;
+      }
+
+      &:focus-visible + .slider {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+    }
+
+    .icon {
+      width: var(--text-md);
+      height: var(--text-md);
+    }
+
+    /* --- Orientation --- */
+
+    @container toggle style(--toggle-orientation: vertical) {
+      .slider {
+        flex-direction: column;
+
+        &::before {
+          width: 100%;
+          height: calc(50% - (var(--toggle-gap) / 2));
+          transform: translateY(calc(var(--active-pos) * (100% + var(--toggle-gap))));
+        }
+      }
+    }
+
+    /* --- Variants --- */
+
+    &[data-variant='primary'] {
+      &:active .slider:before {
+        background-color: var(--color-primary-add-1);
+      }
+
+      .slider {
+        &::before {
+          background-color: var(--color-primary);
+        }
+
+        .left, .left .icon {
+          color: var(--color-text-light);
+        }
+
+        .right, .right .icon {
+          color: inherit;
+        }
+      }
+
+      .toggle:checked ~ .slider {
+        .left, .left .icon {
+          color: inherit;
+        }
+
+        .right, .right .icon {
+          color: var(--color-text-light);
+        }
+      }
+
+    }
+  }
+}

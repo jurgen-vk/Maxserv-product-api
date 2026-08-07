@@ -33,16 +33,11 @@ final readonly class ImportController
             perPage: $request->query->get(key: 'perPage'),
         );
 
-        $imports = [];
-        foreach ($result->items as $import) {
-            $imports[$import->id] = $this->extractor->extract(import: $import);
-        }
-
         return new Response(
             content: $this->templateRenderer->render(
                 template: 'pages.imports',
                 data: [
-                    'imports' => $imports,
+                    'imports' => $result->items,
                     'paginator' => $result->paginator,
                 ],
             ),

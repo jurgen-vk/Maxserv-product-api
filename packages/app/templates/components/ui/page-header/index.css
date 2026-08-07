@@ -1,0 +1,31 @@
+@layer main {
+  .page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+
+      svg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+        color: var(--color-primary);
+      }
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+
+      &:empty {
+        display: none;
+      }
+    }
+  }
+}

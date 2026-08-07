@@ -1,0 +1,41 @@
+{% set items = items|default([]) %}
+
+<div {{ attrs(defaults: { class: 'ui-carousel' }, attributes: attributes) }}>
+  <div class="main">
+    {% if items|length > 1 %}
+      <button type="button" class="arrow prev" aria-label="Previous image">
+        {{ icon('lucide:chevron-left') }}
+      </button>
+    {% endif %}
+
+    {% if items|length > 0 %}
+      <img src="{{ items[0].url }}" alt="{{ items[0].alt|default('') }}">
+    {% else %}
+      <div class="placeholder">{{ icon('lucide:image') }}</div>
+    {% endif %}
+
+    {% if items|length > 1 %}
+      <button type="button" class="arrow next" aria-label="Next image">
+        {{ icon('lucide:chevron-right') }}
+      </button>
+    {% endif %}
+  </div>
+
+  {% if items|length > 1 %}
+    <div class="thumbs-row">
+      <button type="button" data-carousel-scroll="prev" aria-label="Scroll thumbnails left">
+        {{ icon('lucide:chevron-left') }}
+      </button>
+      <div class="thumbs">
+        {% for item in items %}
+          <button type="button" class="thumb{{ loop.first ? ' is-active' : '' }}" data-index="{{ loop.index0 }}">
+            <img src="{{ item.url }}" alt="{{ item.alt|default('') }}">
+          </button>
+        {% endfor %}
+      </div>
+      <button type="button" data-carousel-scroll="next" aria-label="Scroll thumbnails right">
+        {{ icon('lucide:chevron-right') }}
+      </button>
+    </div>
+  {% endif %}
+</div>

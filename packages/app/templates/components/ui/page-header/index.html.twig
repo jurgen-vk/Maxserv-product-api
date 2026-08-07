@@ -1,0 +1,12 @@
+{% set iconName = iconName|default(null) %}
+
+<div {{ attrs(defaults: { class: 'page-header' }, attributes: attributes) }}>
+  <div class="title">
+    {% if icon %}{{ icon|raw }}{% endif %}
+    <h1>{{ title }}</h1>
+  </div>
+  <div class="actions">
+    {% block actions %}{% endblock %}
+  </div>
+</div>
+<hr>

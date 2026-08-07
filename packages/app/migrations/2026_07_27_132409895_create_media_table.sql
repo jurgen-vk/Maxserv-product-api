@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS media (
   url         VARCHAR(500)     NOT NULL,
   media_type  VARCHAR(50)      NOT NULL DEFAULT 'image',
   sort_order  TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  role        VARCHAR(20)      NULL,
   INDEX idx_media_entity (entity_type, entity_id)
 );

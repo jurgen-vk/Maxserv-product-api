@@ -20,6 +20,7 @@ final class Product
         public Category $category,
         public ?Brand $brand,
         public ?int $id = null,
+        public ?Media $thumbnail = null,
         public array $media = [],
     ) {}
 

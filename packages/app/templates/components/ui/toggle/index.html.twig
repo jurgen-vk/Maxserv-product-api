@@ -1,0 +1,15 @@
+{% set orientation = orientation|default(null) %}
+{% set variant = variant|default('primary') %}
+{% set checked = checked|default(false) %}
+
+<label {{ attrs(defaults: {
+  class: 'c_ui_toggle',
+  'data-variant': variant,
+  'data-orientation': orientation,
+}) }}>
+  <input type="checkbox" class="toggle"{% if checked %} checked{% endif %}>
+  <span class="slider">
+    <span class="content left">{% block left %}{% endblock %}</span>
+    <span class="content right">{% block right %}{% endblock %}</span>
+  </span>
+</label>

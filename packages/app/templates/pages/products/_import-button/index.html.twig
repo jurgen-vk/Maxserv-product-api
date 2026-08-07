@@ -1,0 +1,28 @@
+<div {{ attrs(defaults: { class: 'import-buttons-wrapper' }, attributes: attributes) }} >
+  {% embed 'components.ui.button' with {
+    variant: 'primary',
+    attributes: {
+      class: [
+        'btn-import',
+        activeImport ? 'hidden' : null,
+      ],
+    },
+  } only %}
+    {% block iconBefore %} {{ icon('lucide:import') }} {% endblock %}
+    {% block label %} Import products {% endblock %}
+  {% endembed %}
+
+  {% embed 'components.ui.button' with {
+    variant: 'primary',
+    attributes: {
+      class: [
+        'btn-importing',
+        activeImport ? null : 'hidden',
+      ],
+      disabled: true,
+    },
+  } only %}
+    {% block iconBefore %} {{ icon('lucide:loader-circle', { class: 'spin' }) }} {% endblock %}
+    {% block label %} Importing... {% endblock %}
+  {% endembed %}
+</div>

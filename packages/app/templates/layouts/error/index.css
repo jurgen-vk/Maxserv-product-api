@@ -1,0 +1,62 @@
+@layer main {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-main-2);
+    /*color: var(--color-text-1);*/
+  }
+
+  .error-shell {
+    display: flex;
+    min-height: 80ch;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  /* .error-page styles live here rather than co-located with 404/500/default
+     — those are deliberately flat files with no dedicated CSS per the
+     project's own file convention (error/404.html.twig, not a folder), and
+     all three share this identical structure, so the wrapping layout is
+     the natural common owner. */
+  .error-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .message {
+      color: var(--color-text-10);
+
+      background-color: var(--color-main-1);
+      border-radius: var(--radius-default);
+      border: 1px solid var(--color-main-3);
+      padding: 1rem 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .title {
+      margin-bottom: 2rem;
+    }
+
+    .code {
+      font-size: var(--text-5xl);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      font-family: var(--font-mono);
+      color: var(--color-danger-add-1);
+    }
+
+    .message.is-pre {
+      inline-size: 100%;
+      padding: 0.875rem;
+      text-align: left;
+      border-color: var(--color-danger-sub-7);
+      background-color: var(--color-danger-sub-12);
+      /*font-size: var(--text-xs);*/
+      /*color: inherit;*/
+      white-space: pre-wrap;
+      font-family: var(--font-mono);
+      overflow-wrap: anywhere;
+    }
+  }
+}

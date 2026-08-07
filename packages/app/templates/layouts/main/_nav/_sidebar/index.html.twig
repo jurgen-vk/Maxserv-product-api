@@ -1,0 +1,34 @@
+{% set sidebarPinned = app.request.cookies.get('sidebarPinned') %}
+<div class="nav-sidebar" id="nav-sidebar"
+     popover="auto" data-pinned="{{ sidebarPinned }}">
+  <div class="header">
+    <a href="{{ path('home_index') }}" class="logo-link">
+      {% include 'components.ui.brand.logo' only %}
+    </a>
+
+    {% include 'layouts.main._nav._sidebar._pin' only %}
+  </div>
+
+  <hr>
+
+  <div class="links">
+    {% include 'layouts.main._nav._sidebar._link' with {
+      href: path('products_index'),
+      icon: icon('lucide:layout-grid'),
+      label: 'Products'
+    } only %}
+
+    {% include 'layouts.main._nav._sidebar._link' with {
+      href: path('imports_index'),
+      icon: icon('lucide:import'),
+      label: 'Imports'
+    } only %}
+  </div>
+
+  <hr>
+
+  <div class="footer">
+    <span class="theme-label">Theme Mode: </span>
+    {% include 'components.ui.theme-mode-toggle' only %}
+  </div>
+</div>

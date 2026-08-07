@@ -1,0 +1,30 @@
+{% set themeMode = app.request.cookies.get('themeMode') %}
+<!DOCTYPE html>
+<html lang="en"{% if themeMode %} data-theme-mode="{{ themeMode }}"{% endif %}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MaxServ{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{{ asset('site/logo.svg') }}">
+  <meta name="mercure-url" content="{{ mercure() }}">
+  <meta name="theme-mode" content="{{ themeMode }}">
+  {{ vite_css('assets/css/app.css') }}
+</head>
+<body>
+<div class="app-shell">
+  <div class="app-nav">
+    {% include 'layouts.main._nav' %}
+  </div>
+  <div class="app-content">
+    <main class="main-content">
+      {% block content %}{% endblock %}
+    </main>
+    {#   additional future footer goes here   #}
+  </div>
+</div>
+
+{% include 'components.ui.notification.container' with { attributes: { class: 'notifications-container' } } only %}
+
+{{ vite_js('assets/js/app.js') }}
+</body>
+</html>

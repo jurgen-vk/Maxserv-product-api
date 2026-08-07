@@ -114,7 +114,7 @@ final readonly class ProductRepository
         $entityIds = array_map(callback: fn(Product $p) => $p->id, array: $products);
         $media = array_merge(
             ...array_map(
-            callback: fn(Product $p) => $p->media,
+            callback: fn(Product $p) => $p->thumbnail !== null ? [$p->thumbnail, ...$p->media] : $p->media,
             array: $products,
         ),
         );
@@ -125,7 +125,7 @@ final readonly class ProductRepository
 
     public function findManyMedia(array $productIds): array
     {
-        return $this->mediaRepository->findFirstByEntities(
+        return $this->mediaRepository->findThumbnailsByEntities(
             entityType: 'product',
             entityIds: $productIds,
         );

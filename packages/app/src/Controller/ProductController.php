@@ -7,6 +7,7 @@ namespace MaxServ\App\Controller;
 use MaxServ\App\Filter\ProductFilter;
 use MaxServ\App\Repository\BrandRepository;
 use MaxServ\App\Repository\CategoryRepository;
+use MaxServ\App\Repository\ImportRepository;
 use MaxServ\App\Repository\ProductRepository;
 use MaxServ\Core\Http\Exception\HttpException;
 use MaxServ\Core\Render\FragmentRenderer;
@@ -22,6 +23,7 @@ final readonly class ProductController
         private ProductRepository $productRepository,
         private CategoryRepository $categoryRepository,
         private BrandRepository $brandRepository,
+        private ImportRepository $importRepository,
         private TemplateRenderer $templateRenderer,
         private FragmentRenderer $fragmentRenderer,
     ) {}
@@ -45,12 +47,13 @@ final readonly class ProductController
             'filter' => $filter,
             'categories' => $this->categoryRepository->findAll(),
             'brands' => $this->brandRepository->findAll(),
+            'activeImport' => $this->importRepository->findActiveByType(type: 'products'),
         ];
 
         $requestedFragments = $request->query->all(key: 'fragments');
         if ($requestedFragments !== []) {
             return new JsonResponse(
-                $this->fragmentRenderer->render(
+                $this->fragmentRenderer->renderMany(
                     page: 'products',
                     fragments: $requestedFragments,
                     data: $data,

@@ -7,6 +7,7 @@ namespace MaxServ\App\Repository;
 use MaxServ\App\Dto\Pagination\PaginatedResult;
 use MaxServ\App\Dto\Pagination\Paginator;
 use MaxServ\App\Entity\Import;
+use MaxServ\App\Enum\ImportStatus;
 use MaxServ\App\Hydrator\ImportHydrator;
 use MaxServ\App\Utility\QueryUtility;
 use MaxServ\Core\Database\Connection;
@@ -158,6 +159,42 @@ final readonly class ImportRepository
             query: "DELETE FROM imports WHERE id IN ($placeholders)",
         )->execute(
             params: $ids,
+        );
+    }
+
+    public function findActiveByType(string $type): ?Import
+    {
+        $stmt = $this->connection->pdo->prepare(
+            query: "
+              SELECT * FROM imports
+              WHERE type = :type AND status IN ('pending', 'running')
+              ORDER BY started_at DESC
+              LIMIT 1
+            ",
+        );
+        $stmt->execute(params: [':type' => $type]);
+        $row = $stmt->fetch(mode: PDO::FETCH_ASSOC);
+
+        return $row !== false
+            ? $this->hydrator->hydrateFromDatabase(row: $row)
+            : null;
+    }
+
+    public function findByStatuses(array $statuses): array
+    {
+        [$placeholders, $bindings] = QueryUtility::buildNamedPlaceholders(
+            prefix: 'status',
+            values: array_map(callback: fn(ImportStatus $status) => $status->value, array: $statuses),
+        );
+
+        $stmt = $this->connection->pdo->prepare(
+            query: "SELECT * FROM imports WHERE status IN ($placeholders)",
+        );
+        $stmt->execute(params: $bindings);
+
+        return array_map(
+            callback: fn(array $row) => $this->hydrator->hydrateFromDatabase(row: $row),
+            array: $stmt->fetchAll(mode: PDO::FETCH_ASSOC),
         );
     }
 

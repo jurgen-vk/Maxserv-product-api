@@ -1,0 +1,14 @@
+{% extends 'layouts.error' %}
+
+{% block title %}Error {{ code }}{% endblock %}
+
+{% block content %}
+  <div class="error-page">
+    <p class="code">{{ code }}</p>
+    <h1 class="title">Something went wrong</h1>
+    <p class="message">{{ message }}</p>
+    {% embed 'components.ui.button' with { variant: 'primary', href: path('home_index') } only %}
+      {% block label %}Go Home{% endblock %}
+    {% endembed %}
+  </div>
+{% endblock %}

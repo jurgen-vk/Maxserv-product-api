@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Entity;
 
+use MaxServ\App\Enum\MediaRole;
 use MaxServ\App\Enum\MediaType;
 
 final class Media
@@ -15,5 +16,6 @@ final class Media
         public string $url,
         public MediaType $mediaType,
         public int $sortOrder,
+        public ?MediaRole $role = null,
     ) {}
 }

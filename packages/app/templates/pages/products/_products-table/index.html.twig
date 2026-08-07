@@ -1,0 +1,84 @@
+{% set hasActiveFilter = filter.search or filter.category or filter.brand or filter.minPrice or filter.maxPrice or filter.minRating %}
+
+{% set progressBar = null %}
+{% if activeImport %}
+  {% set percent = activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
+  {% set progressBar %}
+    {% include 'components.ui.progress-bar' with {
+      attributes: { id: 'products-import-progress', style: '--progress: ' ~ percent ~ '%' },
+    } only %}
+  {% endset %}
+{% endif %}
+
+{% embed 'components.ui.table' with {
+  items: items,
+  filter: filter,
+  isEmpty: items|length == 0,
+  paginator: paginator,
+  routeName: 'products_index',
+  progressBar: progressBar,
+  extraParams: {
+    search: filter.search,
+    category: filter.category,
+    brand: filter.brand,
+    minPrice: filter.minPrice,
+    maxPrice: filter.maxPrice,
+    minRating: filter.minRating,
+    sort: filter.sortBy,
+    order: filter.order,
+  },
+  emptyIcon: hasActiveFilter ? 'lucide:search-x' : 'lucide:package-open',
+  emptyTitle: hasActiveFilter ? 'No products match your filters' : 'No products yet',
+  emptyDescription: hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Import products to get started.',
+  emptyActionLabel: hasActiveFilter ? 'Clear filters' : null,
+  emptyActionAttributes: hasActiveFilter ? { class: 'filter-clear' } : {},
+} only %}
+  {% block head %}
+    <tr>
+      <th></th>
+      {% include 'pages.products._products-table._sort-link' with { label: 'Title', column: 'title', filter: filter, attributes: { class: 'title-cell' } } only %}
+      {% include 'pages.products._products-table._sort-link' with { label: 'Brand', column: 'brand', filter: filter } only %}
+      {% include 'pages.products._products-table._sort-link' with { label: 'Category', column: 'category', filter: filter } only %}
+      {% include 'pages.products._products-table._sort-link' with { label: 'Price', column: 'price', filter: filter } only %}
+      {% include 'pages.products._products-table._sort-link' with { label: 'Discount price', column: 'discounted', filter: filter } only %}
+      {% include 'pages.products._products-table._sort-link' with { label: 'Rating', column: 'rating', filter: filter } only %}
+      {% include 'pages.products._products-table._sort-link' with { label: 'Stock', column: 'stock', filter: filter } only %}
+    </tr>
+  {% endblock %}
+
+  {% block body %}
+    {% for product in items %}
+      {% set thumbnail = product.thumbnail %}
+      <tr>
+        <td class="thumb-cell">
+          {% if thumbnail %}
+            <img src="{{ thumbnail.url }}" alt="" class="thumb">
+          {% else %}
+            <div class="thumb thumb--empty">{{ icon('lucide:image', { class: 'thumb-icon' }) }}</div>
+          {% endif %}
+        </td>
+        <td class="title-cell">
+          <a href="{{ path('products_show', { id: product.id }) }}" class="title-link">{{ product.title }}</a>
+        </td>
+        <td>{{ product.brand ? product.brand.name : '—' }}</td>
+        <td>{% include 'components.ui.badge' with { variant: 'neutral', label: product.category.name } only %}</td>
+        <td class="num">
+          {% if product.discountPercentage > 0 %}
+            <span class="strike">€{{ product.price|number_format(2) }}</span>
+          {% else %}
+            €{{ product.price|number_format(2) }}
+          {% endif %}
+        </td>
+        <td class="num">
+          {% if product.discountPercentage > 0 %}
+            <span class="discount">€{{ product.discountPrice|number_format(2) }}</span>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td class="num">{{ product.rating|number_format(1) }}</td>
+        <td class="num{{ product.stock < 10 ? ' num--low' : '' }}">{{ product.stock }}</td>
+      </tr>
+    {% endfor %}
+  {% endblock %}
+{% endembed %}

@@ -1,0 +1,37 @@
+@layer main {
+  .app-shell {
+    display: flex;
+    background-color: var(--color-main);
+    height: 100dvh;
+
+    @media (--under-lg) {
+      flex-direction: column; /* mobile: header stacks above content */
+    }
+
+    .app-nav {
+      flex-shrink: 0; /* width tracks the sidebar's own width naturally */
+    }
+
+    .app-content {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+
+      @media (--under-lg) {
+        padding-top: 3.5rem; /* header is position:fixed and removed from flow — without this, content renders underneath it */
+      }
+
+      .main-content {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        container-type: inline-size; /* Section 6.2 */
+        container-name: page;
+        padding: 1.5rem 2.5rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+@layer main {
+  .ui-search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:focus-within {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .field {
+      display: flex;
+      inline-size: 16.25rem;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: var(--radius-default);
+      border: 1px solid var(--color-main-8);
+      padding-inline: 0.625rem;
+      padding-block: 0.4375rem;
+      background-color: var(--color-main);
+      color: var(--color-text-13);
+
+      @media (--under-md) {
+        inline-size: 100%;
+      }
+
+      svg {
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        flex-shrink: 0;
+      }
+
+      input {
+        inline-size: 100%;
+        border: 0;
+        background: transparent;
+        font-size: var(--text-sm);
+        font-family: var(--font-sans);
+        color: var(--color-text-1);
+        outline: none;
+      }
+
+      .clear {
+        display: flex;
+        flex-shrink: 0;
+        cursor: pointer;
+        align-items: center;
+        border-radius: var(--radius-default);
+        border: 0;
+        background: transparent;
+        padding: 0;
+
+        &:hover {
+          color: var(--color-text-1);
+        }
+      }
+    }
+  }
+}

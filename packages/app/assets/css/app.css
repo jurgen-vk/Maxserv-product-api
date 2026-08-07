@@ -1,8 +1,8 @@
-@import "tailwindcss";
+@layer reset, base, default, default-dark, theme, theme-dark, main, utility;
+
+@import "./fonts.css";
+@import "./reset.css";
+@import "./base.css";
+@import "./theme/default.css";
 @import "./_components.generated.css";
-
-@source "../../templates/**/*.twig";
-
-[x-cloak] {
-  display: none !important;
-}
+@import "./utility.css";

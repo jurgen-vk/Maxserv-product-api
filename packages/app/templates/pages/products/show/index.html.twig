@@ -1,0 +1,55 @@
+{% extends 'layouts.main' %}
+
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block content %}
+  <div class="product-show">
+    {% embed 'components.ui.button' with {
+      variant: 'neutral',
+      href: path('products_index'),
+      attributes: { class: 'back' },
+    } only %}
+      {% block iconBefore %}{{ icon('lucide:arrow-left') }}{% endblock %}
+      {% block label %}Back to products{% endblock %}
+    {% endembed %}
+
+    <div class="layout">
+      {% include 'components.ui.media-carousel' with {
+        items: product.media|map(m => { url: m.url, alt: product.title }),
+      } only %}
+
+      <div class="info">
+        {% include 'components.ui.badge' with { variant: 'neutral', label: product.category.name, attributes: { class: 'category' } } only %}
+
+        <h1>{{ product.title }}</h1>
+        <p class="brand">{{ product.brand ? product.brand.name : 'No brand' }}</p>
+        <hr>
+
+        <div class="price-row">
+          <div class="price">
+            {% if product.discountPercentage > 0 %}
+              <span class="strike">€{{ product.price|number_format(2) }}</span>
+              <span class="current">€{{ product.discountPrice|number_format(2) }}</span>
+              {% include 'components.ui.badge' with { variant: 'success', label: '-' ~ product.discountPercentage|number_format(0) ~ '%' } only %}
+            {% else %}
+              <span class="current">€{{ product.price|number_format(2) }}</span>
+            {% endif %}
+          </div>
+
+          <span class="stock{{ product.stock < 10 ? ' is-low' : '' }}">{{ product.stock }} in stock</span>
+        </div>
+        <hr>
+
+        <p class="description">{{ product.description }}</p>
+        <hr>
+
+        <div class="rating">
+          {% for i in 1..5 %}
+            {{ icon('lucide:star', { class: i <= product.rating|round ? 'is-filled' : '' }) }}
+          {% endfor %}
+          <span class="value">{{ product.rating|number_format(1) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+@layer main {
+  .imports-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-family: var(--font-mono);
+      color: var(--color-text-1);
+    }
+
+    /* the flex layout lives on this inner wrapper, not the <td> itself —
+       putting display:flex directly on a table cell knocks it out of
+       normal table-row layout in some browsers, which is what was
+       throwing this column's vertical alignment off from its siblings */
+    .progress {
+      display: flex;
+      min-inline-size: 8.75rem;
+      align-items: center;
+      gap: 0.5rem;
+
+      .progress-bar {
+        flex: 1 1 0%;
+      }
+    }
+
+    .percent {
+      display: inline-block;
+      min-inline-size: 2rem;
+      text-align: right;
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      color: var(--color-text-13);
+    }
+  }
+}

@@ -17,6 +17,8 @@ RUN npm run build --workspaces --if-present
 
 FROM php:8.5-apache AS runtime
 
+RUN apt-get update && apt-get install -y --no-install-recommends gosu && rm -rf /var/lib/apt/lists/*
+
 RUN docker-php-ext-install pdo pdo_mysql pcntl && \
     docker-php-ext-enable pdo pdo_mysql pcntl
 
@@ -28,7 +30,11 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
     sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf && \
     printf '<Directory "${APACHE_DOCUMENT_ROOT}">\n\tAllowOverride All\n</Directory>\n' \
         >> /etc/apache2/apache2.conf && \
-    printf '<Directory "${APACHE_DOCUMENT_ROOT}/assets">\n\tHeader set Cache-Control "public, max-age=31536000, immutable"\n</Directory>\n' \
+    printf '<Directory "${APACHE_DOCUMENT_ROOT}/assets/build">\n\tHeader set Cache-Control "public, max-age=31536000, immutable"\n</Directory>\n' \
+        >> /etc/apache2/apache2.conf && \
+    printf '<Directory "${APACHE_DOCUMENT_ROOT}/assets/icons">\n\tHeader set Cache-Control "public, max-age=3600, must-revalidate"\n</Directory>\n' \
+        >> /etc/apache2/apache2.conf && \
+    printf '<Directory "${APACHE_DOCUMENT_ROOT}/assets/site">\n\tHeader set Cache-Control "public, max-age=3600, must-revalidate"\n</Directory>\n' \
         >> /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
@@ -54,10 +60,14 @@ ENV APP_URL=""
 # image itself. This matters beyond the image: docker-compose.override.yml mounts a named
 # volume over var/cache for local dev, and Docker seeds a brand-new empty volume from whatever
 # the image already has at that path — including ownership. Baking a warm, www-data-owned cache
-# here means that seed is already correct, so nothing at container start needs to fix
-# permissions or re-run this.
+# here means that seed is already correct in the common case; entrypoint.sh re-owns it on
+# startup for the dev case where www-data's id gets remapped after this point.
 USER www-data
 RUN php bin/console cache:warmup
 USER root
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]

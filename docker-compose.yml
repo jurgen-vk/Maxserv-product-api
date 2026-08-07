@@ -31,7 +31,6 @@ services:
       dockerfile: Dockerfile
       target: runtime
     container_name: migrate
-    user: www-data
     command: ["php", "bin/console", "migrate:init"]
     environment:
       DB_HOST: db
@@ -75,8 +74,7 @@ services:
       target: runtime
     container_name: messenger-imports
     restart: always
-    user: www-data
-    command: ["php", "bin/console", "messenger:consume", "imports", "--keepalive=300"]
+    command: ["sh", "-c", "php bin/console import:clear-stuck && php bin/console messenger:consume imports --keepalive=300"]
     environment:
       DB_HOST: db
       DB_USER: ${MYSQL_USER}

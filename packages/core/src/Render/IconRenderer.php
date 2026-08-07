@@ -90,6 +90,11 @@ final readonly class IconRenderer
 
         $root = $document->documentElement;
 
+        $classes = array_filter(array: ['icon', $attributes['class'] ?? null]);
+        unset($attributes['class']);
+
+        $root->setAttribute(qualifiedName: 'class', value: implode(separator: ' ', array: $classes));
+
         foreach ($attributes as $attribute => $value) {
             $root->setAttribute(
                 qualifiedName: $attribute,

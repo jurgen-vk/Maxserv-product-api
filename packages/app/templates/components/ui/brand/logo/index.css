@@ -1,0 +1,16 @@
+@layer main {
+  .logo {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--color-text-1);
+    flex-shrink: 0;
+    font-weight: var(--text-xl-weight);
+    letter-spacing: var(--text-xl-letter-spacing);
+
+    .logo-mark {
+      margin-right: 1rem;
+    }
+  }
+}

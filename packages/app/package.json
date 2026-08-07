@@ -1,14 +1,18 @@
 {
   "name": "maxserv-app",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "alpinejs": "^3.14",
-    "jquery": "^4.0.0"
+    "jquery": "^4.0.0",
+    "maxserv-core": "*"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
+    "picomatch": "^2.3.2",
+    "postcss": "^8.5.25",
+    "postcss-custom-media": "^12.0.1",
     "tinyglobby": "^0.2.17",
-    "vite": "^8.1"
+    "vite": "^8.1",
+    "vite-plugin-static-copy": "^3.4.0"
   },
   "scripts": {
     "build": "vite build",

@@ -104,6 +104,13 @@ services:
     class: 'MaxServ\Core\FileSystem\TwigFileSystemLoader'
     arguments: [ ]
 
+  Symfony\Bridge\Twig\AppVariable:
+    calls:
+      - method: setRequestStack
+        arguments: [ '@Symfony\Component\HttpFoundation\RequestStack' ]
+      - method: setDebug
+        arguments: [ '%app.is_dev%' ]
+
   Twig\Environment:
     class: 'Twig\Environment'
     arguments:
@@ -120,7 +127,11 @@ services:
       - method: addExtension
         arguments: [ '@MaxServ\Core\Render\Extension\IconExtension' ]
       - method: addExtension
+        arguments: [ '@MaxServ\Core\Render\Extension\AttributesExtension' ]
+      - method: addExtension
         arguments: [ '@Symfony\Bridge\Twig\Extension\RoutingExtension' ]
+      - method: addGlobal
+        arguments: [ 'app', '@Symfony\Bridge\Twig\AppVariable' ]
       - method: addGlobal
         arguments: [ 'notifications', '@MaxServ\Core\Notification\Notifications' ]
 

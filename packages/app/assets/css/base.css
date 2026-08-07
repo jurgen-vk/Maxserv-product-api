@@ -1,0 +1,179 @@
+@layer base {
+  /*================================================================================================================*/
+  /*===[ Media Breakpoints ]========================================================================================*/
+  /*================================================================================================================*/
+  /* support for this unsupported css feature is added by a postcss plugin */
+  @custom-media --under-sm (max-width: 40rem);
+  @custom-media --under-md (max-width: 48rem);
+  @custom-media --under-lg (max-width: 64rem);
+  @custom-media --under-xl (max-width: 80rem);
+  @custom-media --under-2xl (max-width: 96rem);
+
+  :root {
+    /*================================================================================================================*/
+    /*===[ App Variables ]============================================================================================*/
+    /*================================================================================================================*/
+
+    /* --- Z-Index --- */
+    --z-sub-2: -2;
+    --z-sub-1: -1;
+    --z: 0;
+    --z-add-1: 1;
+    --z-add-2: 2;
+
+    /* --- Animation --- */
+    --snap: linear(0, 0.007 1.8%, 0.047 3.7%, 0.13 4.7%, 0.3 5.1%, 0.858 6.4%, 1.012 7.1%, 1.073 7.4%, 1.121 8.4%, 1.137 10.4%, 1.111 12.2%, 1.055 12.9%, 0.988 13.9%, 0.965 16%, 0.979 18%, 1 19.6%, 1);
+    --shoot: cubic-bezier(0.25, 1.15, 0.3, 1);
+    --bounce-inout: linear(0, -0.01 5%, -0.069 17.3%, -0.082 23%, -0.064 29%, -0.006 34.4%, 0.089 39.2%, 0.227 43.8%, 0.671 53.6%, 0.839 58.2%, 0.966 63.3%, 1.045 68.7%, 1.076 73.3%, 1.081 78.5%, 1.066 83.4%, 1.011 94.7%, 1);
+
+    /* --- Shadows --- */
+    --shadow-button: ;
+    --shadow-sidebar-right: ;
+    --shadow-sidebar-left: ;
+
+    /*--shadow-modal-xs: 1px 1px 2px color-mix(in oklab, black, transparent calc(88% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-sm: 1px 2px 3px color-mix(in oklab, black, transparent calc(84% / var(--shadow-base-strength))),*/
+    /*1px 3px 6px -2px color-mix(in oklab, black, transparent calc(88% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-md: 2px 3px 4px color-mix(in oklab, black, transparent calc(82% / var(--shadow-base-strength))),*/
+    /*2px 6px 13px -3px color-mix(in oklab, black, transparent calc(86% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-lg: 2px 4px 5px color-mix(in oklab, black, transparent calc(80% / var(--shadow-base-strength))),*/
+    /*3px 11px 22px -4px color-mix(in oklab, black, transparent calc(84% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-xl: 3px 6px 7px color-mix(in oklab, black, transparent calc(78% / var(--shadow-base-strength))),*/
+    /*5px 18px 34px -6px color-mix(in oklab, black, transparent calc(82% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-2xl: 4px 9px 10px color-mix(in oklab, black, transparent calc(76% / var(--shadow-base-strength))),*/
+    /*7px 28px 50px -9px color-mix(in oklab, black, transparent calc(80% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-3xl: 6px 13px 14px color-mix(in oklab, black, transparent calc(74% / var(--shadow-base-strength))),*/
+    /*10px 42px 75px -13px color-mix(in oklab, black, transparent calc(78% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-4xl: 8px 19px 20px color-mix(in oklab, black, transparent calc(72% / var(--shadow-base-strength))),*/
+    /*14px 62px 108px -18px color-mix(in oklab, black, transparent calc(76% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-5xl: 12px 28px 29px color-mix(in oklab, black, transparent calc(70% / var(--shadow-base-strength))),*/
+    /*19px 90px 155px -24px color-mix(in oklab, black, transparent calc(74% / var(--shadow-base-strength)));*/
+
+    /*--shadow-modal-xs: 0 0 2px 1px color-mix(in oklab, black, transparent calc(88% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-sm: 0 0 3px 1px color-mix(in oklab, black, transparent calc(84% / var(--shadow-base-strength))),*/
+    /*0 0 4px 1px color-mix(in oklab, black, transparent calc(88% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-md: 0 0 4px 1px color-mix(in oklab, black, transparent calc(82% / var(--shadow-base-strength))),*/
+    /*0 0 8px 2px color-mix(in oklab, black, transparent calc(86% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-lg: 0 0 5px 2px color-mix(in oklab, black, transparent calc(81% / var(--shadow-base-strength))),*/
+    /*0 0 13px 3px color-mix(in oklab, black, transparent calc(85% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-xl: 0 0 7px 2px color-mix(in oklab, black, transparent calc(78% / var(--shadow-base-strength))),*/
+    /*0 0 20px 5px color-mix(in oklab, black, transparent calc(82% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-2xl: 0 0 10px 3px color-mix(in oklab, black, transparent calc(76% / var(--shadow-base-strength))),*/
+    /*0 0 28px 8px color-mix(in oklab, black, transparent calc(80% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-3xl: 0 0 14px 4px color-mix(in oklab, black, transparent calc(74% / var(--shadow-base-strength))),*/
+    /*0 0 42px 12px color-mix(in oklab, black, transparent calc(78% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-4xl: 0 0 20px 5px color-mix(in oklab, black, transparent calc(72% / var(--shadow-base-strength))),*/
+    /*0 0 60px 16px color-mix(in oklab, black, transparent calc(76% / var(--shadow-base-strength)));*/
+    /*--shadow-modal-5xl: 0 0 29px 7px color-mix(in oklab, black, transparent calc(70% / var(--shadow-base-strength))),*/
+    /*0 0 86px 22px color-mix(in oklab, black, transparent calc(74% / var(--shadow-base-strength)));*/
+
+    --shadow-size-xs: 0 0 3px 1px;
+    --shadow-size-sm: 0 0 4px 2px;
+    --shadow-size-md: 0 0 6px 3px;
+    --shadow-size-lg: 0 0 9px 4px;
+    --shadow-size-xl: 0 0 12px 5px;
+    --shadow-size-2xl: 0 0 16px 7px;
+    --shadow-size-3xl: 0 0 22px 9px;
+    --shadow-size-4xl: 0 0 29px 12px;
+    --shadow-size-5xl: 0 0 38px 16px;
+
+    --shadow-strength-xs: color-mix(in oklab, black, transparent calc(82% / var(--shadow-base-strength)));
+    --shadow-strength-sm: color-mix(in oklab, black, transparent calc(78% / var(--shadow-base-strength)));
+    --shadow-strength-md: color-mix(in oklab, black, transparent calc(75% / var(--shadow-base-strength)));
+    --shadow-strength-lg: color-mix(in oklab, black, transparent calc(72% / var(--shadow-base-strength)));
+    --shadow-strength-xl: color-mix(in oklab, black, transparent calc(70% / var(--shadow-base-strength)));
+    --shadow-strength-2xl: color-mix(in oklab, black, transparent calc(68% / var(--shadow-base-strength)));
+    --shadow-strength-3xl: color-mix(in oklab, black, transparent calc(66% / var(--shadow-base-strength)));
+    --shadow-strength-4xl: color-mix(in oklab, black, transparent calc(64% / var(--shadow-base-strength)));
+    --shadow-strength-5xl: color-mix(in oklab, black, transparent calc(62% / var(--shadow-base-strength)));
+
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-md);
+    line-height: var(--text-md-line-height);
+    letter-spacing: var(--text-md-letter-spacing);
+    font-weight: var(--text-md-weight);
+    color: var(--color-text-3);
+  }
+
+  .icon {
+    color: var(--color-text-3);
+    vertical-align: middle;
+  }
+
+  img {
+    vertical-align: middle;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--h1-font-size);
+    font-weight: var(--h1-weight);
+    letter-spacing: var(--h1-letter-spacing);
+    text-transform: var(--h1-transform);
+  }
+
+  h2 {
+    font-size: var(--h2-font-size);
+    font-weight: var(--h2-weight);
+    letter-spacing: var(--h2-letter-spacing);
+    text-transform: var(--h2-transform);
+  }
+
+  h3 {
+    font-size: var(--h3-font-size);
+    font-weight: var(--h3-weight);
+    letter-spacing: var(--h3-letter-spacing);
+    text-transform: var(--h3-transform);
+  }
+
+  h4 {
+    font-size: var(--h4-font-size);
+    font-weight: var(--h4-weight);
+    letter-spacing: var(--h4-letter-spacing);
+    text-transform: var(--h4-transform);
+  }
+
+  h5 {
+    font-size: var(--h5-font-size);
+    font-weight: var(--h5-weight);
+    letter-spacing: var(--h5-letter-spacing);
+    text-transform: var(--h5-transform);
+  }
+
+  h6 {
+    font-size: var(--h6-font-size);
+    font-weight: var(--h6-weight);
+    letter-spacing: var(--h6-letter-spacing);
+    text-transform: var(--h6-transform);
+  }
+
+  hr {
+    height: 1px;
+    width: auto;
+    background-color: var(--color-main-5);
+  }
+
+  ::selection {
+    background-color: var(--color-primary-sub-8);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

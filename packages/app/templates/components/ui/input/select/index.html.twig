@@ -1,0 +1,31 @@
+{% set label = label|default('') %}
+{% set placeholder = placeholder|default('All') %}
+{% set value = value|default('') %}
+{% set options = options|default([]) %}
+{% set name = name|default('') %}
+{% set selectedOption = value ? options|filter(o => o.value == value)|first : null %}
+
+<div {{ attrs(defaults: { class: 'ui-select' }, attributes: attributes) }}>
+  {% if label %}<span class="label" id="select-label-{{ name }}">{{ label }}</span>{% endif %}
+  <div class="control">
+    <button type="button" class="trigger"
+      popovertarget="select-panel-{{ name }}"
+      aria-haspopup="listbox"
+      aria-controls="select-panel-{{ name }}"
+      aria-expanded="false"
+      aria-labelledby="{{ label ? 'select-label-' ~ name ~ ' ' : '' }}select-value-{{ name }}">
+      <span class="value" id="select-value-{{ name }}">{{ selectedOption ? selectedOption.label : placeholder }}</span>
+      {{ icon('lucide:chevron-down') }}
+    </button>
+    <div class="panel" popover id="select-panel-{{ name }}">
+      <input type="text" class="select-search" placeholder="Search…">
+      <ul class="options">
+        <li class="{{ value == '' ? 'is-selected' : '' }}" data-value="">{{ placeholder }}</li>
+        {% for option in options %}
+          <li class="{{ value == option.value ? 'is-selected' : '' }}" data-value="{{ option.value }}">{{ option.label }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <input type="hidden" name="{{ name }}" value="{{ value }}" class="select-input">
+  </div>
+</div>

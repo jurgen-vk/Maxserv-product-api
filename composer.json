@@ -13,7 +13,8 @@
     "maxserv/app": "*"
   },
   "scripts": {
-    "console": "docker compose exec --user www-data app php bin/console"
+    "console": "docker compose exec --user www-data app php bin/console",
+    "restart-imports": "docker compose restart messenger-imports"
   },
   "minimum-stability": "dev",
   "prefer-stable": true

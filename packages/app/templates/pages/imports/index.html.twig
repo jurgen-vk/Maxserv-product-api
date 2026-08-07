@@ -1,62 +1,62 @@
-{% extends 'layouts/base.html.twig' %}
+{% extends 'layouts.main' %}
 
 {% block title %}Imports{% endblock %}
 
-{% block content %}
-  <div x-data="importsList({{ imports|json_encode }}, {{ mercure('imports/{id}')|json_encode }})">
-    <h1 class="text-lg font-semibold text-gray-900 mb-4">Imports</h1>
+{% set statusVariant = { pending: 'neutral', running: 'info', completed: 'success', failed: 'danger' } %}
 
-    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-      <table class="w-full text-sm">
-        <thead class="bg-gray-50 border-b border-gray-200">
+{% block content %}
+  <div class="imports-page">
+    {% include 'components.ui.page-header' with { title: 'Imports', iconName: 'lucide:import' } only %}
+
+    {% embed 'components.ui.table' with {
+      imports: imports,
+      statusVariant: statusVariant,
+      isEmpty: imports|length == 0,
+      paginator: paginator,
+      routeName: 'imports_index',
+      emptyIcon: 'lucide:inbox',
+      emptyTitle: 'No imports yet',
+      emptyDescription: 'Imports you start from the products page will show up here.',
+    } only %}
+      {% block head %}
         <tr>
-          <th class="text-left px-4 py-3 font-semibold text-gray-600">ID</th>
-          <th class="text-left px-4 py-3 font-semibold text-gray-600">Type</th>
-          <th class="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
-          <th class="text-left px-4 py-3 font-semibold text-gray-600">Started</th>
-          <th class="text-left px-4 py-3 font-semibold text-gray-600">Completed</th>
-          <th class="text-left px-4 py-3 font-semibold text-gray-600">Count</th>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Progress</th>
+          <th>Status</th>
+          <th>Started</th>
+          <th>Completed</th>
+          <th>Processed</th>
         </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-        {% for id, import in imports %}
-          <tr data-import-id="{{ import.id }}">
-            <td class="px-4 py-3 font-mono text-gray-500">#{{ import.id }}</td>
-            <td class="px-4 py-3 text-gray-500">{{ import.type }}</td>
-            <td class="px-4 py-3">
-                <span class="inline-block text-xs px-2 py-0.5 rounded-full"
-                      :class="{
-                    pending: 'bg-gray-100 text-gray-600',
-                    running: 'bg-blue-100 text-blue-700',
-                    completed: 'bg-green-100 text-green-700',
-                    failed: 'bg-red-100 text-red-700',
-                  }[imports[{{ import.id }}].status]"
-                      x-text="imports[{{ import.id }}].status"
-                ></span>
-              <span class="text-gray-400 ml-1" x-show="imports[{{ import.id }}].status === 'running'"
-                    x-text="'(' + (imports[{{ import.id }}].processed ?? 0) + '/' + (imports[{{ import.id }}].total ?? '?') + ')'"
-              ></span>
+      {% endblock %}
+
+      {% block body %}
+        {% for import in imports %}
+          {% set percent = import.total > 0 ? (import.processed / import.total * 100)|round : 0 %}
+          <tr class="import-row" data-import-id="{{ import.id }}" data-status="{{ import.status.value }}" data-processed="{{ import.processed }}" data-total="{{ import.total }}">
+            <td class="num">#{{ import.id }}</td>
+            <td>{{ import.type|capitalize }}</td>
+            <td class="progress-cell">
+              {% if import.status.value in ['pending', 'running'] %}
+                <div class="progress">
+                  {% include 'components.ui.progress-bar' with {
+                    attributes: { id: 'import-progress-' ~ import.id, style: '--progress: ' ~ percent ~ '%' },
+                  } only %}
+                  <span class="percent progress-text">{{ percent }}%</span>
+                </div>
+              {% else %}
+                <span class="percent">—</span>
+              {% endif %}
             </td>
-            <td class="px-4 py-3 text-gray-500">{{ import.startedAt|date('Y-m-d H:i:s') }}</td>
-            <td class="px-4 py-3 text-gray-500">
-              {{ import.completedAt ? import.completedAt|date('Y-m-d H:i:s') : '—' }}
+            <td class="status-cell">
+              {% include 'components.ui.badge' with { variant: statusVariant[import.status.value], label: import.status.value|capitalize } only %}
             </td>
-            <td class="px-4 py-3 text-gray-500" x-text="imports[{{ import.id }}].processed"></td>
-          </tr>
-        {% else %}
-          <tr>
-            <td colspan="6" class="px-4 py-12 text-center text-gray-400">No imports yet.</td>
+            <td class="num">{{ import.startedAt|date('Y-m-d H:i') }}</td>
+            <td class="num completed-cell">{{ import.completedAt ? import.completedAt|date('Y-m-d H:i') : '—' }}</td>
+            <td class="num processed-cell">{{ import.processed }}</td>
           </tr>
         {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    {% if paginator.total > 0 %}
-      {% include 'components.ui.pagination' with {
-        paginator: paginator,
-        baseUrl: '/imports'
-      } %}
-    {% endif %}
+      {% endblock %}
+    {% endembed %}
   </div>
 {% endblock %}
