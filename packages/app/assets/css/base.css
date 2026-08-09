@@ -31,10 +31,10 @@
     );
 
     /*---[ ▼ Shadow ▼ ]-----------------------------------------------------------------------------------------------*/
-    /* TODO: fill these and remove the sharp shadow variables from theme */
-    --shadow-button: ;
-    --shadow-sidebar-right: ;
-    --shadow-sidebar-left: ;
+    --shadow-button: var(--shadow-size-button) var(--shadow-strength-xs);
+
+    --shadow-size-sidebar: 3px 0 6px 0;
+    --shadow-size-button: 0 2px 0 0;
 
     --shadow-size-xs: 0 0 3px 1px;
     --shadow-size-sm: 0 0 4px 2px;
@@ -46,6 +46,10 @@
     --shadow-size-4xl: 0 0 29px 12px;
     --shadow-size-5xl: 0 0 38px 16px;
 
+    --shadow-strength-5xs: color-mix(in oklab, black, transparent calc(98% / var(--shadow-base-strength)));
+    --shadow-strength-4xs: color-mix(in oklab, black, transparent calc(94% / var(--shadow-base-strength)));
+    --shadow-strength-3xs: color-mix(in oklab, black, transparent calc(90% / var(--shadow-base-strength)));
+    --shadow-strength-2xs: color-mix(in oklab, black, transparent calc(86% / var(--shadow-base-strength)));
     --shadow-strength-xs: color-mix(in oklab, black, transparent calc(82% / var(--shadow-base-strength)));
     --shadow-strength-sm: color-mix(in oklab, black, transparent calc(78% / var(--shadow-base-strength)));
     --shadow-strength-md: color-mix(in oklab, black, transparent calc(75% / var(--shadow-base-strength)));
@@ -55,6 +59,12 @@
     --shadow-strength-3xl: color-mix(in oklab, black, transparent calc(66% / var(--shadow-base-strength)));
     --shadow-strength-4xl: color-mix(in oklab, black, transparent calc(64% / var(--shadow-base-strength)));
     --shadow-strength-5xl: color-mix(in oklab, black, transparent calc(62% / var(--shadow-base-strength)));
+
+    /*---[ ▼ Input ▼ ]-------------------------------------------------------------------------------------------------*/
+    --input-background: var(--color-main-2);
+    --input-border: var(--color-main-5);
+    --input-text-color: var(--color-text-1);
+    --input-padding: 0.4rem 0.7rem;
   }
 
   /*===[ ▲ App Variables ▲ ]============================================================================</editor-fold>*/
@@ -74,7 +84,7 @@
   hr {
     height: 1px;
     width: auto;
-    background-color: var(--color-main-5);
+    background-color: var(--border-color-main);
   }
 
   /*---[ ▼ Media ▼ ]--------------------------------------------------------------------------------------------------*/
@@ -141,9 +151,48 @@
     background-color: var(--color-primary-sub-8);
   }
 
+  code {
+    font-family: var(--font-mono);
+  }
+
   /*---[ ▼ Input ▼ ]--------------------------------------------------------------------------------------------------*/
   /*:::[ ▼ Input: Label ▼ ]:::::*/
+  label {
+    font-size: var(--text-sm);
+    font-weight: var(--text-lg-weight);
+    letter-spacing: var(--text-md-letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-text-5);
+  }
+
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
   /*:::[ ▼ Input: Field ▼ ]:::::*/
+  input[type="text"], input[type="search"], input[type="email"], input[type="password"],
+  input[type="tel"], input[type="url"], input[type="number"], input[type="date"],
+  input[type="datetime-local"], input[type="month"], input[type="time"], input[type="week"],
+  textarea {
+    border-radius: var(--radius-default);
+    border: 1px solid var(--input-border);
+    padding: var(--input-padding);
+    font-size: var(--text-md);
+    font-weight: var(--text-md-weight);
+    letter-spacing: var(--text-md-letter-spacing);
+    text-transform: none;
+    font-family: var(--font-sans);
+    background-color: var(--input-background);
+    color: var(--input-text-color);
+  }
+
+  option {
+    background-color: var(--input-background);
+    color: var(--input-text-color);
+  }
+
   /*:::[ ▼ Input: Button ▼ ]:::::*/
   /*:::[ ▼ Input: Controls ▼ ]:::::*/
   /*:::[ ▼ Input: Feedback ▼ ]:::::*/

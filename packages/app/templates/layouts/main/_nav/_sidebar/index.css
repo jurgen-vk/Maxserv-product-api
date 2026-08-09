@@ -4,13 +4,13 @@
     container-name: nav-sidebar;
 
     position: static;
-    margin: 0;
-    border: none;
+    /*margin: 0;*/
+    /*border: none;*/
 
     display: flex;
     flex-direction: column;
     background-color: var(--color-main-1);
-    border-right: 1px solid var(--color-primary-sub-8);
+    border-right: 1px solid var(--border-color-primary);
     width: 4.5rem;
     height: 100dvh;
     transition: width var(--sidebar-anim-dur) var(--shoot);
@@ -18,10 +18,6 @@
     padding: 1.5rem 1rem;
 
     --collapsed: true;
-
-    /*@media (--under-md) {*/
-    /*  padding: 1rem 1rem;*/
-    /*}*/
 
     .header {
       display: flex;
@@ -61,12 +57,12 @@
 
     /* --- Collapsed state --- */
 
-    &:hover, &:focus-within, &[data-pinned='true'] {
+    &:hover, &:focus-within, &[data-pinned="true"] {
       width: 15rem;
       --collapsed: false;
     }
 
-    &:not(:hover):not(:focus-within):not([data-pinned='true']) {
+    &:not(:hover):not(:focus-within):not([data-pinned="true"]) {
       .l_main__nav__sidebar__pin {
         display: none;
       }
@@ -98,7 +94,7 @@
       height: auto;
       margin: 0;
       border: none;
-      box-shadow: var(--shadow-xl);
+      box-shadow: var(--shadow-size-sidebar) var(--shadow-strength-xs);
       transform: translateX(-100%);
       transition: transform 0.25s ease, display 0.25s allow-discrete, overlay 0.25s allow-discrete;
 
@@ -145,27 +141,27 @@
          same selector (matching specificity) rather than a plain one,
          otherwise the higher-specificity desktop rule would still win
          even inside this media query */
-      &:hover, &:focus-within, &[data-pinned='true'] {
+      &:hover, &:focus-within, &[data-pinned="true"] {
         width: 85%;
         max-width: 320px;
         transition-delay: 0s;
       }
 
-      &:not(:hover):not(:focus-within):not([data-pinned='true']) .footer {
+      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .footer {
         justify-content: space-between;
       }
 
-      &:not(:hover):not(:focus-within):not([data-pinned='true']) .footer .theme-label {
+      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .footer .theme-label {
         transform: translateX(0);
         max-width: initial;
         opacity: 1;
       }
 
-      &:not(:hover):not(:focus-within):not([data-pinned='true']) .footer .theme-mode-toggle {
+      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .footer .theme-mode-toggle {
         display: flex;
       }
 
-      &:not(:hover):not(:focus-within):not([data-pinned='true']) .label {
+      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .label {
         max-width: none;
         opacity: 1;
       }

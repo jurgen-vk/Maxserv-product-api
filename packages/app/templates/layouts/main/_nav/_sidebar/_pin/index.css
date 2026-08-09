@@ -35,9 +35,9 @@
     &,
     &:hover:not(:disabled),
     &:active:not(:disabled) {
-      box-shadow: unset;
-      border-color: transparent;
-      transform: scale(1);
+      /*box-shadow: unset;*/
+      /*border-color: transparent;*/
+      /*transform: scale(1);*/
       /*transition: transform 0.1s var(--snap);*/
     }
 

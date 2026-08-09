@@ -1,18 +1,29 @@
 @layer main {
   .c_ui_table__empty {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding-inline: 1.25rem;
-    padding-block: 3rem;
-    text-align: center;
+    /*width: fit-content;*/
+    /*padding-left: 1.25rem;*/
+    /*padding-right: 1.25rem;*/
+    /*padding-top: 3rem;*/
+    /*padding-bottom: 3rem;*/
 
-    svg {
-      inline-size: 1.875rem;
-      block-size: 1.875rem;
-      color: var(--color-primary-add-6);
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 75%;
+      gap: 0.5rem;
+      justify-content: center;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+
+    .icon {
+      width: 2rem;
+      height: 2rem;
+      margin-bottom: 0.5rem;
     }
 
     h3 {
@@ -25,13 +36,12 @@
     }
 
     p {
-      max-inline-size: 34ch;
       font-size: var(--text-sm);
       color: var(--color-text-13);
     }
 
     .action {
-      margin-block-start: 0.25rem;
+      margin-top: 0.25rem;
     }
   }
 }

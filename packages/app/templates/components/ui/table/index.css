@@ -1,6 +1,6 @@
 @layer main {
   .c_ui_table {
-    border: 1px solid var(--color-main-3);
+    border: 1px solid var(--border-color-main);
     background-color: var(--color-main);
 
     .table-container {
@@ -21,13 +21,15 @@
          individual th cells (which left the loading bar behind as a plain
          row that scrolled away on its own) */
       position: sticky;
-      inset-block-start: 0;
+      top: 0;
       z-index: var(--z-add-1); /* z-1: sticky table header */
     }
 
     th {
-      padding-inline: 0.875rem;
-      padding-block: 0.5625rem;
+      padding-left: 0.875rem;
+      padding-right: 0.875rem;
+      padding-top: 0.5625rem;
+      padding-bottom: 0.5625rem;
       text-align: left;
       vertical-align: middle;
       font-size: var(--text-xs);
@@ -59,15 +61,17 @@
       color: inherit;
 
       svg {
-        inline-size: 0.625rem;
-        block-size: 0.625rem;
+        width: 0.625rem;
+        height: 0.625rem;
       }
     }
 
     tbody {
       td {
-        padding-inline: 0.875rem;
-        padding-block: 0.5625rem;
+        padding-left: 0.875rem;
+        padding-right: 0.875rem;
+        padding-top: 0.5625rem;
+        padding-bottom: 0.5625rem;
         white-space: nowrap;
         vertical-align: middle;
         color: var(--color-text-1);
@@ -75,7 +79,7 @@
       }
 
       tr:last-child td {
-        border-block-end: 0;
+        border-bottom: 0;
       }
 
       tr:nth-child(even) {

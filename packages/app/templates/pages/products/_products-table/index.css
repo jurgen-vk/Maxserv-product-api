@@ -11,8 +11,8 @@
        readable at any width. Every other column just sizes to its own
        content, auto-layout style. */
     .title-cell {
-      inline-size: 100%;
-      min-inline-size: 12rem;
+      width: 100%;
+      min-width: 12rem;
       white-space: normal;
       overflow-wrap: break-word;
     }
@@ -25,8 +25,8 @@
 
     .thumb {
       margin: 0.4375rem;
-      inline-size: 2.125rem;
-      block-size: 2.125rem;
+      width: 2.125rem;
+      height: 2.125rem;
       flex-shrink: 0;
       border-radius: var(--radius-default);
       object-fit: contain;
@@ -41,8 +41,8 @@
     }
 
     .thumb-icon {
-      inline-size: 0.9375rem;
-      block-size: 0.9375rem;
+      width: 0.9375rem;
+      height: 0.9375rem;
     }
 
     .title-link {

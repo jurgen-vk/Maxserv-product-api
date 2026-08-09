@@ -1,4 +1,4 @@
-{% set iconName = iconName|default('lucide:inbox') %}
+{% set icon = icon|default(icon('lucide:inbox')) %}
 {% set title = title|default('Nothing here yet.') %}
 {% set description = description|default('') %}
 {% set actionLabel = actionLabel|default(null) %}
@@ -6,18 +6,20 @@
 {% set actionAttributes = actionAttributes|default({}) %}
 
 <div {{ attrs(defaults: { class: 'c_ui_table__empty' }, attributes: attributes) }}>
-  {{ icon(iconName) }}
-  <h3>{{ title }}</h3>
-  {% if description %}
-    <p>{{ description }}</p>
-  {% endif %}
-  {% if actionLabel and (actionHref or actionAttributes) %}
-    {% embed 'components.ui.button' with {
-      variant: 'neutral',
-      href: actionHref,
-      attributes: actionAttributes|merge({ class: ('action ' ~ (actionAttributes.class|default('')))|trim }),
-    } only %}
-      {% block label %}{{ actionLabel }}{% endblock %}
-    {% endembed %}
-  {% endif %}
+  <div class="content">
+    {{ icon|raw }}
+    <h3>{{ title }}</h3>
+    {% if description %}
+      <p>{{ description }}</p>
+    {% endif %}
+    {% if actionLabel and (actionHref or actionAttributes) %}
+      {% embed 'components.ui.button' with {
+        variant: 'neutral',
+        href: actionHref,
+        attributes: actionAttributes|merge({ class: ('action ' ~ (actionAttributes.class|default('')))|trim }),
+      } only %}
+        {% block label %}{{ actionLabel }}{% endblock %}
+      {% endembed %}
+    {% endif %}
+  </div>
 </div>

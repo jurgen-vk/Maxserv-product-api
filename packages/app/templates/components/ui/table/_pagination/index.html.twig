@@ -12,11 +12,11 @@
   <div class="controls">
     <label class="per-page">
       <span>Per page</span>
-      <select class="per-page-select">
-        {% for option in [10, 25, 50, 100] %}
-          <option value="{{ option }}"{{ option == paginator.perPage ? ' selected' : '' }}>{{ option }}</option>
-        {% endfor %}
-      </select>
+      {% include 'components.ui.input.select' with {
+        options: [10, 25, 50, 100]|map(o => { value: o, label: o }),
+        value: paginator.perPage,
+        attributes: { class: 'per-page-select' },
+      } only %}
     </label>
 
     {% if paginator.totalPages > 1 %}

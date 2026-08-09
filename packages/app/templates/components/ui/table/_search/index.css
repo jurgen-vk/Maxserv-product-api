@@ -5,35 +5,37 @@
     align-items: center;
     gap: 0.5rem;
 
-    &:focus-within {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
+    .search-input {
+      padding: 0;
     }
 
     .field {
       display: flex;
-      inline-size: 16.25rem;
+      width: 16.25rem;
       align-items: center;
       gap: 0.5rem;
       border-radius: var(--radius-default);
-      border: 1px solid var(--color-main-8);
-      padding-inline: 0.625rem;
-      padding-block: 0.4375rem;
+      border: 1px solid var(--input-border);
+      padding: var(--input-padding);
+      /*padding-left: 0.625rem;*/
+      /*padding-right: 0.625rem;*/
+      /*padding-top: 0.4375rem;*/
+      /*padding-bottom: 0.4375rem;*/
       background-color: var(--color-main);
       color: var(--color-text-13);
 
       @media (--under-md) {
-        inline-size: 100%;
+        width: 100%;
       }
 
       svg {
-        inline-size: 0.875rem;
-        block-size: 0.875rem;
+        width: 0.875rem;
+        height: 0.875rem;
         flex-shrink: 0;
       }
 
       input {
-        inline-size: 100%;
+        width: 100%;
         border: 0;
         background: transparent;
         font-size: var(--text-sm);
@@ -45,11 +47,8 @@
       .clear {
         display: flex;
         flex-shrink: 0;
-        cursor: pointer;
         align-items: center;
         border-radius: var(--radius-default);
-        border: 0;
-        background: transparent;
         padding: 0;
 
         &:hover {

@@ -1,21 +1,23 @@
 {% set label = label|default('') %}
-{% set placeholder = placeholder|default('All') %}
+{% set placeholder = placeholder|default('') %}
 {% set value = value|default('') %}
 {% set options = options|default([]) %}
 {% set name = name|default('') %}
+{% set variant = variant|default('primary') %}
+{% set searchable = searchable|default(false) %}
 {% set selectedOption = value ? options|filter(o => o.value == value)|first : null %}
 
-<div {{ attrs(defaults: { class: 'c_ui_input_select' }, attributes: attributes) }}>
-  {% if label %}<span class="label">{{ label }}</span>{% endif %}
+<div {{ attrs(defaults: { class: 'c_ui_input_select', 'data-variant': variant }, attributes: attributes) }}>
+  {% if label %}<label>{{ label }}</label>{% endif %}
   <div class="control">
     <button type="button" class="trigger" popovertarget="select-panel-{{ name }}">
       <span class="value">{{ selectedOption ? selectedOption.label : placeholder }}</span>
       {{ icon('lucide:chevron-down') }}
     </button>
     <div class="panel" popover id="select-panel-{{ name }}">
-      <input type="text" class="select-search" placeholder="Search…">
+      {% if searchable %}<input type="text" class="select-search" placeholder="Search…">{% endif %}
       <ul class="options">
-        <li data-value=""{{ value == '' ? ' data-selected' : '' }}>{{ placeholder }}</li>
+        {% if placeholder %}<li data-value=""{{ value == '' ? ' data-selected' : '' }}>{{ placeholder }}</li>{% endif %}
         {% for option in options %}
           <li data-value="{{ option.value }}"{{ value == option.value ? ' data-selected' : '' }}>{{ option.label }}</li>
         {% endfor %}

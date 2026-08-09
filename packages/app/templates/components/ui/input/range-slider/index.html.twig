@@ -8,7 +8,7 @@
 {% set nameMax = nameMax|default('max') %}
 
 <div {{ attrs(defaults: { class: 'c_ui_input_range-slider' }, attributes: attributes) }}>
-  {% if label %}<span class="label">{{ label }}</span>{% endif %}
+  {% if label %}<label>{{ label }}</label>{% endif %}
 
   <div class="values">
     <input type="number" value="{{ valueMin }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" data-range-number="min">

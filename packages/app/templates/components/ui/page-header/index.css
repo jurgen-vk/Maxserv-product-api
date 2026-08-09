@@ -12,8 +12,8 @@
       gap: 0.625rem;
 
       svg {
-        inline-size: 1.25rem;
-        block-size: 1.25rem;
+        width: 1.25rem;
+        height: 1.25rem;
         color: var(--color-primary);
       }
     }

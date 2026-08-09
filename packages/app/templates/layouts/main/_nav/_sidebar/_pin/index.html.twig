@@ -1,7 +1,7 @@
 {% set sidebarPinned = app.request.cookies.get('sidebarPinned') %}
 
 {% embed 'components.ui.button' with {
-  variant: 'transparent',
+  variant: 'bare',
   attributes: { class: 'l_main__nav__sidebar__pin', 'data-pressed': sidebarPinned == 'true' ? true : null },
 } only %}
   {% block iconBefore %} {{ icon('lucide:pin') }} {% endblock %}

@@ -23,10 +23,7 @@
       width: 2.75rem;
       height: 2.75rem;
       flex-shrink: 0;
-      border: none;
       border-radius: var(--radius-default);
-      cursor: pointer;
-      background-color: transparent;
       color: var(--color-text-1);
       -webkit-tap-highlight-color: transparent;
 
@@ -41,7 +38,7 @@
     }
 
     .logo-link {
-      padding-left: 1rem;
+      margin-left: 1rem;
 
       .logo img {
         width: 2rem;

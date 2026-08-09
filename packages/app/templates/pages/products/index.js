@@ -109,7 +109,7 @@ $tableContainer.on('click', '[data-page]', function (event) {
   refreshTable({page: $(this).data('page')}, {pushState: true});
 });
 
-$tableContainer.on('change', '.per-page-select', function () {
+$tableContainer.on('change', '.per-page-select .select-input', function () {
   refreshTable({perPage: $(this).val(), page: null}, {pushState: true});
 });
 

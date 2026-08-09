@@ -50,9 +50,6 @@
         display: inline-flex;
         align-items: center;
         align-self: flex-start;
-        cursor: pointer;
-        border: 0;
-        background: none;
         /*margin-left: 1rem;*/
         color: inherit;
         transform: scale(1);

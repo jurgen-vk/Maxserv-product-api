@@ -47,7 +47,7 @@
     }
 
     .message.raw {
-      inline-size: 100%;
+      width: 100%;
       padding: 0.875rem;
       text-align: left;
       border-color: var(--color-danger-sub-7);
