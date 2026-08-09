@@ -11,7 +11,7 @@
   {{ vite_css('assets/css/app.css') }}
 </head>
 <body>
-<div class="app-shell">
+<div class="l_main">
   <div class="app-nav">
     {% include 'layouts.main._nav' %}
   </div>
@@ -23,7 +23,7 @@
   </div>
 </div>
 
-{% include 'components.ui.notification.container' with { attributes: { class: 'notifications-container' } } only %}
+{% include 'components.ui.toaster' only %}
 
 {{ vite_js('assets/js/app.js') }}
 </body>

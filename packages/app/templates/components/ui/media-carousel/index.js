@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-$('.ui-carousel').each(function () {
+$('.c_ui_media-carousel').each(function () {
   const $root = $(this);
   const $image = $root.find('.main img');
   const $thumbs = $root.find('.thumb');
@@ -18,8 +18,8 @@ $('.ui-carousel').each(function () {
     const $img = $thumb.find('img');
     $image.attr('src', $img.attr('src'));
     $image.attr('alt', $img.attr('alt'));
-    $thumbs.removeClass('is-active');
-    $thumb.addClass('is-active');
+    $thumbs.removeAttr('data-active');
+    $thumb.attr('data-active', '');
   }
 
   $thumbs.on('click', function () {

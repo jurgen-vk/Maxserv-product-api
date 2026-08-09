@@ -1,0 +1,162 @@
+@layer main {
+  .c_ui_toaster__toast {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    margin-bottom: 0.5rem;
+    animation: toast-in 0.6s var(--bounce-inout);
+
+    &[data-animation-state="out"] {
+      animation: toast-out 0.6s var(--bounce-inout) forwards;
+    }
+
+    &[data-animation-state="remove"] {
+      transform: translateX(100%);
+      opacity: 0;
+      animation: toast-remove 0.3s ease;
+    }
+
+    .toast-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      overflow: hidden;
+      min-height: 0;
+      /*min-width: 18rem;*/
+      max-width: min(22.5rem, calc(100vw - 3rem));
+      padding: 0.5rem 0.8rem;
+      border-radius: var(--radius-default);
+      border: 1px solid var(--color-main-5);
+      font-size: var(--text-sm);
+      font-weight: var(--text-lg-weight);
+      background-color: var(--color-main-3);
+      box-shadow: var(--shadow-size-sm) var(--shadow-strength-sm);
+
+      .icon-slot {
+        display: flex;
+        flex-shrink: 0;
+
+        .icon {
+          width: 1.2rem;
+          height: 1.2rem;
+        }
+      }
+
+      .message {
+        flex: 1 1 0;
+        /*text-align: justify;*/
+      }
+
+      .close {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        cursor: pointer;
+        border: 0;
+        background: none;
+        /*margin-left: 1rem;*/
+        color: inherit;
+        transform: scale(1);
+        transition: transform 0.08s var(--shoot), color 0.08s var(--shoot);
+        -webkit-tap-highlight-color: transparent;
+
+        &:hover {
+          transform: scale(1.2);
+        }
+
+        &:active {
+          transform: scale(1);
+          color: var(--color-danger-add-1);
+        }
+
+        .icon {
+          width: 1.2rem;
+          height: 1.2rem;
+          transform: scale(0.8);
+
+          &:hover {
+            color: var(--color-danger);
+          }
+
+          &:active {
+            color: var(--color-danger-sub-3)
+          }
+        }
+      }
+    }
+
+    /* --- Variants --- */
+
+    &[data-type="success"] .toast-content {
+      background-color: var(--color-success-sub-2);
+      color: var(--color-text-light);
+      border-color: transparent;
+
+      .icon {
+        color: var(--color-text-light);
+      }
+    }
+
+    &[data-type="danger"] .toast-content {
+      background-color: var(--color-danger-sub-2);
+      color: var(--color-text-light);
+      border-color: transparent;
+
+      .icon {
+        color: var(--color-text-light);
+      }
+    }
+
+    &[data-type="warning"] .toast-content {
+      background-color: var(--color-warning-sub-2);
+      color: var(--color-text-light);
+      border-color: transparent;
+
+      .icon {
+        color: var(--color-text-light);
+      }
+    }
+
+    &[data-type="info"] .toast-content {
+      background-color: var(--color-info-sub-2);
+      color: var(--color-text-light);
+      border-color: transparent;
+
+      .icon {
+        color: var(--color-text-light);
+      }
+    }
+  }
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes toast-remove {
+  from {
+    grid-template-rows: minmax(0, 1fr);
+    margin-bottom: 0.5rem;
+  }
+  to {
+    grid-template-rows: minmax(0, 0fr);
+    margin-bottom: 0;
+  }
+}

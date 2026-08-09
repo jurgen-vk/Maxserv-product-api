@@ -1,4 +1,4 @@
-<div {{ attrs(defaults: { class: 'state-toggle' }, attributes: attributes) }} data-state="{{ state|default('idle') }}">
+<div {{ attrs(defaults: { class: 'c_ui_state-toggle' }, attributes: attributes) }} data-state="{{ state|default('idle') }}">
   <div data-state-pane="idle">{% block idle %}{% endblock %}</div>
   <div data-state-pane="loading">{% block loading %}{% endblock %}</div>
 </div>

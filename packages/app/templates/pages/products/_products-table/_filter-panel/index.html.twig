@@ -2,8 +2,8 @@
 {% set brandOptions = brands|map(b => { value: b.name, label: b.name }) %}
 {% set priceMax = maxPrice ?? 0 %}
 
-<div {{ attrs(defaults: { class: 'filter-panel', popover: true, id: 'products-filter-panel' }, attributes: attributes) }}>
-  <form id="products-filter-form">
+<div {{ attrs(defaults: { class: 'p_products__products-table__filter-panel', popover: true, id: 'products-filter-panel' }, attributes: attributes) }}>
+  <form class="filter-form">
     {% include 'components.ui.input.select' with {
       label: 'Category',
       name: 'category',

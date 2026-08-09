@@ -29,7 +29,9 @@ export default defineConfig(({mode}) => {
     resolve: {
       alias: {
         '@app': path.resolve(import.meta.dirname, 'assets/js'),
-        '@core': path.resolve(import.meta.dirname, '../core/assets/js')
+        '@core': path.resolve(import.meta.dirname, '../core/assets/js'),
+        '~app': path.resolve(import.meta.dirname, 'templates'),
+        '~core': path.resolve(import.meta.dirname, '../core/templates')
       }
     },
     server: {

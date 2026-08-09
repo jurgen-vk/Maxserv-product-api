@@ -5,7 +5,7 @@
 {% set actionHref = actionHref|default(null) %}
 {% set actionAttributes = actionAttributes|default({}) %}
 
-<div {{ attrs(defaults: { class: 'table-empty' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'c_ui_table__empty' }, attributes: attributes) }}>
   {{ icon(iconName) }}
   <h3>{{ title }}</h3>
   {% if description %}

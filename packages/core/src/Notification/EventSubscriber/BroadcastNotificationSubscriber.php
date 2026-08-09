@@ -30,7 +30,8 @@ final readonly class BroadcastNotificationSubscriber implements EventSubscriberI
                 data: json_encode(
                     value: [
                         'message' => $event->message,
-                        'type' => $event->type,
+                        'type' => $event->type->value,
+                        'icon' => $event->icon,
                         'duration' => $event->duration,
                     ],
                 ),

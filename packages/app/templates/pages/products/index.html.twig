@@ -3,7 +3,7 @@
 {% block title %}Products{% endblock %}
 
 {% block content %}
-  <div class="products-page">
+  <div class="p_products">
     {% embed 'components.ui.page-header' with { title: 'Products', icon: icon('lucide:layout-grid'), activeImport: activeImport } only %}
       {% block actions %}
         {% include 'pages.products._import-button' %}
@@ -16,7 +16,6 @@
       {% embed 'components.ui.button' with {
         variant: 'neutral',
         attributes: {
-          id: 'products-filter-toggle',
           type: 'button',
           popovertarget: 'products-filter-panel',
           popovertargetaction: 'toggle',
@@ -35,7 +34,7 @@
       } only %}
     </div>
 
-    <div id="products-table-container">
+    <div class="products-table-container">
       {% include 'pages.products._products-table' with { items: items, paginator: paginator, filter: filter, activeImport: activeImport } only %}
     </div>
   </div>

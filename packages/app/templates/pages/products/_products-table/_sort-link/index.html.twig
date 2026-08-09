@@ -1,7 +1,7 @@
 {% set isSorted = filter.sortBy == column %}
 {% set nextOrder = (isSorted and filter.order|upper == 'ASC') ? 'DESC' : 'ASC' %}
 
-<th {{ attrs(defaults: { class: isSorted ? 'is-sorted' : '' }, attributes: attributes) }}>
+<th {{ attrs(defaults: { class: 'p_products__products-table__sort-link', 'data-sorted': isSorted ? true : null }, attributes: attributes) }}>
   <a href="#" class="sort-link link" data-column="{{ column }}" data-order="{{ nextOrder }}">
     {{ label }}
     {% if isSorted %}

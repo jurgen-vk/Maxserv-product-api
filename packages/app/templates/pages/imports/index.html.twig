@@ -5,8 +5,8 @@
 {% set statusVariant = { pending: 'neutral', running: 'info', completed: 'success', failed: 'danger' } %}
 
 {% block content %}
-  <div class="imports-page">
-    {% include 'components.ui.page-header' with { title: 'Imports', iconName: 'lucide:import' } only %}
+  <div class="p_imports">
+    {% include 'components.ui.page-header' with { title: 'Imports', icon: icon('lucide:import') } only %}
 
     {% embed 'components.ui.table' with {
       imports: imports,
@@ -33,14 +33,15 @@
       {% block body %}
         {% for import in imports %}
           {% set percent = import.total > 0 ? (import.processed / import.total * 100)|round : 0 %}
-          <tr class="import-row" data-import-id="{{ import.id }}" data-status="{{ import.status.value }}" data-processed="{{ import.processed }}" data-total="{{ import.total }}">
+          <tr class="import-row" data-import-id="{{ import.id }}" data-status="{{ import.status.value }}"
+              data-processed="{{ import.processed }}" data-total="{{ import.total }}">
             <td class="num">#{{ import.id }}</td>
             <td>{{ import.type|capitalize }}</td>
             <td class="progress-cell">
               {% if import.status.value in ['pending', 'running'] %}
                 <div class="progress">
                   {% include 'components.ui.progress-bar' with {
-                    attributes: { id: 'import-progress-' ~ import.id, style: '--progress: ' ~ percent ~ '%' },
+                    attributes: { style: '--progress: ' ~ percent ~ '%' },
                   } only %}
                   <span class="percent progress-text">{{ percent }}%</span>
                 </div>

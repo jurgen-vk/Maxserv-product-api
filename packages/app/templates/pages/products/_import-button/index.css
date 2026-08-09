@@ -1,0 +1,7 @@
+@layer main {
+  .p_products__import-button {
+    .btn-importing {
+      cursor: progress;
+    }
+  }
+}

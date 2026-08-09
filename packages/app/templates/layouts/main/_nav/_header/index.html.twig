@@ -1,6 +1,5 @@
-<div class="nav-header">
-  <button type="button" class="hamburger-toggle" popovertarget="nav-sidebar" popovertargetaction="toggle"
-          aria-label="Toggle navigation">
+<div {{ attrs(defaults: { class: 'l_main__nav__header' }, attributes: attributes) }}>
+  <button type="button" class="hamburger-toggle" popovertarget="nav-sidebar" popovertargetaction="toggle">
     <span class="hamburger-icon">{{ icon('lucide:menu') }}</span>
     <span class="close-icon">{{ icon('lucide:x') }}</span>
   </button>

@@ -1,10 +1,10 @@
 @layer main {
-  /* these rules only ever render inside components.ui.table's embed blocks
-     (tr/td fragments), which live in .ui-table's own DOM — nesting them
-     under .ui-table scopes them without needing BEM naming, and gives
-     .num--low enough specificity to beat the generic tbody td rule without
-     an !important escape hatch. */
-  .ui-table {
+  /* this component's own td/img classes render inside components.ui.table's
+     embed blocks (tr/td fragments), but scope off this file's own wrapper
+     rather than reaching into .c_ui_table by name — [data-low] on the same
+     element keeps enough specificity to beat the generic tbody td rule
+     without an !important escape hatch. */
+  .p_products__products-table {
     /* the title column is the only one allowed to grow — it claims
        whatever space the other (naturally-sized) columns don't need, and
        wraps instead of ellipsis-truncating so the full title stays
@@ -72,7 +72,7 @@
       color: var(--color-success-add-6);
     }
 
-    .num--low {
+    .num[data-low] {
       font-weight: 700;
       color: var(--color-danger-add-6);
     }

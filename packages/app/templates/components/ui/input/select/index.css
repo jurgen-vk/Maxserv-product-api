@@ -1,5 +1,5 @@
 @layer main {
-  .ui-select {
+  .c_ui_input_select {
     --field: var(--color-main-2);
 
     display: flex;
@@ -148,7 +148,7 @@
           background-color: var(--color-primary-sub-6);
         }
 
-        &.is-selected {
+        &[data-selected] {
           font-weight: 700;
           background-color: var(--color-primary-sub-6);
         }

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-$('.ui-range').each(function () {
+$('.c_ui_input_range-slider').each(function () {
   const $root = $(this);
   const $minSlider = $root.find('[data-range-slider="min"]');
   const $maxSlider = $root.find('[data-range-slider="max"]');

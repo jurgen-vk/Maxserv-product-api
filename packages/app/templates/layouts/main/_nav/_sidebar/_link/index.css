@@ -1,78 +1,76 @@
 @layer main {
   .l_main__nav__sidebar__link {
-    .item {
-      position: relative;
+    position: relative;
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+    align-items: center;
+    overflow: hidden;
+    border-radius: var(--radius-default);
+    background-color: transparent;
+    text-align: left;
+    text-decoration: none;
+    /*color: var(--color-text-8);*/
+    padding-left: 0;
+    transition: background-color 0.15s var(--snap), color 0.15s var(--snap), padding-left 0.15s var(--snap);
+    font-weight: var(--text-lg-weight);
+
+    .icon {
+      color: inherit;
+      transition: color 0.15s var(--snap);
+    }
+
+    .icon-slot {
       display: flex;
-      width: 100%;
-      cursor: pointer;
+      flex-shrink: 0;
       align-items: center;
-      overflow: hidden;
-      border-radius: var(--radius-default);
-      background-color: transparent;
-      text-align: left;
-      text-decoration: none;
-      /*color: var(--color-text-8);*/
-      padding-left: 0;
-      transition: background-color 0.15s var(--snap), color 0.15s var(--snap), padding-left 0.15s var(--snap);
-      font-weight: var(--text-lg-weight);
+      justify-content: center;
+      margin-right: 0.5rem;
 
       .icon {
-        color: inherit;
-        transition: color 0.15s var(--snap);
+        width: 2.5rem;
+        height: 2.5rem;
+        transform: scale(0.6);
       }
+    }
 
-      .icon-slot {
-        display: flex;
-        flex-shrink: 0;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.5rem;
+    .label {
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      opacity: 1;
+      transform: translateY(0);
+      transition: translateY;
+    }
 
-        .icon {
-          width: 2.5rem;
-          height: 2.5rem;
-          transform: scale(0.6);
-        }
-      }
-
-      .label {
-        display: inline-block;
-        overflow: hidden;
-        white-space: nowrap;
-        opacity: 1;
-        transform: translateY(0);
-        transition: translateY;
-      }
-
-      &.is-active {
-        background-color: var(--color-primary);
-        color: var(--color-text-light);
-
-        &:hover {
-          background-color: var(--color-primary-add-1);
-        }
-
-        &:active {
-          background-color: var(--color-primary-add-2);
-        }
-
-        .icon {
-          color: var(--color-text-light);
-        }
-      }
+    &[data-active] {
+      background-color: var(--color-primary);
+      color: var(--color-text-light);
 
       &:hover {
-        background-color: var(--color-primary-sub-8);
-        padding-left: 0.2rem;
+        background-color: var(--color-primary-add-1);
       }
 
       &:active {
-        background-color: var(--color-primary-sub-2);
-        color: var(--color-text-light);
+        background-color: var(--color-primary-add-2);
+      }
 
-        .icon {
-          color: var(--color-text-light)
-        }
+      .icon {
+        color: var(--color-text-light);
+      }
+    }
+
+    &:hover {
+      background-color: var(--color-primary-sub-8);
+      padding-left: 0.2rem;
+    }
+
+    &:active {
+      background-color: var(--color-primary-sub-2);
+      color: var(--color-text-light);
+
+      .icon {
+        color: var(--color-text-light)
       }
     }
   }

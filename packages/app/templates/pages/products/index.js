@@ -3,7 +3,8 @@ import setProgress from '@app/progress';
 import { fetchFragment } from '@core/api/fragmentFetcher';
 import notify from '@core/informer/notify';
 
-const $tableContainer = $('#products-table-container');
+const $root = $('.p_products');
+const $tableContainer = $('.products-table-container');
 
 let refreshController = null;
 
@@ -48,12 +49,12 @@ async function refreshTable(params = {}, {pushState = false} = {}) {
 }
 
 // ---- search (debounced typing = replaceState, explicit search = pushState via table:search) ----
-$('.ui-search').on('table:search', (event, value) => {
+$root.find('.c_ui_table__search').on('table:search', (event, value) => {
   refreshTable({search: value, page: null}, {pushState: true});
 });
 
 // ---- filter panel: apply routes through the same AJAX path, no full reload ----
-$('#products-filter-form').on('submit', function (event) {
+$root.find('.filter-form').on('submit', function (event) {
   event.preventDefault();
 
   const params = Object.fromEntries(new FormData(this));
@@ -70,16 +71,16 @@ $('#products-filter-form').on('submit', function (event) {
 //      reaching into any widget's internal state directly ----
 // delegated on the page (not bound directly) since this same action also
 // appears in the table's empty state, which gets replaced on every refresh
-$('.products-page').on('click', '.filter-clear', function (event) {
+$root.on('click', '.filter-clear', function (event) {
   event.preventDefault();
 
-  const $form = $('#products-filter-form');
+  const $form = $root.find('.filter-form');
 
-  $form.find('.ui-select').each(function () {
+  $form.find('.c_ui_input_select').each(function () {
     $(this).find('.options > li[data-value=""]').trigger('click');
   });
 
-  $form.find('.ui-range').each(function () {
+  $form.find('.c_ui_input_range-slider').each(function () {
     const $minNumber = $(this).find('[data-range-number="min"]');
     const $maxNumber = $(this).find('[data-range-number="max"]');
     $minNumber.val($minNumber.attr('min')).trigger('change');
@@ -115,13 +116,13 @@ $tableContainer.on('change', '.per-page-select', function () {
 // ---- import trigger: resume-on-navigation via data-* attributes rendered
 //      from the activeImport entity, no JSON blob ----
 const $importTrigger = $('#products-import-trigger');
-const $importStateToggle = $importTrigger.closest('.state-toggle');
+const $importStateToggle = $importTrigger.closest('.c_ui_state-toggle');
 
 function setImportingState(isImporting) {
   $importStateToggle.attr('data-state', isImporting ? 'loading' : 'idle');
   // re-queried fresh each time, not cached — the progress bar now lives
   // inside the table fragment, which gets replaced on every refresh
-  $('#products-import-progress').toggleClass('hidden', !isImporting);
+  $root.find('.progress-bar').toggle(isImporting);
 }
 
 function watchImport(importId) {
@@ -132,7 +133,7 @@ function watchImport(importId) {
     const update = JSON.parse(event.data);
 
     if (update.status === 'running') {
-      setProgress('#products-import-progress', update.processed, update.total);
+      setProgress($root.find('.progress-bar')[0], update.processed, update.total);
       return;
     }
 
@@ -162,7 +163,7 @@ if (activeImportId) {
   // flash), but the progress bar's visibility is only ever toggled by
   // setImportingState() — it needs calling here too, not just setProgress()
   setImportingState(true);
-  setProgress('#products-import-progress', $importTrigger.data('processed'), $importTrigger.data('total'));
+  setProgress($root.find('.progress-bar')[0], $importTrigger.data('processed'), $importTrigger.data('total'));
   watchImport(activeImportId);
 }
 
@@ -187,7 +188,7 @@ $importTrigger.on('click', async () => {
     // rendered before that was true, so refresh it to pick up the new row
     // before trying to target the bar it contains
     await refreshTable(Object.fromEntries(new URLSearchParams(window.location.search)));
-    setProgress('#products-import-progress', 0, 0);
+    setProgress($root.find('.progress-bar')[0], 0, 0);
     $(document).trigger('import:started', [{importId: imports[0].id}]);
     watchImport(imports[0].id);
   } catch (error) {

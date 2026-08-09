@@ -1,5 +1,5 @@
 @layer main {
-  .state-toggle {
+  .c_ui_state-toggle {
     display: grid;
 
     > * {

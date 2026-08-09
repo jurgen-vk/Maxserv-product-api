@@ -1,7 +1,7 @@
 import $ from "jquery";
 import debounce from "@app/utils/debounce";
 
-$(".ui-search").each(function () {
+$(".c_ui_table__search").each(function () {
   const $root = $(this);
   const $input = $root.find(".search-input");
   const $button = $root.find(".search-button");
@@ -11,7 +11,7 @@ $(".ui-search").each(function () {
   const emitDebounced = debounce(emit, 500);
 
   function syncClearButton() {
-    $clear.toggleClass("hidden", $input.val() === "");
+    $clear.toggle($input.val() !== "");
   }
 
   $input.on("input", function () {

@@ -1,5 +1,5 @@
 @layer main {
-  .nav-sidebar {
+  .l_main__nav__sidebar {
     container-type: normal;
     container-name: nav-sidebar;
 
@@ -67,7 +67,7 @@
     }
 
     &:not(:hover):not(:focus-within):not([data-pinned='true']) {
-      .sidebar-pin {
+      .l_main__nav__sidebar__pin {
         display: none;
       }
 
@@ -129,7 +129,7 @@
       }
 
       /* mobile: logo already lives in the header, pinning is desktop-only */
-      .logo, .sidebar-pin, .header + hr {
+      .c_ui_brand_logo, .l_main__nav__sidebar__pin, .header + hr {
         display: none;
       }
 

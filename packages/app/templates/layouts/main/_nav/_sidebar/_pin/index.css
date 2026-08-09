@@ -1,52 +1,52 @@
 @layer main {
-  .sidebar-pin {
-    .btn, .btn:hover:not(:disabled), .btn:active:not(:disabled) {
-      background-color: unset;
+  .l_main__nav__sidebar__pin {
+    padding: 0;
+    background-color: transparent;
+
+    .icon {
+      width: var(--text-lg);
+      height: var(--text-lg);
+    }
+
+    .icon--after .icon {
+      color: var(--color-primary-add-3);
+    }
+
+    &[data-pressed] {
+      .icon--before {
+        display: none;
+      }
+
+      .icon--after {
+        display: inline-flex;
+      }
+    }
+
+    &:not([data-pressed]) {
+      .icon--before {
+        display: inline-flex;
+      }
+
+      .icon--after {
+        display: none;
+      }
+    }
+
+    &,
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
       box-shadow: unset;
       border-color: transparent;
       transform: scale(1);
       /*transition: transform 0.1s var(--snap);*/
     }
 
-    .btn:hover:not(:disabled) {
+    &:hover:not(:disabled) {
       transform: scale(1.15);
     }
 
-    .btn:active:not(:disabled) {
+    &:active:not(:disabled) {
       transform: scale(1);
-    }
-
-    .btn {
-      padding: 0;
-
-      .icon {
-        width: var(--text-lg);
-        height: var(--text-lg);
-      }
-
-      .icon--after .icon {
-        color: var(--color-primary-add-3);
-      }
-    }
-
-    &[aria-pressed="true"] {
-      .icon--before {
-        display: none;
-      }
-
-      .icon--after {
-        display: inline-flex;
-      }
-    }
-
-    &[aria-pressed="false"] {
-      .icon--before {
-        display: inline-flex;
-      }
-
-      .icon--after {
-        display: none;
-      }
     }
   }
 }

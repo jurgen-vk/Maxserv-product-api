@@ -1,5 +1,5 @@
 @layer main {
-  .app-shell {
+  .l_main {
     display: flex;
     background-color: var(--color-main);
     height: 100dvh;

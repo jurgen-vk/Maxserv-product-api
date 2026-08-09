@@ -9,12 +9,11 @@
 {% set iconAfter %}{% block iconAfter %}{% endblock %}{% endset %}
 
 <{{ tag }} {{ attrs(defaults: {
-  class: 'btn',
+  class: 'c_ui_button',
   'data-variant': variant,
   type: tag == 'a' ? null : type,
   href: href,
   disabled: (tag == 'button' and disabled) ? true : null,
-  'aria-disabled': (tag == 'a' and disabled) ? 'true' : null,
 }, attributes: attributes) }}>
 {% if iconBefore|trim is not empty %}
   <span class="icon-container icon--before">{{ iconBefore }}</span>

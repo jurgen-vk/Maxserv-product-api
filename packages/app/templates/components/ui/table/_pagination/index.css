@@ -1,5 +1,5 @@
 @layer main {
-  .pagination {
+  .c_ui_table__pagination {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -63,7 +63,7 @@
         background-color: var(--color-main-2);
       }
 
-      &.is-active {
+      &[data-active] {
         font-weight: 600;
         color: var(--color-text-light);
         background-color: var(--color-primary);

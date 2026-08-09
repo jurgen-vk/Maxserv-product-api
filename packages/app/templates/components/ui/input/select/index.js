@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-$('.ui-select').each(function () {
+$('.c_ui_input_select').each(function () {
   const $root = $(this);
   const $trigger = $root.find('.trigger');
   const $panel = $root.find('.panel');
@@ -11,12 +11,11 @@ $('.ui-select').each(function () {
 
   $panel.on('toggle', (event) => {
     const isOpen = event.newState === 'open';
-    $trigger.attr('aria-expanded', isOpen ? 'true' : 'false');
     if (isOpen) {
       $search.trigger('focus');
     } else {
       $search.val('');
-      $options.removeClass('hidden');
+      $options.show();
     }
   });
 
@@ -24,7 +23,7 @@ $('.ui-select').each(function () {
     const query = $(this).val().toLowerCase();
     $options.each(function () {
       const $option = $(this);
-      $option.toggleClass('hidden', !$option.text().toLowerCase().includes(query));
+      $option.toggle($option.text().toLowerCase().includes(query));
     });
   });
 
@@ -32,8 +31,8 @@ $('.ui-select').each(function () {
     const $option = $(this);
     $input.val($option.data('value')).trigger('change');
     $value.text($option.text().trim());
-    $options.removeClass('is-selected');
-    $option.addClass('is-selected');
+    $options.removeAttr('data-selected');
+    $option.attr('data-selected', '');
     $panel.get(0).hidePopover();
   });
 });

@@ -1,5 +1,5 @@
 @layer main {
-  .filter-panel {
+  .p_products__products-table__filter-panel {
     /* fields inside this panel sit one step lighter than the panel's own
        surface — a local override of the shared --field alias, not a
        change reaching into select/range-slider's own internal classes */
@@ -63,7 +63,7 @@
     /* real, trigger-relative placement once anchor positioning is
        supported — popovertarget already establishes an implicit anchor
        reference to the trigger button. +1rem matches the gap already used
-       between the toolbar and the table below it (.products-page's gap). */
+       between the toolbar and the table below it (.p_products's gap). */
     @supports (anchor-name: --a) {
       /* left/bottom must be reset to auto explicitly — otherwise a stray
          non-auto value (from the UA's own [popover] default inset, or from

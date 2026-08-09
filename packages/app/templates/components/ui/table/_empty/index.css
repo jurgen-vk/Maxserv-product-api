@@ -1,5 +1,5 @@
 @layer main {
-  .table-empty {
+  .c_ui_table__empty {
     display: flex;
     flex-direction: column;
     align-items: center;

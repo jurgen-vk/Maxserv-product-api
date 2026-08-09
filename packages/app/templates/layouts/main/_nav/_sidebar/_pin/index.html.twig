@@ -1,10 +1,9 @@
 {% set sidebarPinned = app.request.cookies.get('sidebarPinned') %}
 
-<div class="sidebar-pin" aria-pressed="{{ sidebarPinned == 'true' ? 'true' : 'false' }}">
-  {% embed 'components.ui.button' with {
-    variant: 'neutral'
-  } only %}
-    {% block iconBefore %} {{ icon('lucide:pin') }} {% endblock %}
-    {% block iconAfter %} {{ icon('lucide:pin-off') }} {% endblock %}
-  {% endembed %}
-</div>
+{% embed 'components.ui.button' with {
+  variant: 'transparent',
+  attributes: { class: 'l_main__nav__sidebar__pin', 'data-pressed': sidebarPinned == 'true' ? true : null },
+} only %}
+  {% block iconBefore %} {{ icon('lucide:pin') }} {% endblock %}
+  {% block iconAfter %} {{ icon('lucide:pin-off') }} {% endblock %}
+{% endembed %}

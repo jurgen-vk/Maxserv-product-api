@@ -1,0 +1,10 @@
+<template class="c_ui_toaster__toast-template">
+  <div {{ attrs(defaults: { class: 'c_ui_toaster__toast' }, attributes: attributes) }}>
+    <div class="toast-content">
+      <span class="icon-slot"></span>
+      <span class="message"></span>
+      <button type="button" class="close">{{ icon('lucide:x') }}</button>
+      
+    </div>
+  </div>
+</template>

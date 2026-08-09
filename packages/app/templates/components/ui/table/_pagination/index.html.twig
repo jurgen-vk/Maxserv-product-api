@@ -1,6 +1,6 @@
 {% set extraParams = extraParams|default({}) %}
 
-<div {{ attrs(defaults: { class: 'pagination' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'c_ui_table__pagination' }, attributes: attributes) }}>
   <p class="summary">
     {% if paginator.total > 0 %}
       Showing {{ paginator.offset + 1 }}–{{ min(paginator.offset + paginator.perPage, paginator.total) }} of {{ paginator.total }}
@@ -20,10 +20,10 @@
     </label>
 
     {% if paginator.totalPages > 1 %}
-      <nav class="pages" aria-label="Pagination">
+      <nav class="pages">
         {% if paginator.hasPreviousPage %}
           <a href="{{ path(routeName, extraParams|merge({ page: paginator.page - 1, perPage: paginator.perPage })) }}"
-             class="page-link link" data-page="{{ paginator.page - 1 }}" aria-label="Previous page">
+             class="page-link link" data-page="{{ paginator.page - 1 }}">
             {{ icon('lucide:chevron-left') }}
           </a>
         {% endif %}
@@ -39,7 +39,7 @@
 
         {% for p in start..end %}
           <a href="{{ path(routeName, extraParams|merge({ page: p, perPage: paginator.perPage })) }}"
-             class="page-link link{{ p == paginator.page ? ' is-active' : '' }}"
+             class="page-link link"{{ p == paginator.page ? ' data-active' : '' }}
              data-page="{{ p }}">{{ p }}</a>
         {% endfor %}
 
@@ -51,7 +51,7 @@
 
         {% if paginator.hasNextPage %}
           <a href="{{ path(routeName, extraParams|merge({ page: paginator.page + 1, perPage: paginator.perPage })) }}"
-             class="page-link link" data-page="{{ paginator.page + 1 }}" aria-label="Next page">
+             class="page-link link" data-page="{{ paginator.page + 1 }}">
             {{ icon('lucide:chevron-right') }}
           </a>
         {% endif %}

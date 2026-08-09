@@ -1,15 +1,10 @@
 @layer main {
-  .ui-range {
+  .c_ui_input_range-slider {
     --field: var(--color-main-2);
 
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
-
-    &:focus-within {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
-    }
 
     .label {
       font-size: var(--text-xs);

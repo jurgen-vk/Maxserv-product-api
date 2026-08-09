@@ -1,6 +1,6 @@
-{% set iconName = iconName|default(null) %}
+{% set icon = icon|default(null) %}
 
-<div {{ attrs(defaults: { class: 'page-header' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'c_ui_page-header' }, attributes: attributes) }}>
   <div class="title">
     {% if icon %}{{ icon|raw }}{% endif %}
     <h1>{{ title }}</h1>

@@ -5,11 +5,12 @@
   {% set percent = activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
   {% set progressBar %}
     {% include 'components.ui.progress-bar' with {
-      attributes: { id: 'products-import-progress', style: '--progress: ' ~ percent ~ '%' },
+      attributes: { style: '--progress: ' ~ percent ~ '%' },
     } only %}
   {% endset %}
 {% endif %}
 
+<div class="p_products__products-table">
 {% embed 'components.ui.table' with {
   items: items,
   filter: filter,
@@ -77,8 +78,9 @@
           {% endif %}
         </td>
         <td class="num">{{ product.rating|number_format(1) }}</td>
-        <td class="num{{ product.stock < 10 ? ' num--low' : '' }}">{{ product.stock }}</td>
+        <td class="num"{{ product.stock < 10 ? ' data-low' : '' }}>{{ product.stock }}</td>
       </tr>
     {% endfor %}
   {% endblock %}
 {% endembed %}
+</div>

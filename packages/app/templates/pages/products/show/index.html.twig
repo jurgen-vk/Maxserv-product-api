@@ -3,7 +3,7 @@
 {% block title %}{{ product.title }}{% endblock %}
 
 {% block content %}
-  <div class="product-show">
+  <div class="p_products_show">
     {% embed 'components.ui.button' with {
       variant: 'neutral',
       href: path('products_index'),
@@ -36,7 +36,7 @@
             {% endif %}
           </div>
 
-          <span class="stock{{ product.stock < 10 ? ' is-low' : '' }}">{{ product.stock }} in stock</span>
+          <span class="stock"{{ product.stock < 10 ? ' data-low' : '' }}>{{ product.stock }} in stock</span>
         </div>
         <hr>
 
@@ -45,7 +45,7 @@
 
         <div class="rating">
           {% for i in 1..5 %}
-            {{ icon('lucide:star', { class: i <= product.rating|round ? 'is-filled' : '' }) }}
+            {{ icon('lucide:star', i <= product.rating|round ? { 'data-filled': true } : {}) }}
           {% endfor %}
           <span class="value">{{ product.rating|number_format(1) }}</span>
         </div>

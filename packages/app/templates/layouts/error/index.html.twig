@@ -10,11 +10,11 @@
   {{ vite_css('assets/css/app.css') }}
 </head>
 <body>
-<main class="error-shell">
+<main class="l_error">
   {% block content %}{% endblock %}
 </main>
 
-{% include 'components.ui.notification.container' %}
+{% include 'components.ui.toaster' %}
 
 {{ vite_js('assets/js/app.js') }}
 </body>

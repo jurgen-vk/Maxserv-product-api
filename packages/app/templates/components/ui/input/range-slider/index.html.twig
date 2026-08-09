@@ -7,19 +7,19 @@
 {% set nameMin = nameMin|default('min') %}
 {% set nameMax = nameMax|default('max') %}
 
-<div {{ attrs(defaults: { class: 'ui-range' }, attributes: attributes) }}>
-  {% if label %}<span class="label" id="range-label-{{ nameMin }}">{{ label }}</span>{% endif %}
+<div {{ attrs(defaults: { class: 'c_ui_input_range-slider' }, attributes: attributes) }}>
+  {% if label %}<span class="label">{{ label }}</span>{% endif %}
 
   <div class="values">
-    <input type="number" value="{{ valueMin }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" data-range-number="min" aria-labelledby="range-label-{{ nameMin }}">
+    <input type="number" value="{{ valueMin }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" data-range-number="min">
     <span>–</span>
-    <input type="number" value="{{ valueMax }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" data-range-number="max" aria-labelledby="range-label-{{ nameMin }}">
+    <input type="number" value="{{ valueMax }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" data-range-number="max">
   </div>
 
   <div class="track">
     <div class="fill"></div>
-    <input type="range" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ valueMin }}" data-range-slider="min" aria-labelledby="range-label-{{ nameMin }}">
-    <input type="range" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ valueMax }}" data-range-slider="max" aria-labelledby="range-label-{{ nameMin }}">
+    <input type="range" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ valueMin }}" data-range-slider="min">
+    <input type="range" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ valueMax }}" data-range-slider="max">
   </div>
 
   <input type="hidden" name="{{ nameMin }}" value="{{ valueMin }}" data-range-hidden="min">

@@ -1,5 +1,5 @@
 @layer main {
-  .products-page {
+  .p_products {
     display: flex;
     flex-direction: column;
     gap: 1rem;

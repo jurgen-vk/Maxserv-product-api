@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace MaxServ\App\EventSubscriber\Import;
 
+use MaxServ\App\Entity\Import;
 use MaxServ\App\Event\Import\ImportCompletedEvent;
 use MaxServ\App\Event\Import\ImportFailedEvent;
 use MaxServ\App\Event\Import\ImportProgressEvent;
 use MaxServ\App\Event\Import\ImportStartedEvent;
+use MaxServ\App\Extractor\ImportExtractor;
 use MaxServ\Core\Mercure\SafeHub;
+use MaxServ\Core\Notification\Enum\NotificationType;
 use MaxServ\Core\Notification\Event\NotificationEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mercure\Update;
@@ -19,6 +22,7 @@ final readonly class BroadcastImportStatusSubscriber implements EventSubscriberI
     public function __construct(
         private SafeHub $hub,
         private EventDispatcherInterface $eventDispatcher,
+        private ImportExtractor $extractor,
     ) {}
 
     public static function getSubscribedEvents(): array
@@ -33,75 +37,52 @@ final readonly class BroadcastImportStatusSubscriber implements EventSubscriberI
 
     public function onStarted(ImportStartedEvent $event): void
     {
-        $this->broadcast(
-            importId: $event->import->id,
-            data: [
-                'id' => $event->import->id,
-                'status' => 'running',
-            ],
-        );
+        $this->broadcast(import: $event->import);
 
         $this->eventDispatcher->dispatch(
             new NotificationEvent(
                 message: ucfirst($event->import->type) . ' import started',
+                type: NotificationType::Info,
             ),
         );
     }
 
     public function onProgress(ImportProgressEvent $event): void
     {
-        $this->broadcast(
-            importId: $event->import->id,
-            data: [
-                'id' => $event->import->id,
-                'status' => 'running',
-                'processed' => $event->import->processed,
-                'total' => $event->import->total,
-            ],
-        );
+        $this->broadcast(import: $event->import);
     }
 
     public function onCompleted(ImportCompletedEvent $event): void
     {
-        $this->broadcast(
-            importId: $event->import->id,
-            data: [
-                'id' => $event->import->id,
-                'status' => 'completed',
-                'processed' => $event->import->processed,
-            ],
-        );
+        $this->broadcast(import: $event->import);
 
         $this->eventDispatcher->dispatch(
             new NotificationEvent(
                 message: ucfirst($event->import->type) . " import completed ({$event->import->processed} products)",
-                type: 'success',
+                type: NotificationType::Success,
             ),
         );
     }
 
     public function onFailed(ImportFailedEvent $event): void
     {
-        $this->broadcast(
-            importId: $event->import->id,
-            data: [
-                'id' => $event->import->id,
-                'status' => 'failed',
-            ],
-        );
+        $this->broadcast(import: $event->import);
 
         $this->eventDispatcher->dispatch(
             new NotificationEvent(
                 message: ucfirst($event->import->type) . ' import failed',
-                type: 'error',
+                type: NotificationType::Danger,
             ),
         );
     }
 
-    private function broadcast(int $importId, array $data): void
+    private function broadcast(Import $import): void
     {
         $this->hub->publishSafely(
-            new Update(topics: "imports/{$importId}", data: json_encode($data)),
+            new Update(
+                topics: "imports/{$import->id}",
+                data: json_encode($this->extractor->extract(import: $import)),
+            ),
         );
     }
 }

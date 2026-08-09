@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-const $root = $('.nav-sidebar');
+const $root = $('.l_main__nav__sidebar');
 
 $root.on('click', function (event) {
   if (event.detail !== 0 && $root[0].contains(document.activeElement)) {

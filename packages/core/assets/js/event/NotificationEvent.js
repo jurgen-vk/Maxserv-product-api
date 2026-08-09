@@ -1,8 +1,10 @@
 export class NotificationEvent {
-  constructor(type, message, iconName, duration) {
-    this.type = type;
+  constructor(message, type, icon, duration) {
     this.message = message;
-    this.icon = iconName ?? NotificationEvent.#defaultIconMap[type];
+    this.type = type ?? 'default';
+    this.icon = icon
+      ?? NotificationEvent.#defaultIconMap[type]
+      ?? NotificationEvent.#defaultIconMap['default'];
     this.duration = duration ?? 3000;
   }
 
@@ -11,6 +13,6 @@ export class NotificationEvent {
     'warning': 'lucide:message-square-warning',
     'danger': 'lucide:message-square-x',
     'info': 'lucide:message-square-dot',
-    'default': 'lucide:message-square',
+    'default': 'lucide:message-square'
   };
 }

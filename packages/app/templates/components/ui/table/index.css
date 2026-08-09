@@ -1,5 +1,5 @@
 @layer main {
-  .ui-table {
+  .c_ui_table {
     border: 1px solid var(--color-main-3);
     background-color: var(--color-main);
 
@@ -40,7 +40,7 @@
       border-bottom: 1px solid var(--color-main-3);
     }
 
-    th.is-sorted {
+    th[data-sorted] {
       /* colored text instead of an underline — a cleaner, quieter signal */
       color: var(--color-primary-add-6);
     }

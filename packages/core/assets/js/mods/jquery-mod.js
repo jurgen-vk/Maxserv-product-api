@@ -1,14 +1,14 @@
 import $ from 'jquery';
 
 $.fn.hide = function () {
-  return this.addClass('hidden').attr('aria-hidden', 'true');
+  return this.prop('hidden', true);
 };
 
 $.fn.show = function () {
-  return this.removeClass('hidden').removeAttr('aria-hidden');
+  return this.prop('hidden', false);
 };
 
 $.fn.toggle = function (state) {
-  const shouldShow = state !== undefined ? state : this.hasClass('hidden');
+  const shouldShow = state !== undefined ? state : this.prop('hidden');
   return shouldShow ? this.show() : this.hide();
 };

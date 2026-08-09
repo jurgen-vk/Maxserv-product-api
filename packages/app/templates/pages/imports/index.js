@@ -1,6 +1,7 @@
 import $ from "jquery";
 import setProgress from "@app/progress";
 
+const $root = $(".p_imports");
 const mercureUrl = document.querySelector("meta[name=\"mercure-url\"]").content;
 
 const statusVariant = {
@@ -12,12 +13,12 @@ const statusVariant = {
 
 function renderBadge(status) {
   const label = status.charAt(0).toUpperCase() + status.slice(1);
-  return `<span class="badge" data-variant="${statusVariant[status]}">${label}</span>`;
+  return `<span class="c_ui_badge" data-variant="${statusVariant[status]}">${label}</span>`;
 }
 
 // Only rows that started as pending/running get a live subscription — a
 // row that's already completed/failed on load has nothing left to update.
-$(".import-row").each(function () {
+$root.find(".import-row").each(function () {
   const $row = $(this);
   const initialStatus = $row.data("status");
 
@@ -32,7 +33,7 @@ $(".import-row").each(function () {
     const update = JSON.parse(event.data);
 
     if (update.status === "running") {
-      const percent = setProgress(`#import-progress-${importId}`, update.processed, update.total);
+      const percent = setProgress($row.find(".progress-bar")[0], update.processed, update.total);
       $row.find(".progress-text").text(`${percent}%`);
       $row.find(".processed-cell").text(update.processed);
       return;

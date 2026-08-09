@@ -1,11 +1,9 @@
-<div {{ attrs(defaults: { class: 'import-buttons-wrapper' }, attributes: attributes) }} >
+<div {{ attrs(defaults: { class: 'p_products__import-button' }, attributes: attributes) }} >
   {% embed 'components.ui.button' with {
     variant: 'primary',
     attributes: {
-      class: [
-        'btn-import',
-        activeImport ? 'hidden' : null,
-      ],
+      class: 'btn-import',
+      hidden: activeImport ? true : null,
     },
   } only %}
     {% block iconBefore %} {{ icon('lucide:import') }} {% endblock %}
@@ -15,10 +13,8 @@
   {% embed 'components.ui.button' with {
     variant: 'primary',
     attributes: {
-      class: [
-        'btn-importing',
-        activeImport ? null : 'hidden',
-      ],
+      class: 'btn-importing',
+      hidden: activeImport ? null : true,
       disabled: true,
     },
   } only %}

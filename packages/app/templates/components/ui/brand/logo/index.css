@@ -1,5 +1,5 @@
 @layer main {
-  .logo {
+  .c_ui_brand_logo {
     display: flex;
     align-items: center;
     overflow: hidden;

@@ -3,8 +3,8 @@
    consumer needs them. */
 
 @layer utility {
-  .hidden {
-    display: none;
+  [hidden] {
+    display: none !important;
   }
 
   .spin {

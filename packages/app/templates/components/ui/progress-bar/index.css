@@ -5,7 +5,7 @@
 }
 
 @layer main {
-  .progress-bar {
+  .c_ui_progress-bar {
     block-size: 3px;
     inline-size: 100%;
     overflow: hidden;

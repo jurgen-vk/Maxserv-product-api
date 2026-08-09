@@ -1,5 +1,5 @@
 @layer main {
-  .page-header {
+  .c_ui_page-header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;

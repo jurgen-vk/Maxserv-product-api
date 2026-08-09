@@ -1,11 +1,9 @@
-{% include 'components.ui.notification' only %}
-
 <div {{ attrs(
   defaults: {
-    class: 'notification-container',
+    class: 'c_ui_toaster',
     'data-server-notifications': notifications.all()|json_encode
   },
   attributes: attributes
 ) }}>
-
+  {% include 'components.ui.toaster._toast' only %}
 </div>

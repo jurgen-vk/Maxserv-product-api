@@ -1,5 +1,5 @@
 @layer main {
-  .nav-header {
+  .l_main__nav__header {
     display: none;
     position: fixed;
     top: 0;
@@ -78,7 +78,7 @@
   /* icon swap driven entirely by the popover's own live state via a shared
      ancestor — :has() only sees descendants, and header/sidebar are
      siblings, so .app-nav is the closest common ancestor that can see both */
-  .app-nav:has(.nav-sidebar:popover-open) .nav-header {
+  .app-nav:has(.l_main__nav__sidebar:popover-open) .l_main__nav__header {
     .hamburger-icon {
       display: none;
     }

@@ -6,7 +6,7 @@
 {% set emptyActionHref = emptyActionHref|default(null) %}
 {% set emptyActionAttributes = emptyActionAttributes|default({}) %}
 
-<div {{ attrs(defaults: { class: 'ui-table' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'c_ui_table' }, attributes: attributes) }}>
   {% if isEmpty %}
     {% block empty %}
       {% include 'components.ui.table._empty' with {

@@ -1,9 +1,9 @@
 {% set items = items|default([]) %}
 
-<div {{ attrs(defaults: { class: 'ui-carousel' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'c_ui_media-carousel' }, attributes: attributes) }}>
   <div class="main">
     {% if items|length > 1 %}
-      <button type="button" class="arrow prev" aria-label="Previous image">
+      <button type="button" class="arrow prev">
         {{ icon('lucide:chevron-left') }}
       </button>
     {% endif %}
@@ -15,7 +15,7 @@
     {% endif %}
 
     {% if items|length > 1 %}
-      <button type="button" class="arrow next" aria-label="Next image">
+      <button type="button" class="arrow next">
         {{ icon('lucide:chevron-right') }}
       </button>
     {% endif %}
@@ -23,17 +23,17 @@
 
   {% if items|length > 1 %}
     <div class="thumbs-row">
-      <button type="button" data-carousel-scroll="prev" aria-label="Scroll thumbnails left">
+      <button type="button" data-carousel-scroll="prev">
         {{ icon('lucide:chevron-left') }}
       </button>
       <div class="thumbs">
         {% for item in items %}
-          <button type="button" class="thumb{{ loop.first ? ' is-active' : '' }}" data-index="{{ loop.index0 }}">
+          <button type="button" class="thumb"{{ loop.first ? ' data-active' : '' }} data-index="{{ loop.index0 }}">
             <img src="{{ item.url }}" alt="{{ item.alt|default('') }}">
           </button>
         {% endfor %}
       </div>
-      <button type="button" data-carousel-scroll="next" aria-label="Scroll thumbnails right">
+      <button type="button" data-carousel-scroll="next">
         {{ icon('lucide:chevron-right') }}
       </button>
     </div>

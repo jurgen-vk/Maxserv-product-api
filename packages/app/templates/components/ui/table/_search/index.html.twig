@@ -2,7 +2,7 @@
 {% set value = value|default('') %}
 {% set name = name|default('search') %}
 
-<div {{ attrs(defaults: { class: 'ui-search' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'c_ui_table__search' }, attributes: attributes) }}>
   <label class="field">
     {{ icon('lucide:search') }}
     <input
@@ -12,11 +12,7 @@
       value="{{ value }}"
       placeholder="{{ placeholder }}"
     >
-    <button
-      type="button"
-      class="clear{{ value ? '' : ' hidden' }}"
-      aria-label="Clear search"
-    >
+    <button type="button" class="clear" {{ value ? '' : 'hidden' }}>
       {{ icon('lucide:x') }}
     </button>
   </label>

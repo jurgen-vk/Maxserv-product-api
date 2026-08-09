@@ -1,5 +1,5 @@
 @layer main {
-  .ui-carousel {
+  .c_ui_media-carousel {
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
@@ -121,7 +121,7 @@
         box-shadow: none;
       }
 
-      &.is-active {
+      &[data-active] {
         border-color: var(--color-primary);
       }
 
