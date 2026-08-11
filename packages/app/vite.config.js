@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import { cssComponentGlob } from './vite-plugins/css-component-glob.js';
 import { fullReload } from './vite-plugins/full-reload.js';
+import { contextAliases } from './vite-plugins/context-aliases.js';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'node:path';
 
@@ -10,6 +11,10 @@ export default defineConfig(({mode}) => {
 
   return {
     plugins: [
+      contextAliases(import.meta.dirname, {
+        '@app': { js: 'assets/js', css: 'assets/css' },
+        '@core': { js: '../core/assets/js', css: '../core/assets/css' },
+      }),
       cssComponentGlob(import.meta.dirname),
       fullReload(import.meta.dirname, ['templates/**/*.html.twig']),
       viteStaticCopy({
@@ -28,10 +33,10 @@ export default defineConfig(({mode}) => {
     envDir,
     resolve: {
       alias: {
-        '@app': path.resolve(import.meta.dirname, 'assets/js'),
-        '@core': path.resolve(import.meta.dirname, '../core/assets/js'),
-        '~app': path.resolve(import.meta.dirname, 'templates'),
-        '~core': path.resolve(import.meta.dirname, '../core/templates')
+        '#app': path.resolve(import.meta.dirname, 'templates'),
+        '#core': path.resolve(import.meta.dirname, '../core/templates'),
+        '~app': path.resolve(import.meta.dirname, 'assets'),
+        '~core': path.resolve(import.meta.dirname, '../core/assets')
       }
     },
     server: {
@@ -43,7 +48,7 @@ export default defineConfig(({mode}) => {
       emptyOutDir: true,
       manifest: true,
       rolldownOptions: {
-        input: ['assets/js/app.js', 'assets/css/app.css']
+        input: ['assets/js/bootstrap.js', 'assets/js/app.js', 'assets/css/app.css']
       }
     }
   };

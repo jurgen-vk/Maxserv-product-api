@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { icon } from '@core/ui/icon';
+import icon from '@core/ui/icon';
 
 export default {
   async create(event) {

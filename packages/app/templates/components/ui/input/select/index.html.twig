@@ -5,24 +5,26 @@
 {% set name = name|default('') %}
 {% set variant = variant|default('primary') %}
 {% set searchable = searchable|default(false) %}
-{% set selectedOption = value ? options|filter(o => o.value == value)|first : null %}
+{% set multiselect = multiselect|default(false) %}
+{% set animateDropdown = animateDropdown|default({}) %}
 
-<div {{ attrs(defaults: { class: 'c_ui_input_select', 'data-variant': variant }, attributes: attributes) }}>
+{% set customOptions %}{% block options %}{% endblock %}{% endset %}
+
+<div {{ attrs(defaults: { class: 'c_ui_input_select' }, attributes: attributes) }}>
   {% if label %}<label>{{ label }}</label>{% endif %}
-  <div class="control">
-    <button type="button" class="trigger" popovertarget="select-panel-{{ name }}">
-      <span class="value">{{ selectedOption ? selectedOption.label : placeholder }}</span>
-      {{ icon('lucide:chevron-down') }}
-    </button>
-    <div class="panel" popover id="select-panel-{{ name }}">
-      {% if searchable %}<input type="text" class="select-search" placeholder="Search…">{% endif %}
-      <ul class="options">
-        {% if placeholder %}<li data-value=""{{ value == '' ? ' data-selected' : '' }}>{{ placeholder }}</li>{% endif %}
-        {% for option in options %}
-          <li data-value="{{ option.value }}"{{ value == option.value ? ' data-selected' : '' }}>{{ option.label }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    <input type="hidden" name="{{ name }}" value="{{ value }}" class="select-input">
-  </div>
+  <select
+    name="{{ name }}{{ multiselect ? '[]' : '' }}"
+    class="select-input"
+    data-variant="{{ variant }}"
+    data-searchable="{{ searchable ? '1' : '0' }}"
+    {% if animateDropdown is not empty %}data-animate-dropdown="{{ animateDropdown|json_encode }}"{% endif %}
+    {% if multiselect %}multiple{% endif %}
+    {% if placeholder %}data-placeholder="{{ placeholder }}"{% endif %}
+  >
+    {% if placeholder and not multiselect %}<option value=""></option>{% endif %}
+    {% for option in options %}
+      <option value="{{ option.value }}"{{ (multiselect and value is iterable and option.value in value) or (not multiselect and option.value == value) ? ' selected' : '' }}>{{ option.label }}</option>
+    {% endfor %}
+    {% if customOptions|trim is not empty %}{{ customOptions }}{% endif %}
+  </select>
 </div>

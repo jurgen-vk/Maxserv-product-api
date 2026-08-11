@@ -28,6 +28,10 @@
 
       .per-page-select {
         width: 4.5rem;
+
+        .c_ui_input_select__container {
+          padding: 0.125rem 0.5rem;
+        }
       }
     }
 

@@ -1,8 +1,9 @@
-@layer reset, base, default, default-dark, theme, theme-dark, main, utility;
+@layer vendor, reset, base, default, default-dark, theme, theme-dark, main, utility;
 
 @import "./fonts.css";
 @import "./reset.css";
 @import "./base.css";
 @import "./theme/default.css";
+@import "select2/dist/css/select2.css" layer(vendor);
 @import "./_components.generated.css";
 @import "./utility.css";

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render;
+namespace MaxServ\Core\Twig\ResourceRenderer;
 
 use DOMDocument;
 use RuntimeException;

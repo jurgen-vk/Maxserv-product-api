@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}MaxServ{% endblock %}</title>
-  <meta name="mercure-url" content="{{ mercure() }}">
+  <link rel="mercure" href="{{ mercure() }}">
   <meta name="theme-mode" content="{{ themeMode }}">
   {{ vite_css('assets/css/app.css') }}
 </head>
@@ -16,6 +16,6 @@
 
 {% include 'components.ui.toaster' %}
 
-{{ vite_js('assets/js/app.js') }}
+{{ vite_js('assets/js/bootstrap.js', 'assets/js/app.js') }}
 </body>
 </html>

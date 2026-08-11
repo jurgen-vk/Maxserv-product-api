@@ -1,4 +1,4 @@
-export class NotificationEvent {
+class NotificationEvent {
   constructor(message, type, icon, duration) {
     this.message = message;
     this.type = type ?? 'default';
@@ -16,3 +16,5 @@ export class NotificationEvent {
     'default': 'lucide:message-square'
   };
 }
+
+export { NotificationEvent };

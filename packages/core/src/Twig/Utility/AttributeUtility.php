@@ -2,21 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render\Extension;
+namespace MaxServ\Core\Twig\Utility;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
-
-final class AttributesExtension extends AbstractExtension
+final class AttributeUtility
 {
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction(name: 'attrs', callable: $this->render(...), options: ['is_safe' => ['html']]),
-        ];
-    }
-
-    private function render(array $defaults, ?array $attributes = null): string
+    public function merge(array $defaults, ?array $attributes = null): string
     {
         $attributes ??= [];
 

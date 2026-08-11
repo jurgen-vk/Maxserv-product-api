@@ -2,6 +2,7 @@ import $ from 'jquery';
 import setProgress from '@app/progress';
 import { fetchFragment } from '@core/api/fragmentFetcher';
 import notify from '@core/informer/notify';
+import mercure from '@core/sse/mercure';
 
 const $root = $('.p_products');
 const $tableContainer = $('.products-table-container');
@@ -28,7 +29,7 @@ async function refreshTable(params = {}, {pushState = false} = {}) {
   refreshController = new AbortController();
 
   try {
-    const table = await fetchFragment('/products', '_table', {
+    const table = await fetchFragment('/products', '_products-table', {
       params,
       signal: refreshController.signal
     });
@@ -76,8 +77,8 @@ $root.on('click', '.filter-clear', function (event) {
 
   const $form = $root.find('.filter-form');
 
-  $form.find('.c_ui_input_select').each(function () {
-    $(this).find('.options > li[data-value=""]').trigger('click');
+  $form.find('.c_ui_input_select .select-input').each(function () {
+    $(this).val('').trigger('change');
   });
 
   $form.find('.c_ui_input_range-slider').each(function () {
@@ -126,31 +127,26 @@ function setImportingState(isImporting) {
 }
 
 function watchImport(importId) {
-  const mercureUrl = document.querySelector('meta[name="mercure-url"]').content;
-  const source = new EventSource(`${mercureUrl}?topic=${encodeURIComponent(`imports/${importId}`)}`);
-
-  source.onmessage = (event) => {
-    const update = JSON.parse(event.data);
-
+  mercure.subscribe(`imports/${importId}`, (update, unsubscribe) => {
     if (update.status === 'running') {
       setProgress($root.find('.progress-bar')[0], update.processed, update.total);
       return;
     }
 
     if (update.status === 'completed') {
-      source.close();
+      unsubscribe();
       setImportingState(false);
       refreshTable(Object.fromEntries(new URLSearchParams(window.location.search)));
       return;
     }
 
     if (update.status === 'failed') {
-      source.close();
+      unsubscribe();
       setImportingState(false);
     }
-  };
+  });
 
-  // Deliberately no onerror handler: a dropped connection is usually transient
+  // Deliberately no onerror handling: a dropped connection is usually transient
   // (network blip, tab backgrounded) — EventSource reconnects on its own, so
   // tearing down the UI here would turn a recoverable hiccup into a false
   // failure. A real, terminal failure arrives as the explicit 'failed'

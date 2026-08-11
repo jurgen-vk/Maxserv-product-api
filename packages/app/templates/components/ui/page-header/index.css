@@ -11,10 +11,13 @@
       align-items: center;
       gap: 0.625rem;
 
-      svg {
+      .icon {
+        position: relative;
+        top: 2px;
         width: 1.25rem;
         height: 1.25rem;
         color: var(--color-primary);
+
       }
     }
 

@@ -7,7 +7,7 @@
     display: none !important;
   }
 
-  .spin {
+  .--spin {
     animation: spin 1s linear infinite;
   }
 }

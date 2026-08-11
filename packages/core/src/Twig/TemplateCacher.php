@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render;
+namespace MaxServ\Core\Twig;
 
 use MaxServ\Core\Cache\CacheableInterface;
 use Symfony\Component\Filesystem\Filesystem;

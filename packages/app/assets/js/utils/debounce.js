@@ -1,4 +1,4 @@
-export default function debounce(fn, wait) {
+function debounce(fn, wait) {
   let timer;
 
   return function debounced(...args) {
@@ -6,3 +6,5 @@ export default function debounce(fn, wait) {
     timer = setTimeout(() => fn.apply(this, args), wait);
   };
 }
+
+export default debounce;

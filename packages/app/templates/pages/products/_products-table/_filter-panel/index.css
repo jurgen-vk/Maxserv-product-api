@@ -1,12 +1,8 @@
 @layer main {
   .p_products__products-table__filter-panel {
-    /* fallback for browsers without anchor positioning (below): once a
-       popover is shown it's promoted to the top layer, and its containing
-       block becomes the viewport, not a position:relative ancestor — a
-       percentage-based top would resolve against viewport height, not the
-       trigger, so this uses a fixed on-screen offset instead. right: 0 is
-       fine unanchored too, since it just flushes to the viewport's own
-       right edge. */
+    --input-background-color: var(--color-main-2);
+    --input-border-color: var(--color-main-5);
+
     position: absolute;
     top: 5.5rem;
     right: 1rem;
@@ -16,31 +12,14 @@
     border-radius: var(--radius-default);
     border: none; /* reset the UA popover default border */
     padding: 1rem;
-    background-color: var(--color-main);
+    background-color: var(--color-main-1);
     box-shadow: var(--shadow-size-sm) var(--shadow-strength-sm);
+    overflow: visible;
     flex-direction: column;
     transition: opacity 0.15s ease, scale 0.15s ease,
     display 0.15s allow-discrete, overlay 0.15s allow-discrete;
-
-    /* closed state — opacity/scale live here (not just in @starting-style)
-       so there's an actual value change for the transition to animate
-       *toward* on close, not just on open. Without this, opacity/scale
-       never differ from :popover-open's values, so closing has nothing to
-       interpolate and the panel just vanishes the instant display flips. */
     opacity: 0;
-    scale: 0.96;
-
-    /* display must stay conditional on :popover-open — an unconditional
-       display: flex here is an author-origin style, which beats the UA
-       stylesheet's [popover]:not(:popover-open) { display: none } default
-       regardless of layers, permanently defeating the popover's own
-       hidden-until-shown behavior. flex-direction, by contrast, must NOT be
-       in here: it isn't part of the transition list, so unlike display (held
-       at its old value for the full 0.15s via allow-discrete) it would revert
-       to its row default the instant :popover-open stops matching — while the
-       panel is still visible and display:flex — collapsing the column layout
-       into a row for the rest of the close animation. Living outside this
-       block means it has no "closed" value to revert to. */
+    scale: 0.95;
 
     &:popover-open {
       display: flex;
@@ -51,20 +30,11 @@
     @starting-style {
       &:popover-open {
         opacity: 0;
-        scale: 0.96;
+        scale: 0.95;
       }
     }
 
-    /* real, trigger-relative placement once anchor positioning is
-       supported — popovertarget already establishes an implicit anchor
-       reference to the trigger button. +1rem matches the gap already used
-       between the toolbar and the table below it (.p_products's gap). */
     @supports (anchor-name: --a) {
-      /* left/bottom must be reset to auto explicitly — otherwise a stray
-         non-auto value (from the UA's own [popover] default inset, or from
-         the fallback rule above) over-constrains the box alongside the
-         explicit width, and the browser silently drops the anchor()-based
-         inset instead of using it */
       top: calc(anchor(bottom) + 1rem);
       right: anchor(right);
       left: auto;
@@ -74,22 +44,26 @@
     form {
       display: flex;
       flex-direction: column;
-      gap: 0.875rem;
+      gap: 0.75rem;
     }
 
-    .field {
+    hr {
+      margin: -0.1875rem 0;
+    }
+
+    .minimum-rating {
       display: flex;
       flex-direction: column;
-      gap: 0.375rem;
+      gap: 0.25rem;
 
-      input {
-        /* one step lighter than the panel's own surface — overriding the
-           shared input background directly, scoped to just this field,
-           rather than the --input-background variable itself, since
-           overriding a shared custom property at this panel's scope
-           would leak into select/range-slider's own internal inputs
-           nested inside this same panel too */
-        background-color: var(--color-main-5);
+      input:focus {
+        border-color: var(--input-border-color-active);
+      }
+
+      &[data-variant="primary"] input {
+        &:focus {
+          border-color: var(--color-primary-add-1);
+        }
       }
     }
 

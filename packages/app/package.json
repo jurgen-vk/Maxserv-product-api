@@ -4,7 +4,8 @@
   "type": "module",
   "dependencies": {
     "jquery": "^4.0.0",
-    "maxserv-core": "*"
+    "maxserv-core": "*",
+    "select2": "^4.0.13"
   },
   "devDependencies": {
     "picomatch": "^2.3.2",

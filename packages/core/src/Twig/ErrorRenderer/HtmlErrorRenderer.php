@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render\Error;
+namespace MaxServ\Core\Twig\ErrorRenderer;
 
-use MaxServ\Core\Render\TemplateRenderer;
+use MaxServ\Core\Twig\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Error\LoaderError;
 

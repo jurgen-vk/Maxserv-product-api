@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render\Extension;
+namespace MaxServ\Core\Twig\Extension;
 
-use MaxServ\Core\Render\IconRenderer;
+use MaxServ\Core\Twig\ResourceRenderer\IconRenderer;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -19,7 +19,7 @@ final class IconExtension extends AbstractExtension
         return [
             new TwigFunction(
                 name: 'icon',
-                callable: [$this->iconRenderer, 'render'],
+                callable: $this->iconRenderer->render(...),
                 options: ['is_safe' => ['html']],
             ),
         ];

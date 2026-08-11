@@ -5,8 +5,11 @@
     --color-light: oklab(0.9612 0.0000 0.0000);
     --color-dark: oklab(0.1591 0.0000 0.0000);
 
-    --color-text-light: oklab(0.8686 0.0000 0.0000);
-    --color-text-dark: oklab(0.2516 0.0000 0.0000);
+    /*--color-text-light: oklab(0.8686 0.0000 0.0000);*/
+    /*--color-text-dark: oklab(0.2516 0.0000 0.0000);*/
+
+    --color-text-light: oklab(0.9303 0.0000 0.0000);
+    --color-text-dark: oklab(0.1899 0.0000 0.0000);
 
     /*---[ ▼ Radius ▼ ]-----------------------------------------------------------------------------------------------*/
     --radius-tight: 2px;
@@ -15,7 +18,7 @@
 
     /*---[ ▼ Border ▼ ]---------------------------------------------------------------------------------------------------------*/
     --border-color-primary: var(--color-primary-sub-8);
-    --border-color-main: var(--color-main-3);
+    --border-color-main: var(--color-main-5);
 
     /*---[ ▼ Font Stack ▼ ]-------------------------------------------------------------------------------------------*/
     --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;

@@ -1,4 +1,4 @@
-export async function fetchFragments(path, fragments, {params = {}, excludeUrlParams = false, signal} = {}) {
+async function fetchFragments(path, fragments, {params = {}, excludeUrlParams = false, signal} = {}) {
   const base = excludeUrlParams
     ? {}
     : Object.fromEntries(new URLSearchParams(window.location.search));
@@ -11,13 +11,18 @@ export async function fetchFragments(path, fragments, {params = {}, excludeUrlPa
   }
 
   const search = new URLSearchParams(merged);
-  fragments.forEach((fragment) => search.append("fragments[]", fragment));
+  fragments.forEach((fragment) => search.append('fragments[]', fragment));
 
   const response = await fetch(`${path}?${search}`, {signal});
   return response.json();
 }
 
-export async function fetchFragment(path, fragment, options) {
+async function fetchFragment(path, fragment, options) {
   const fragments = await fetchFragments(path, [fragment], options);
   return fragments[fragment];
 }
+
+export {
+  fetchFragment,
+  fetchFragments
+};

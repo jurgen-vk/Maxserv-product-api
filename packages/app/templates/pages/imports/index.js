@@ -1,8 +1,8 @@
 import $ from "jquery";
 import setProgress from "@app/progress";
+import mercure from "@core/sse/mercure";
 
 const $root = $(".p_imports");
-const mercureUrl = document.querySelector("meta[name=\"mercure-url\"]").content;
 
 const statusVariant = {
   pending: "neutral",
@@ -27,11 +27,8 @@ $root.find(".import-row").each(function () {
   }
 
   const importId = $row.data("importId");
-  const source = new EventSource(`${mercureUrl}?topic=${encodeURIComponent(`imports/${importId}`)}`);
 
-  source.onmessage = (event) => {
-    const update = JSON.parse(event.data);
-
+  mercure.subscribe(`imports/${importId}`, (update, unsubscribe) => {
     if (update.status === "running") {
       const percent = setProgress($row.find(".progress-bar")[0], update.processed, update.total);
       $row.find(".progress-text").text(`${percent}%`);
@@ -40,7 +37,7 @@ $root.find(".import-row").each(function () {
     }
 
     if (update.status === "completed" || update.status === "failed") {
-      source.close();
+      unsubscribe();
       $row.find(".status-cell").html(renderBadge(update.status));
       $row.find(".progress-cell").html("<span class=\"percent\">—</span>");
 
@@ -49,9 +46,9 @@ $root.find(".import-row").each(function () {
         $row.find(".completed-cell").text(new Date().toLocaleString());
       }
     }
-  };
+  });
 
-  // Deliberately no onerror handler — same rationale as the products page's
+  // Deliberately no onerror handling — same rationale as the products page's
   // import watcher: transient drops auto-reconnect, a real terminal
   // failure always arrives as an explicit 'failed' status instead.
 });

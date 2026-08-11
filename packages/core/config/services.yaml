@@ -121,13 +121,13 @@ services:
       - method: addExtension
         arguments: [ '@UserFrosting\ViteTwig\ViteTwigExtension' ]
       - method: addExtension
-        arguments: [ '@MaxServ\Core\Render\Extension\AssetExtension' ]
+        arguments: [ '@MaxServ\Core\Twig\Extension\ViteAssetExtension' ]
       - method: addExtension
         arguments: [ '@Symfony\Component\Mercure\Twig\MercureExtension' ]
       - method: addExtension
-        arguments: [ '@MaxServ\Core\Render\Extension\IconExtension' ]
+        arguments: [ '@MaxServ\Core\Twig\Extension\IconExtension' ]
       - method: addExtension
-        arguments: [ '@MaxServ\Core\Render\Extension\AttributesExtension' ]
+        arguments: [ '@MaxServ\Core\Twig\Extension\AttributeExtension' ]
       - method: addExtension
         arguments: [ '@Symfony\Bridge\Twig\Extension\RoutingExtension' ]
       - method: addGlobal
@@ -149,6 +149,13 @@ services:
   UserFrosting\ViteTwig\ViteTwigExtension:
     arguments:
       $manifest: '@UserFrosting\ViteTwig\ViteManifest'
+
+  MaxServ\Core\Twig\Resolver\ViteAssetResolver:
+    arguments:
+      $package: '@Symfony\Component\Asset\PackageInterface'
+      $basePath: '%vite.base_path%'
+      $serverUrl: '%vite.server_url%'
+      $devEnabled: '%app.is_dev%'
 
   # ==========================================================================
   # Assets
@@ -224,7 +231,7 @@ services:
   # Error rendering
   # ==========================================================================
 
-  MaxServ\Core\Render\Error\ErrorRenderer:
+  MaxServ\Core\Twig\ErrorRenderer:
     arguments:
       $renderers: !tagged_iterator core.error_renderer
       $debug: '%app.debug%'

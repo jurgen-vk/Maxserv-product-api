@@ -6,7 +6,7 @@ namespace MaxServ\Core\Container;
 
 use MaxServ\Core\Cache\CacheableInterface;
 use MaxServ\Core\DependencyInjection\Compiler\TwigPathsPass;
-use MaxServ\Core\Render\Error\ErrorRendererInterface;
+use MaxServ\Core\Twig\ErrorRenderer\ErrorRendererInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -45,6 +45,7 @@ final readonly class ContainerConfigurator
         $container->setParameter(name: 'app.url', value: '%env(APP_URL)%');
 
         $container->setParameter(name: 'vite.server_url', value: '%env(VITE_SERVER_URL)%');
+        $container->setParameter(name: 'vite.base_path', value: '/assets/');
     }
 
     private static function registerAttributeConfigurators(ContainerBuilder $container): void

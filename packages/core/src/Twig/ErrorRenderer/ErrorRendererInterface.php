@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render\Error;
+namespace MaxServ\Core\Twig\ErrorRenderer;
 
 use Symfony\Component\HttpFoundation\Response;
 

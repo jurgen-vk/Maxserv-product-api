@@ -2,7 +2,7 @@
   .c_ui_input_range-slider {
     display: flex;
     flex-direction: column;
-    gap: 0.625rem;
+    gap: 0.25rem;
 
     .values {
       display: flex;
@@ -11,8 +11,11 @@
 
       input {
         width: 100%;
-        font-variant-numeric: tabular-nums;
         font-family: var(--font-mono);
+
+        &:focus {
+          border-color: var(--input-border-color-active);
+        }
       }
 
       span {
@@ -29,7 +32,7 @@
       margin-right: 0.125rem;
       height: 0.25rem;
       border-radius: var(--radius-default);
-      background-color: var(--color-main-8);
+      background-color: var(--color-main-5);
 
       .fill {
         pointer-events: none;
@@ -37,10 +40,10 @@
         top: 0;
         bottom: 0;
         border-radius: var(--radius-default);
-        background-color: var(--color-primary);
+        background-color: var(--color-main-15);
       }
 
-      input[type='range'] {
+      input[type="range"] {
         position: absolute;
         top: 50%;
         left: 0;
@@ -66,8 +69,8 @@
           cursor: pointer;
           appearance: none;
           border-radius: 9999px;
-          border: 2px solid var(--color-primary);
-          background-color: var(--color-main);
+          border: 2px solid var(--color-main-10);
+          background-color: var(--color-main-1);
           pointer-events: auto;
         }
 
@@ -81,6 +84,20 @@
           background-color: var(--color-main);
           pointer-events: auto;
         }
+      }
+    }
+
+    &[data-variant="primary"] {
+      .values input:focus {
+        border-color: var(--color-primary-add-1);
+      }
+
+      .fill {
+        background-color: var(--color-primary);
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        border: 2px solid var(--color-primary-add-1);
       }
     }
   }

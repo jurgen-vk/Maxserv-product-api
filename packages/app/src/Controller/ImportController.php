@@ -8,7 +8,7 @@ use MaxServ\App\Entity\Import;
 use MaxServ\App\Extractor\ImportExtractor;
 use MaxServ\App\Message\RunImportMessage;
 use MaxServ\App\Repository\ImportRepository;
-use MaxServ\Core\Render\TemplateRenderer;
+use MaxServ\Core\Twig\TemplateRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

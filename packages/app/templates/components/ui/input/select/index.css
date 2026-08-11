@@ -2,152 +2,156 @@
   .c_ui_input_select {
     display: flex;
     flex-direction: column;
-    gap: 0.375rem;
+    gap: 0.25rem;
+    position: relative;
+  }
 
-    .control {
-      position: relative;
+  .c_ui_input_select__container {
+    &.select2-selection--single,
+    &.select2-selection--multiple {
+      height: auto;
+      min-height: 0;
+      border-radius: var(--radius-default);
+      border: 1px solid var(--input-border-color);
+      padding: var(--input-padding);
+      /*padding-right: 1.75rem;*/
+      background-color: var(--input-background-color);
     }
 
-    .trigger {
-      display: flex;
-      width: 100%;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      border-radius: var(--radius-default);
-      border: 1px solid var(--input-border);
-      padding: var(--input-padding);
-      /*font-size: var(--text-md);*/
-      /*font-weight: var(--text-md-weight);*/
-      /*letter-spacing: var(--text-md-letter-spacing);*/
-      /*text-transform: none;*/
-      /*font-family: var(--font-sans);*/
-      background-color: var(--input-background);
+    .select2-selection__rendered {
+      padding: 0;
+      font-size: var(--text-md);
+      font-weight: var(--text-md-weight);
+      letter-spacing: var(--text-md-letter-spacing);
+      font-family: var(--font-sans);
+      line-height: normal;
       color: var(--input-text-color);
-      -webkit-tap-highlight-color: transparent;
+    }
 
-      .value {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .select2-selection__placeholder {
+      color: var(--color-text-13);
+    }
+
+    .select2-selection__arrow {
+      height: auto;
+      top: 50%;
+      right: 0.7rem;
+      width: 0.8125rem;
+      translate: 0 -50%;
+
+      b {
+        display: none;
       }
 
-      svg {
+      &::after {
+        content: "";
+        display: block;
         width: 0.8125rem;
         height: 0.8125rem;
-        flex-shrink: 0;
-        color: var(--color-text-13);
-        transition: transform 0.15s ease;
+        background-color: var(--color-text-13);
+        mask-image: url("~app/icons/lucide/chevron-down.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
       }
     }
 
-    /* chevron rotates with the popover's own open state — no JS needed for
-       this part, :has() + :popover-open read live off the platform's own
-       state rather than a class JS would otherwise have to keep in sync
-       by hand */
-
-    .control:has(.panel:popover-open) .trigger svg {
-      transform: rotate(180deg);
+    .select2-selection--multiple .select2-selection__rendered {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
     }
 
-    .panel {
-      /* once shown, a popover is promoted to the top layer — its
-         containing block becomes the viewport, not a position:relative
-         ancestor — so top/left/bottom are computed and set directly by
-         index.js against the trigger's actual position, flipping above it
-         when there isn't room below. The UA stylesheet gives [popover] its
-         own `inset: 0` default, which would otherwise win over an unset
-         inline style (index.js clears whichever side it isn't using) —
-         these auto values are the author-level override that lets JS's
-         inline top/bottom/left actually take effect instead. */
-      position: fixed;
-      top: auto;
-      right: auto;
-      bottom: auto;
-      left: auto;
-      width: 16rem;
+    .select2-selection__choice {
       margin: 0;
+      border-radius: var(--radius-tight);
+      border: none;
+      padding: 0.0625rem 0.375rem;
+      /*background-color: var(--color-primary-sub-8); !* shouldn't be primary *!*/
+      background-color: var(--color-main); /* shouldn't be primary */
+      color: var(--color-text-1);
+    }
+
+    .select2-selection__choice__remove {
+      margin-right: 0.25rem;
+      border: none;
+      color: inherit;
+    }
+  }
+
+  .select2-container--open .c_ui_input_select__container {
+    border-color: var(--input-border-color-active);
+  }
+
+  .c_ui_input_select__dropdown {
+    overflow: hidden;
+    padding: 0.5rem;
+    border-radius: 0 0 var(--radius-default) var(--radius-default);
+    border: 1px solid var(--input-border-color);
+    background-color: var(--input-background-color);
+    box-shadow: var(--shadow-size-xs) var(--shadow-strength-xs);
+
+    .select2-search--dropdown {
+      margin-bottom: 0.375rem;
+    }
+
+    .select2-search__field {
       border-radius: var(--radius-default);
-      border: none; /* reset the UA popover default border */
-      padding: 0.5rem;
-      background-color: var(--color-main);
-      box-shadow: var(--shadow-size-sm) var(--shadow-strength-sm);
-      opacity: 1;
-      scale: 1;
-      transition: opacity 0.15s ease, scale 0.15s ease,
-      display 0.15s allow-discrete, overlay 0.15s allow-discrete;
+      border: 1px solid var(--input-border-color);
+      padding: var(--input-padding);
+      font-size: var(--text-sm);
+      font-family: var(--font-sans);
+      background-color: var(--input-background-color);
+      color: var(--input-text-color);
+      outline: none;
 
-      @starting-style {
-        &:popover-open {
-          opacity: 0;
-          scale: 0.96;
-        }
-      }
-
-      input {
-        margin-bottom: 0.375rem;
-        width: 100%;
+      &:focus {
+        border-color: var(--input-border-color-active);
       }
     }
 
-    .options {
-      margin: 0;
+    .select2-results__options {
       max-height: 13rem;
-      list-style: none;
-      overflow-y: auto;
-      padding: 0;
-      overscroll-behavior: contain;
-      /* reaching the end of this list
-             shouldn't scroll the page behind the popover */
-      scrollbar-gutter: stable;
-      /* filtering the list shorter/longer
-             shouldn't jitter its width as a scrollbar appears/disappears */
-
-      > li {
-        cursor: pointer;
-        border-radius: var(--radius-default);
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        padding-top: 0.375rem;
-        padding-bottom: 0.375rem;
-        font-size: var(--text-sm);
-        color: var(--input-text-color);
-      }
     }
 
-    /* --- Variants ---
-       decide the options list's hover/active/selected backgrounds only —
-       the trigger/panel/field look stays the shared --input-* tokens
-       regardless of variant, same as the plain select component */
-
-    &[data-variant="primary"] .options > li {
-      &:hover {
-        background-color: var(--color-primary-sub-7);
-      }
-
-      &:active {
-        background-color: var(--color-primary-sub-4);
-      }
-
-      &[data-selected] {
-        font-weight: 700;
-        background-color: var(--color-primary-sub-5);
-      }
+    .select2-results__option {
+      border-radius: var(--radius-default);
+      padding: 0.375rem 0.5rem;
+      font-size: var(--text-sm);
+      color: var(--input-text-color);
     }
 
-    &[data-variant="neutral"] .options > li {
-      &:hover {
-        background-color: color-mix(in oklab, var(--color-main-13) 10%, transparent);
-      }
+    &.select2-dropdown--above {
+      top: auto;
+      bottom: 0;
+    }
+  }
 
-      &:active {
-        background-color: color-mix(in oklab, var(--color-main-13) 24%, transparent);
-      }
+  /*---[ ▼ Variants ▼ ]-----*/
+  .select-input[data-variant="primary"] + .select2-container,
+  .c_ui_input_select__dropdown[data-variant="primary"] {
+    --input-border-color-active: var(--color-primary-add-1);
 
-      &[data-selected] {
-        font-weight: 700;
-        background-color: color-mix(in oklab, var(--color-main-13) 16%, transparent);
-      }
+    .select2-results__option--highlighted {
+      background-color: var(--color-primary-sub-7);
+    }
+
+    .select2-results__option[aria-selected="true"] {
+      font-weight: 700;
+      background-color: var(--color-primary-sub-5);
+    }
+  }
+
+  .select-input[data-variant="neutral"] + .select2-container,
+  .c_ui_input_select__dropdown[data-variant="neutral"] {
+    --input-border-color-active: var(--color-main-3);
+
+    .select2-results__option--highlighted {
+      background-color: color-mix(in oklab, var(--color-main-13) 10%, transparent);
+    }
+
+    .select2-results__option[aria-selected="true"] {
+      font-weight: 700;
+      background-color: color-mix(in oklab, var(--color-main-13) 16%, transparent);
     }
   }
 }

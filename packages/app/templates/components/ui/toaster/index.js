@@ -1,7 +1,8 @@
 import $ from 'jquery';
 import bus from '@core/event-bus/EventBus';
+import mercure from '@core/sse/mercure';
 import { NotificationEvent } from '@core/event/NotificationEvent';
-import toast from '~app/components/ui/toaster/_toast';
+import toast from '#app/components/ui/toaster/_toast';
 
 const $root = $('.c_ui_toaster');
 
@@ -11,26 +12,25 @@ async function pushNotification(event) {
 
 bus.on(NotificationEvent, pushNotification);
 
-const mercureUrl = $('meta[name="mercure-url"]').attr('content');
-const source = new EventSource(
-  mercureUrl + '?topic=' + encodeURIComponent('notifications')
-);
-
-source.onmessage = (event) => {
-  const data = JSON.parse(event.data);
+mercure.subscribe('notifications', (notification) => {
   pushNotification(
-    new NotificationEvent(data.message, data.type, data.icon, data.duration)
+    new NotificationEvent(
+      notification.message,
+      notification.type,
+      notification.icon,
+      notification.duration
+    )
   );
-};
+});
 
 const serverNotifications = $root.data('server-notifications') || [];
 serverNotifications.forEach(
-  (entry) => pushNotification(
+  (notification) => pushNotification(
     new NotificationEvent(
-      entry.message,
-      entry.type,
-      entry.icon,
-      entry.duration
+      notification.message,
+      notification.type,
+      notification.icon,
+      notification.duration
     )
   )
 );

@@ -20,6 +20,7 @@
       placeholder: 'All brands',
       options: brandOptions,
       searchable: true,
+      variant: neutral,
     } only %}
 
     {% include 'components.ui.input.range-slider' with {
@@ -33,10 +34,12 @@
       nameMax: 'maxPrice',
     } only %}
 
-    <label class="field">
+    <label class="minimum-rating" data-variant="primary">
       <span>Minimum rating</span>
       <input type="number" name="minRating" min="0" max="5" step="0.1" value="{{ filter.minRating }}">
     </label>
+
+    <hr>
 
     <div class="actions">
       {% embed 'components.ui.button' with {

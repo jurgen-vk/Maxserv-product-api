@@ -90,7 +90,7 @@ final readonly class ProductImporter implements ImporterInterface
             $this->productRepo->saveMany(products: $products);
             $this->productRepo->saveManyMedia(products: $products);
 
-            $import->markProgress(processed: $count, total: $data['total']);
+            $import->updateProgress(processed: $count, total: $data['total']);
             $this->importRepository->save(import: $import);
 
             $this->eventDispatcher->dispatch(

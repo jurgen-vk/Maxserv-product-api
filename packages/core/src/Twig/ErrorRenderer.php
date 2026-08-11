@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render\Error;
+namespace MaxServ\Core\Twig;
 
 use LogicException;
 use MaxServ\Core\Http\Exception\HttpException;
+use MaxServ\Core\Twig\ErrorRenderer\ErrorRendererInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;

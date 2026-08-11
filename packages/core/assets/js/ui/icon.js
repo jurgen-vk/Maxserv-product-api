@@ -9,7 +9,7 @@ function applyAttributes(svg, attributes) {
 
   const root = document.documentElement;
 
-  const { class: className, ...rest } = attributes;
+  const {class: className, ...rest} = attributes;
   root.setAttribute('class', ['icon', className].filter(Boolean).join(' '));
 
   for (const [attribute, value] of Object.entries(rest)) {
@@ -19,11 +19,7 @@ function applyAttributes(svg, attributes) {
   return new XMLSerializer().serializeToString(root);
 }
 
-// Fetched icons are cached in memory for the lifetime of the page, so a
-// repeated name skips the network entirely rather than re-fetching — actual
-// cross-visit caching is handled by the browser's HTTP cache, per the
-// Cache-Control headers set on /assets/icons/* itself.
-export async function icon(name, attributes = {}) {
+async function icon(name, attributes = {}) {
   try {
     if (!name) {
       throw new Error('No icon name provided.');
@@ -45,3 +41,5 @@ export async function icon(name, attributes = {}) {
     return '';
   }
 }
+
+export default icon;

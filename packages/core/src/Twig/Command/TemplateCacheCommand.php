@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MaxServ\Core\Render\Command;
+namespace MaxServ\Core\Twig\Command;
 
-use MaxServ\Core\Render\TemplateCacher;
+use MaxServ\Core\Twig\TemplateCacher;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

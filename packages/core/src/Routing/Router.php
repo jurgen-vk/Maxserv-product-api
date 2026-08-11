@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MaxServ\Core\Routing;
 
-use MaxServ\Core\Render\Error\ErrorRenderer;
+use MaxServ\Core\Twig\ErrorRenderer;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Router as SymfonyRouter;

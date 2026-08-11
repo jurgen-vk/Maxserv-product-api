@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}MaxServ{% endblock %}</title>
-  <link rel="icon" type="image/svg+xml" href="{{ asset('site/logo.svg') }}">
-  <meta name="mercure-url" content="{{ mercure() }}">
+  <link rel="icon" type="image/svg+xml" href="{{ vite_asset('site/logo.svg') }}">
+  <link rel="mercure" href="{{ mercure() }}">
   <meta name="theme-mode" content="{{ themeMode }}">
   {{ vite_css('assets/css/app.css') }}
 </head>
@@ -25,6 +25,6 @@
 
 {% include 'components.ui.toaster' only %}
 
-{{ vite_js('assets/js/app.js') }}
+{{ vite_js('assets/js/bootstrap.js', 'assets/js/app.js') }}
 </body>
 </html>

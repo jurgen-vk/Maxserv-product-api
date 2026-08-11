@@ -24,7 +24,7 @@ final class Import
         $this->status = ImportStatus::Running;
     }
 
-    public function markProgress(int $processed, int $total): void
+    public function updateProgress(int $processed, int $total): void
     {
         $this->processed = $processed;
         $this->total = $total;
