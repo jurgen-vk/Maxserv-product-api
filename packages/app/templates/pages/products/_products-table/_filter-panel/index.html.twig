@@ -45,10 +45,10 @@
       {% embed 'components.ui.button' with {
         variant: 'neutral',
         attributes: { class: 'filter-clear' },
-      } only %}
+      } %}
         {% block label %}Clear filters{% endblock %}
       {% endembed %}
-      {% embed 'components.ui.button' with { variant: 'primary', attributes: { type: 'submit' } } only %}
+      {% embed 'components.ui.button' with { variant: 'primary', attributes: { type: 'submit' } } %}
         {% block label %}Apply{% endblock %}
       {% endembed %}
     </div>
