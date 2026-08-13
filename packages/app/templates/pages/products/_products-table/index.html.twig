@@ -12,8 +12,6 @@
   {% endif %}
 
   {% embed 'components.ui.table' with {
-    items: items,
-    filter: filter,
     isEmpty: items|length == 0,
     paginator: paginator,
     routeName: 'products_index',
@@ -33,7 +31,7 @@
     emptyDescription: hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Import products to get started.',
     emptyActionLabel: hasActiveFilter ? 'Clear filters' : null,
     emptyActionAttributes: hasActiveFilter ? { class: 'filter-clear' } : {},
-  } only %}
+  } %}
     {% block head %}
       <tr>
         <th></th>

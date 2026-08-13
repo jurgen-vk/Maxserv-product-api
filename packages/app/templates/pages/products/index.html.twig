@@ -4,7 +4,7 @@
 
 {% block content %}
   <div class="p_products">
-    {% embed 'components.ui.page-header' with { title: 'Products', icon: icon('lucide:layout-grid'), activeImport: activeImport } only %}
+    {% embed 'components.ui.page-header' with { title: 'Products', icon: icon('lucide:layout-grid'), activeImport: activeImport } %}
       {% block actions %}
         {% include 'pages.products._import-button' %}
       {% endblock %}
@@ -13,6 +13,8 @@
     <div class="toolbar">
       {% include 'components.ui.table._search' with { value: filter.search, placeholder: 'Search products…' } only %}
 
+      {# TODO: attributes are not proper data attributes here #}
+
       {% embed 'components.ui.button' with {
         variant: 'neutral',
         attributes: {
@@ -20,7 +22,7 @@
           popovertarget: 'products-filter-panel',
           popovertargetaction: 'toggle',
         },
-      } only %}
+      } %}
         {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
         {% block label %}Filters{% endblock %}
       {% endembed %}

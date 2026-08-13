@@ -9,15 +9,13 @@
     {% include 'components.ui.page-header' with { title: 'Imports', icon: icon('lucide:import') } only %}
 
     {% embed 'components.ui.table' with {
-      imports: imports,
-      statusVariant: statusVariant,
       isEmpty: imports|length == 0,
       paginator: paginator,
       routeName: 'imports_index',
       emptyIcon: icon('lucide:inbox'),
       emptyTitle: 'No imports yet',
       emptyDescription: 'Imports you start from different pages will show up here.',
-    } only %}
+    } %}
       {% block head %}
         <tr>
           <th>ID</th>
@@ -50,7 +48,10 @@
               {% endif %}
             </td>
             <td class="status-cell">
-              {% include 'components.ui.badge' with { variant: statusVariant[import.status.value], label: import.status.value|capitalize } only %}
+              {% include 'components.ui.badge' with {
+                variant: statusVariant[import.status.value],
+                label: import.status.value|capitalize
+              } only %}
             </td>
             <td class="num">{{ import.startedAt|date('Y-m-d H:i') }}</td>
             <td class="num completed-cell">{{ import.completedAt ? import.completedAt|date('Y-m-d H:i') : '—' }}</td>

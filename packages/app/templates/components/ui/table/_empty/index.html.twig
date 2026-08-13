@@ -17,7 +17,7 @@
         variant: 'neutral',
         href: actionHref,
         attributes: actionAttributes|merge({ class: ('action ' ~ (actionAttributes.class|default('')))|trim }),
-      } only %}
+      } %}
         {% block label %}{{ actionLabel }}{% endblock %}
       {% endembed %}
     {% endif %}

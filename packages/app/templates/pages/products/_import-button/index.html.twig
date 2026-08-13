@@ -5,7 +5,7 @@
       class: 'btn-import',
       hidden: activeImport ? true : null,
     },
-  } only %}
+  } %}
     {% block iconBefore %} {{ icon('lucide:import') }} {% endblock %}
     {% block label %} Import products {% endblock %}
   {% endembed %}
@@ -17,7 +17,7 @@
       hidden: activeImport ? null : true,
       disabled: true,
     },
-  } only %}
+  } %}
     {% block iconBefore %} {{ icon('lucide:loader-circle', { class: '--spin' }) }} {% endblock %}
     {% block label %} Importing... {% endblock %}
   {% endembed %}
