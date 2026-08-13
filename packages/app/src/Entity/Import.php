@@ -19,15 +19,20 @@ final class Import
         private(set) int $total = 0,
     ) {}
 
-    public function markRunning(): void
+    public function markStarted(): void
     {
-        $this->status = ImportStatus::Running;
+        $this->status = ImportStatus::Started;
     }
 
-    public function updateProgress(int $processed, int $total): void
+    public function markRunning(int $total): void
+    {
+        $this->status = ImportStatus::Running;
+        $this->total = $total;
+    }
+
+    public function updateProgress(int $processed): void
     {
         $this->processed = $processed;
-        $this->total = $total;
     }
 
     public function markCompleted(): void

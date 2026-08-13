@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import setProgress from '@app/progress';
+import { updateProgress } from '#app/components/ui/progress-bar/progress';
 import { fetchFragment } from '@core/api/fragmentFetcher';
 import notify from '@core/informer/notify';
 import mercure from '@core/sse/mercure';
@@ -117,7 +117,7 @@ $tableContainer.on('change', '.per-page-select .select-input', function () {
 // ---- import trigger: resume-on-navigation via data-* attributes rendered
 //      from the activeImport entity, no JSON blob ----
 const $importTrigger = $('#products-import-trigger');
-const $importStateToggle = $importTrigger.closest('.c_ui_state-toggle');
+const $importStateToggle = $importTrigger.closest('.c_ui_state-toggle'); // TODO: I refactored this, so I should swap this out for the new thing
 
 function setImportingState(isImporting) {
   $importStateToggle.attr('data-state', isImporting ? 'loading' : 'idle');
@@ -129,7 +129,7 @@ function setImportingState(isImporting) {
 function watchImport(importId) {
   mercure.subscribe(`imports/${importId}`, (update, unsubscribe) => {
     if (update.status === 'running') {
-      setProgress($root.find('.progress-bar')[0], update.processed, update.total);
+      updateProgress($root.find('.progress-bar'), update.processed, update.total);
       return;
     }
 
@@ -157,9 +157,9 @@ const activeImportId = $importTrigger.data('activeImportId');
 if (activeImportId) {
   // the button's own disabled/label state is already correct from SSR (no
   // flash), but the progress bar's visibility is only ever toggled by
-  // setImportingState() — it needs calling here too, not just setProgress()
+  // setImportingState() — it needs calling here too, not just updateProgress()
   setImportingState(true);
-  setProgress($root.find('.progress-bar')[0], $importTrigger.data('processed'), $importTrigger.data('total'));
+  updateProgress($root.find('.progress-bar'), $importTrigger.data('processed'), $importTrigger.data('total'));
   watchImport(activeImportId);
 }
 
@@ -184,7 +184,7 @@ $importTrigger.on('click', async () => {
     // rendered before that was true, so refresh it to pick up the new row
     // before trying to target the bar it contains
     await refreshTable(Object.fromEntries(new URLSearchParams(window.location.search)));
-    setProgress($root.find('.progress-bar')[0], 0, 0);
+    updateProgress($root.find('.progress-bar'), 0, 0);
     $(document).trigger('import:started', [{importId: imports[0].id}]);
     watchImport(imports[0].id);
   } catch (error) {

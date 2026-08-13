@@ -2,7 +2,7 @@
 
 {% block title %}Imports{% endblock %}
 
-{% set statusVariant = { pending: 'neutral', running: 'info', completed: 'success', failed: 'danger' } %}
+{% set statusVariant = { pending: 'neutral', started: 'info', running: 'info', completed: 'success', failed: 'danger' } %}
 
 {% block content %}
   <div class="p_imports">
@@ -38,7 +38,7 @@
             <td class="num">#{{ import.id }}</td>
             <td>{{ import.type|capitalize }}</td>
             <td class="progress-cell">
-              {% if import.status.value in ['pending', 'running'] %}
+              {% if import.status.value in ['pending', 'started', 'running'] %}
                 <div class="progress">
                   {% include 'components.ui.progress-bar' with {
                     attributes: { style: '--progress: ' ~ percent ~ '%' },

@@ -1,17 +1,12 @@
 @layer main {
-  /* this component's own td/img classes render inside components.ui.table's
-     embed blocks (tr/td fragments), but scope off this file's own wrapper
-     rather than reaching into .c_ui_table by name — [data-low] on the same
-     element keeps enough specificity to beat the generic tbody td rule
-     without an !important escape hatch. */
   .p_products__products-table {
-    /* the title column is the only one allowed to grow — it claims
-       whatever space the other (naturally-sized) columns don't need, and
-       wraps instead of ellipsis-truncating so the full title stays
-       readable at any width. Every other column just sizes to its own
-       content, auto-layout style. */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+
     .title-cell {
-      width: 100%;
+      /*width: 100%;*/
       min-width: 12rem;
       white-space: normal;
       overflow-wrap: break-word;
@@ -19,6 +14,7 @@
 
     /* this column should only ever be as big as the thumbnail itself, not
        padded out like a text cell */
+
     .thumb-cell {
       padding: 0;
     }

@@ -13,15 +13,15 @@ final readonly class ImportService
         private iterable $importers,
     ) {}
 
-    public function run(string $type, Import $import): void
+    public function run(Import $import): void
     {
         foreach ($this->importers as $importer) {
-            if ($importer->supports(type: $type)) {
+            if ($importer->supports(type: $import->type)) {
                 $importer->import(import: $import);
                 return;
             }
         }
 
-        throw new RuntimeException("No importer supports type: $type");
+        throw new RuntimeException(message: "No importer supports type: $import->type");
     }
 }

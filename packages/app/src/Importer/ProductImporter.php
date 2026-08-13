@@ -6,36 +6,50 @@ namespace MaxServ\App\Importer;
 
 use GuzzleHttp\Client;
 use MaxServ\App\Entity\Import;
-use MaxServ\App\Event\Import\ImportProgressEvent;
 use MaxServ\App\Hydrator\MediaHydrator;
 use MaxServ\App\Hydrator\ProductHydrator;
-use MaxServ\App\Interface\ImporterInterface;
 use MaxServ\App\Repository\BrandRepository;
 use MaxServ\App\Repository\CategoryRepository;
 use MaxServ\App\Repository\ImportRepository;
 use MaxServ\App\Repository\ProductRepository;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-final readonly class ProductImporter implements ImporterInterface
+final readonly class ProductImporter extends AbstractImporter
 {
     public function __construct(
         private Client $client,
         private ProductRepository $productRepo,
         private CategoryRepository $categoryRepo,
         private BrandRepository $brandRepo,
-        private ImportRepository $importRepository,
         private ProductHydrator $hydrator,
         private MediaHydrator $mediaHydrator,
-        private EventDispatcherInterface $eventDispatcher,
-    ) {}
+        ImportRepository $importRepository,
+        EventDispatcherInterface $eventDispatcher,
+    ) {
+        parent::__construct(
+            importRepository: $importRepository,
+            eventDispatcher: $eventDispatcher,
+        );
+    }
 
     public function supports(string $type): bool
     {
         return $type === 'products';
     }
 
-    public function import(Import $import): void
+    protected function run(Import $import): void
     {
+        $probe = $this->client->get(
+            uri: 'https://dummyjson.com/products',
+            options: ['query' => ['limit' => 1]],
+        );
+        $total = json_decode(
+            json: $probe->getBody()->getContents(),
+            associative: true,
+        )['total'];
+
+        $this->markRunning(import: $import, total: $total);
+
         $count = 0;
         $skip = 0;
         $limit = 100;
@@ -58,7 +72,10 @@ final readonly class ProductImporter implements ImporterInterface
                 ],
             );
 
-            $data = json_decode(json: $response->getBody()->getContents(), associative: true);
+            $data = json_decode(
+                json: $response->getBody()->getContents(),
+                associative: true,
+            );
 
             $products = [];
 
@@ -90,14 +107,9 @@ final readonly class ProductImporter implements ImporterInterface
             $this->productRepo->saveMany(products: $products);
             $this->productRepo->saveManyMedia(products: $products);
 
-            $import->updateProgress(processed: $count, total: $data['total']);
-            $this->importRepository->save(import: $import);
-
-            $this->eventDispatcher->dispatch(
-                event: new ImportProgressEvent(import: $import),
-            );
+            $this->updateProgress(import: $import, processed: $count);
 
             $skip += $limit;
-        } while ($skip < $data['total']);
+        } while ($skip < $total);
     }
 }

@@ -2,6 +2,7 @@
   .p_imports {
     display: flex;
     flex-direction: column;
+    height: 100%;
     gap: 1rem;
 
     .num {
@@ -14,6 +15,7 @@
        putting display:flex directly on a table cell knocks it out of
        normal table-row layout in some browsers, which is what was
        throwing this column's vertical alignment off from its siblings */
+
     .progress {
       display: flex;
       min-width: 8.75rem;

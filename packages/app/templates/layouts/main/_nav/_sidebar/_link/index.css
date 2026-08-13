@@ -25,12 +25,13 @@
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      margin-right: 0.5rem;
+      margin-right: 0.25rem;
 
       .icon {
         width: 2.5rem;
         height: 2.5rem;
-        transform: scale(0.6);
+        transform: scale(0.5);
+        stroke-width: 2.2px;
       }
     }
 

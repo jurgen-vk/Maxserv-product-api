@@ -1,4 +1,4 @@
-parameters: {}
+parameters: { }
 
 services:
   _defaults:
@@ -191,7 +191,7 @@ services:
   # get access to publishSafely().
   MaxServ\Core\Mercure\SafeHub:
     decorates: Symfony\Component\Mercure\HubInterface
-    arguments: ['@.inner']
+    arguments: [ '@.inner' ]
 
   Symfony\Component\Mercure\HubRegistry:
     arguments:
@@ -262,7 +262,25 @@ services:
 
   messenger.transport.serializer:
     class: Symfony\Component\Messenger\Transport\Serialization\Serializer
-    factory: [ 'Symfony\Component\Messenger\Transport\Serialization\Serializer', 'create' ]
+    arguments:
+      $serializer: '@messenger.transport.symfony_serializer'
+
+  messenger.transport.symfony_serializer:
+    class: Symfony\Component\Serializer\Serializer
+    arguments:
+      $normalizers:
+        - !service { class: Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer }
+        - !service { class: Symfony\Component\Serializer\Normalizer\DateTimeNormalizer }
+        - !service { class: Symfony\Component\Serializer\Normalizer\ArrayDenormalizer }
+        - !service
+          class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+          arguments:
+            $propertyTypeExtractor: '@Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
+      $encoders:
+        - !service { class: Symfony\Component\Serializer\Encoder\JsonEncoder }
+        - !service { class: Symfony\Component\Serializer\Encoder\XmlEncoder }
+
+  Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor: ~
 
   messenger.receiver_locator:
     class: Symfony\Component\DependencyInjection\ServiceLocator

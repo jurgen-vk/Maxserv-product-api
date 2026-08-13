@@ -1,14 +1,15 @@
-import $ from "jquery";
-import setProgress from "@app/progress";
-import mercure from "@core/sse/mercure";
+import $ from 'jquery';
+import { updateProgress } from '#app/components/ui/progress-bar/progress';
+import mercure from '@core/sse/mercure';
 
-const $root = $(".p_imports");
+const $root = $('.p_imports');
 
 const statusVariant = {
-  pending: "neutral",
-  running: "info",
-  completed: "success",
-  failed: "danger"
+  pending: 'neutral',
+  started: 'info',
+  running: 'info',
+  completed: 'success',
+  failed: 'danger'
 };
 
 function renderBadge(status) {
@@ -16,34 +17,34 @@ function renderBadge(status) {
   return `<span class="c_ui_badge" data-variant="${statusVariant[status]}">${label}</span>`;
 }
 
-// Only rows that started as pending/running get a live subscription — a
-// row that's already completed/failed on load has nothing left to update.
-$root.find(".import-row").each(function () {
+// Only rows that started as pending/started/running get a live subscription —
+// a row that's already completed/failed on load has nothing left to update.
+$root.find('.import-row').each(function () {
   const $row = $(this);
-  const initialStatus = $row.data("status");
+  const initialStatus = $row.data('status');
 
-  if (initialStatus !== "pending" && initialStatus !== "running") {
+  if (initialStatus !== 'pending' && initialStatus !== 'started' && initialStatus !== 'running') {
     return;
   }
 
-  const importId = $row.data("importId");
+  const importId = $row.data('importId');
 
   mercure.subscribe(`imports/${importId}`, (update, unsubscribe) => {
-    if (update.status === "running") {
-      const percent = setProgress($row.find(".progress-bar")[0], update.processed, update.total);
-      $row.find(".progress-text").text(`${percent}%`);
-      $row.find(".processed-cell").text(update.processed);
+    if (update.status === 'running') {
+      const percent = updateProgress($row.find('.progress-bar'), update.processed, update.total);
+      $row.find('.progress-text').text(`${percent}%`);
+      $row.find('.processed-cell').text(update.processed);
       return;
     }
 
-    if (update.status === "completed" || update.status === "failed") {
+    if (update.status === 'completed' || update.status === 'failed') {
       unsubscribe();
-      $row.find(".status-cell").html(renderBadge(update.status));
-      $row.find(".progress-cell").html("<span class=\"percent\">—</span>");
+      $row.find('.status-cell').html(renderBadge(update.status));
+      $row.find('.progress-cell').html('<span class="percent">—</span>');
 
-      if (update.status === "completed") {
-        $row.find(".processed-cell").text(update.processed);
-        $row.find(".completed-cell").text(new Date().toLocaleString());
+      if (update.status === 'completed') {
+        $row.find('.processed-cell').text(update.processed);
+        $row.find('.completed-cell').text(new Date().toLocaleString());
       }
     }
   });

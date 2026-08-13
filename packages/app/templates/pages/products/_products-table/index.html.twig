@@ -1,16 +1,16 @@
 {% set hasActiveFilter = filter.search or filter.category or filter.brand or filter.minPrice or filter.maxPrice or filter.minRating %}
 
-{% set progressBar = null %}
-{% if activeImport %}
-  {% set percent = activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
-  {% set progressBar %}
-    {% include 'components.ui.progress-bar' with {
-      attributes: { style: '--progress: ' ~ percent ~ '%' },
-    } only %}
-  {% endset %}
-{% endif %}
-
 <div class="p_products__products-table">
+  {% set progressBar = null %}
+  {% if activeImport %}
+    {% set percent = activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
+    {% set progressBar %}
+      {% include 'components.ui.progress-bar' with {
+        attributes: { style: '--progress: ' ~ percent ~ '%' },
+      } only %}
+    {% endset %}
+  {% endif %}
+
   {% embed 'components.ui.table' with {
     items: items,
     filter: filter,

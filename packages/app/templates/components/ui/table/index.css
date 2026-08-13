@@ -2,11 +2,16 @@
   .c_ui_table {
     border: 1px solid var(--border-color-main);
     background-color: var(--color-main);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 
     .table-container {
+      flex: 1;
+      min-height: 0;
       overflow-x: auto; /* keep only horizontal scroll for wide tables on narrow viewports */
-      /*overflow-y: scroll;*/
-      /*max-height: 70vh;*/
+      overflow-y: auto;
     }
 
     table {
@@ -79,7 +84,7 @@
       }
 
       tr:last-child td {
-        border-bottom: 0;
+        /*border-bottom: 0;*/
       }
 
       tr:nth-child(even) {

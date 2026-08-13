@@ -16,7 +16,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand(
     name: 'import:clear-stuck',
-    description: 'Mark imports stuck in "pending" or "running" as failed (e.g. after a worker crash/restart)'
+    description: 'Mark imports stuck in "pending", "started" or "running" as failed (e.g. after a worker crash/restart)'
 )]
 final class ClearStuckImportsCommand extends Command
 {
@@ -32,7 +32,7 @@ final class ClearStuckImportsCommand extends Command
         $io = new SymfonyStyle(input: $input, output: $output);
 
         $stuck = $this->importRepository->findByStatuses(
-            statuses: [ImportStatus::Pending, ImportStatus::Running],
+            statuses: [ImportStatus::Pending, ImportStatus::Started, ImportStatus::Running],
         );
 
         foreach ($stuck as $import) {

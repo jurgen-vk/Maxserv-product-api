@@ -61,7 +61,7 @@ final readonly class ImportController
             $import = new Import(type: $type);
             $this->importRepository->save(import: $import);
             $this->bus->dispatch( // no named argument on purpose, because interface
-                new RunImportMessage(importRunId: $import->id, type: $type),
+                new RunImportMessage(import: $import),
             );
             $imports[] = $this->extractor->extract(import: $import);
         }
