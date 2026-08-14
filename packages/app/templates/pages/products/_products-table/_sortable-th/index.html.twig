@@ -1,0 +1,15 @@
+{% set isSorted = filter.sortBy == column %}
+{% set nextOrder = (isSorted and filter.order|upper == 'ASC') ? 'DESC' : 'ASC' %}
+{% set sortIconUp = sortIconUp|default(icon('lucide:arrow-up')) %}
+{% set sortIconDown = sortIconDown|default(icon('lucide:arrow-down')) %}
+
+<th {{ attrs(defaults: { class: 'p_products__products-table__sortable-th', 'data-sorted': isSorted ? true : null }, attributes: attributes) }}>
+  <a href="#" class="sort-link" data-column="{{ column }}" data-order="{{ nextOrder }}">
+    {{ label }}
+    {% if isSorted %}
+      {{ filter.order|upper == 'ASC' ? sortIconUp|raw : sortIconDown|raw }}
+    {% else %}
+      {{ icon('lucide:chevrons-up-down') }}
+    {% endif %}
+  </a>
+</th>

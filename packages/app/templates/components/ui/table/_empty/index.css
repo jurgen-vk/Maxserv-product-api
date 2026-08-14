@@ -26,6 +26,10 @@
       margin-bottom: 0.5rem;
     }
 
+    &[data-variant="primary"] .icon {
+      color: var(--color-primary);
+    }
+
     h3 {
       /* smaller than a normal h3 — this is a quiet inline note, not a
          section heading */

@@ -33,18 +33,18 @@ $root.find('.import-row').each(function () {
     if (update.status === 'running') {
       const percent = updateProgress($row.find('.progress-bar'), update.processed, update.total);
       $row.find('.progress-text').text(`${percent}%`);
-      $row.find('.processed-cell').text(update.processed);
+      $row.find('.import-td-processed').text(update.processed);
       return;
     }
 
     if (update.status === 'completed' || update.status === 'failed') {
       unsubscribe();
-      $row.find('.status-cell').html(renderBadge(update.status));
-      $row.find('.progress-cell').html('<span class="percent">—</span>');
+      $row.find('.import-td-status').html(renderBadge(update.status));
+      $row.find('.import-td-progress').html('<span class="percent">—</span>');
 
       if (update.status === 'completed') {
-        $row.find('.processed-cell').text(update.processed);
-        $row.find('.completed-cell').text(new Date().toLocaleString());
+        $row.find('.import-td-processed').text(update.processed);
+        $row.find('.import-td-completed').text(new Date().toLocaleString());
       }
     }
   });

@@ -50,7 +50,7 @@ async function refreshTable(params = {}, {pushState = false} = {}) {
 }
 
 // ---- search (debounced typing = replaceState, explicit search = pushState via table:search) ----
-$root.find('.c_ui_table__search').on('table:search', (event, value) => {
+$root.find('.c_ui_input_search').on('table:search', (event, value) => {
   refreshTable({search: value, page: null}, {pushState: true});
 });
 
@@ -103,15 +103,6 @@ $root.on('click', '.filter-clear', function (event) {
 $tableContainer.on('click', '.sort-link', function (event) {
   event.preventDefault();
   refreshTable({sort: $(this).data('column'), order: $(this).data('order'), page: null}, {pushState: true});
-});
-
-$tableContainer.on('click', '[data-page]', function (event) {
-  event.preventDefault();
-  refreshTable({page: $(this).data('page')}, {pushState: true});
-});
-
-$tableContainer.on('change', '.per-page-select .select-input', function () {
-  refreshTable({perPage: $(this).val(), page: null}, {pushState: true});
 });
 
 // ---- import trigger: resume-on-navigation via data-* attributes rendered

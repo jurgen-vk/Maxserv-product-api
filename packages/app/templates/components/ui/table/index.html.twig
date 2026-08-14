@@ -1,48 +1,20 @@
-{% set isEmpty = isEmpty|default(false) %}
-{% set variant = variant|default('primary') %}
-{% set emptyIcon = emptyIcon|default(icon('lucide:inbox')) %}
-{% set emptyTitle = emptyTitle|default('Nothing here yet.') %}
-{% set emptyDescription = emptyDescription|default('') %}
-{% set emptyActionLabel = emptyActionLabel|default(null) %}
-{% set emptyActionHref = emptyActionHref|default(null) %}
-{% set emptyActionAttributes = emptyActionAttributes|default({}) %}
+{% set bodyContent %}{% block body %}{% endblock %}{% endset %}
+{% set emptyContent %}
+  {% block empty %}
+    {% embed 'components.ui.table._empty' %}{% endembed %}
+  {% endblock %}
+{% endset %}
 
-<div {{ attrs(defaults: { class: 'c_ui_table' }, attributes: attributes) }}>
-  {% if isEmpty %}
-    {% block empty %}
-      {% include 'components.ui.table._empty' with {
-        icon: emptyIcon,
-        title: emptyTitle,
-        description: emptyDescription,
-        actionLabel: emptyActionLabel,
-        actionHref: emptyActionHref,
-        actionAttributes: emptyActionAttributes,
-      } only %}
-    {% endblock %}
-  {% else %}
-    <div class="table-container">
-      <table>
-        {% block colgroup %}{% endblock %}
-        <thead>
-        {% block head %}{% endblock %}
-        {% if progressBar is defined and progressBar %}
-          <tr class="progress-row">
-            <td colspan="100">{{ progressBar }}</td>
-          </tr>
-        {% endif %}
-        </thead>
-        <tbody>
-        {% block body %}{% endblock %}
-        </tbody>
-      </table>
-    </div>
-  {% endif %}
-
-  {% if paginator is defined and paginator %}
-    {% include 'components.ui.table._pagination' with {
-      paginator: paginator,
-      routeName: routeName,
-      extraParams: extraParams|default({}),
-    } only %}
-  {% endif %}
+<div {{ attrs(defaults: { class: 'c_ui_table', 'data-variant': variant }, attributes: attributes) }}>
+  <table>
+    {% block colgroup %}{% endblock %}
+    <thead>{% block head %}{% endblock %}</thead>
+    <tbody>
+      {% if bodyContent|trim is not empty %}
+        {{ bodyContent|raw }}
+      {% elseif emptyContent|trim is not empty %}
+        <tr class="empty-row"><td colspan="100">{{ emptyContent|raw }}</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
 </div>

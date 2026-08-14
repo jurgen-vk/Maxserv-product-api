@@ -1,6 +1,6 @@
 class Url extends URL {
-  constructor() {
-    super(window.location.href);
+  constructor(url = null, base = null) {
+    super(url ?? window.location.href, base);
   }
 
   state = null;

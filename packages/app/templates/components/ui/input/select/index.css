@@ -14,12 +14,12 @@
       border-radius: var(--radius-default);
       border: 1px solid var(--input-border-color);
       padding: var(--input-padding);
-      /*padding-right: 1.75rem;*/
+      padding-right: 2rem;
       background-color: var(--input-background-color);
     }
 
     .select2-selection__rendered {
-      padding: 0;
+      /*padding: 0;*/
       font-size: var(--text-md);
       font-weight: var(--text-md-weight);
       letter-spacing: var(--text-md-letter-spacing);
@@ -75,6 +75,62 @@
       margin-right: 0.25rem;
       border: none;
       color: inherit;
+    }
+  }
+
+  .select2-selection--single:has(.select2-selection__clear) .select2-selection__arrow {
+    display: none;
+  }
+
+  .select2-selection__clear {
+    position: absolute;
+    top: 50%;
+    right: 0.4rem;
+    translate: 0 -50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0; /* hides select2's own "×" text content, the icon below replaces it visually */
+    border-radius: var(--radius-default);
+
+    &::after {
+      content: "";
+      width: 0.8125rem;
+      height: 0.8125rem;
+      background-color: var(--color-text-13);
+      mask-image: url("~app/icons/lucide/x.svg");
+      mask-size: contain;
+      mask-repeat: no-repeat;
+    }
+
+    &:hover {
+      background-color: var(--color-main-2);
+    }
+
+    &:hover::after {
+      background-color: var(--color-text-1);
+    }
+  }
+
+  .select2-selection__arrow {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::after {
+      background-color: var(--color-text-13);
+    }
+
+    &:hover {
+      background-color: var(--color-main-2);
+    }
+
+    &:hover::after {
+      background-color: var(--color-text-1);
     }
   }
 
@@ -136,7 +192,7 @@
     }
 
     .select2-results__option[aria-selected="true"] {
-      font-weight: 700;
+      font-weight: var(--text-2xl-weight);
       background-color: var(--color-primary-sub-5);
     }
   }
@@ -150,7 +206,7 @@
     }
 
     .select2-results__option[aria-selected="true"] {
-      font-weight: 700;
+      font-weight: var(--text-2xl-weight);
       background-color: color-mix(in oklab, var(--color-main-13) 16%, transparent);
     }
   }

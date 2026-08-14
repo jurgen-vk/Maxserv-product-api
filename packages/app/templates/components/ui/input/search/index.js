@@ -1,7 +1,7 @@
 import $ from "jquery";
 import debounce from "@app/utils/debounce";
 
-$(".c_ui_table__search").each(function () {
+$(".c_ui_input_search").each(function () {
   const $root = $(this);
   const $input = $root.find(".search-input");
   const $button = $root.find(".search-button");

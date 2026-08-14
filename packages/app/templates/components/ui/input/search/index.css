@@ -1,5 +1,5 @@
 @layer main {
-  .c_ui_table__search {
+  .c_ui_input_search {
     display: flex;
     flex-wrap: wrap;
     align-items: center;

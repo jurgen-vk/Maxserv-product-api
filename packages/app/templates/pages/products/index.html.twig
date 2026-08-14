@@ -4,14 +4,14 @@
 
 {% block content %}
   <div class="p_products">
-    {% embed 'components.ui.page-header' with { title: 'Products', icon: icon('lucide:layout-grid'), activeImport: activeImport } %}
+    {% embed 'components.ui.page-header' with { title: 'Products', icon: icon('lucide:layout-grid') } %}
       {% block actions %}
-        {% include 'pages.products._import-button' %}
+        {% include 'pages.products._import-button' with { activeImport: activeImport } only %}
       {% endblock %}
     {% endembed %}
 
     <div class="toolbar">
-      {% include 'components.ui.table._search' with { value: filter.search, placeholder: 'Search products…' } only %}
+      {% include 'components.ui.input.search' with { value: filter.search, placeholder: 'Search products…' } only %}
 
       {# TODO: attributes are not proper data attributes here #}
 
@@ -36,8 +36,6 @@
       } only %}
     </div>
 
-    <div class="products-table-container">
-      {% include 'pages.products._products-table' with { items: items, paginator: paginator, filter: filter, activeImport: activeImport } only %}
-    </div>
+    {% include 'pages.products._products-table' with { items: items, paginator: paginator, filter: filter, activeImport: activeImport } only %}
   </div>
 {% endblock %}

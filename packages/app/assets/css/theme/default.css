@@ -98,7 +98,7 @@
     --text-2xl-line-height: initial;
     --text-2xl-transform: initial;
     --text-2xl-letter-spacing: 0.1875rem;
-    --text-2xl-weight: 700;
+    --text-2xl-weight: 703; /* 703 because this fixes a small issue with font rendering */
 
     --text-3xl: 1.75rem;
     --text-3xl-line-height: initial;

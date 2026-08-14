@@ -19,6 +19,7 @@ final readonly class ProductFilter
         public ?float $minRating = null,
     ) {
         [$this->filters, $this->bindings] = $this->buildFilters();
+        $this->hasActiveFilter = $this->filters !== 'TRUE';
         $this->sorts = $this->buildSort();
         $this->sortJoins = $this->buildSortJoins();
     }
@@ -42,6 +43,7 @@ final readonly class ProductFilter
 
     public string $filters;
     public array $bindings;
+    public bool $hasActiveFilter;
     public string $sorts;
     public string $sortJoins;
 

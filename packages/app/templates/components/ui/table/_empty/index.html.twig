@@ -1,25 +1,10 @@
-{% set icon = icon|default(icon('lucide:inbox')) %}
-{% set title = title|default('Nothing here yet.') %}
-{% set description = description|default('') %}
-{% set actionLabel = actionLabel|default(null) %}
-{% set actionHref = actionHref|default(null) %}
-{% set actionAttributes = actionAttributes|default({}) %}
+{% set descriptionContent %}{% block description %}{% endblock %}{% endset %}
 
-<div {{ attrs(defaults: { class: 'c_ui_table__empty' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'c_ui_table__empty', 'data-variant': variant }, attributes: attributes) }}>
   <div class="content">
-    {{ icon|raw }}
-    <h3>{{ title }}</h3>
-    {% if description %}
-      <p>{{ description }}</p>
-    {% endif %}
-    {% if actionLabel and (actionHref or actionAttributes) %}
-      {% embed 'components.ui.button' with {
-        variant: 'neutral',
-        href: actionHref,
-        attributes: actionAttributes|merge({ class: ('action ' ~ (actionAttributes.class|default('')))|trim }),
-      } %}
-        {% block label %}{{ actionLabel }}{% endblock %}
-      {% endembed %}
-    {% endif %}
+    {% block icon %}{{ icon('lucide:inbox') }}{% endblock %}
+    <h3>{% block title %}Nothing here yet.{% endblock %}</h3>
+    {% if descriptionContent|trim is not empty %}<p>{{ descriptionContent|raw }}</p>{% endif %}
+    {% block action %}{% endblock %}
   </div>
 </div>

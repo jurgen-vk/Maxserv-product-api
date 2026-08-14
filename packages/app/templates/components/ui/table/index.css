@@ -1,98 +1,83 @@
 @layer main {
   .c_ui_table {
-    border: 1px solid var(--border-color-main);
-    background-color: var(--color-main);
-    display: flex;
-    flex-direction: column;
     flex: 1;
     min-height: 0;
-
-    .table-container {
-      flex: 1;
-      min-height: 0;
-      overflow-x: auto; /* keep only horizontal scroll for wide tables on narrow viewports */
-      overflow-y: auto;
-    }
+    overflow: auto;
+    border: 1px solid var(--border-color-main);
+    background-color: var(--color-main);
+    scrollbar-color: var(--color-main-10) var(--color-main-3);
 
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: var(--text-sm);
-    }
 
-    thead {
-      /* the whole header — the column-label row and the loading-bar row
-         beneath it — sticks together as one unit, rather than pinning
-         individual th cells (which left the loading bar behind as a plain
-         row that scrolled away on its own) */
-      position: sticky;
-      top: 0;
-      z-index: var(--z-add-1); /* z-1: sticky table header */
-    }
+      thead {
+        position: sticky;
+        top: 0;
+        z-index: var(--z-add-1); /* z-1: sticky table header */
 
-    th {
-      padding-left: 0.875rem;
-      padding-right: 0.875rem;
-      padding-top: 0.5625rem;
-      padding-bottom: 0.5625rem;
-      text-align: left;
-      vertical-align: middle;
-      font-size: var(--text-xs);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-      text-transform: uppercase;
-      background-color: var(--color-main-3);
-      color: var(--color-text-13);
-      border-bottom: 1px solid var(--color-main-3);
-    }
+        th {
+          padding: 0.5rem;
+          text-align: left;
+          vertical-align: middle;
+          font-size: var(--text-xs);
+          font-weight: var(--text-2xl-weight);
+          letter-spacing: var(--text-lg-letter-spacing);
+          white-space: nowrap;
+          text-transform: uppercase;
+          background-color: var(--color-main-3);
+          border-bottom: 1px solid var(--border-color-main);
+        }
+      }
 
-    th[data-sorted] {
-      /* colored text instead of an underline — a cleaner, quieter signal */
-      color: var(--color-primary-add-6);
-    }
+      tbody {
+        td {
+          padding: 0.5rem;
+          white-space: nowrap;
+          vertical-align: middle;
+          color: var(--color-text-1);
+          border-bottom: 1px solid var(--color-main-3);
+        }
 
-    .progress-row td {
-      padding: 0;
-      border-bottom: 1px solid var(--color-main-3);
-    }
+        tr {
+          &:nth-child(even) {
+            background-color: var(--color-main-1);
+          }
 
-    .sort-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.1875rem;
-      border-radius: var(--radius-default);
-      text-decoration: none;
-      color: inherit;
+          &:hover {
+            background-color: var(--color-main-2);
+          }
+        }
 
-      svg {
-        width: 0.625rem;
-        height: 0.625rem;
+        .empty-row {
+          td {
+            border-bottom: 0;
+          }
+        }
       }
     }
 
-    tbody {
-      td {
-        padding-left: 0.875rem;
-        padding-right: 0.875rem;
-        padding-top: 0.5625rem;
-        padding-bottom: 0.5625rem;
-        white-space: nowrap;
-        vertical-align: middle;
-        color: var(--color-text-1);
-        border-bottom: 1px solid var(--color-main-3);
+    /* --- Variants --- */
+
+    &[data-variant="primary"] {
+      scrollbar-color: var(--color-primary-sub-2) var(--color-primary-sub-9);
+
+      th {
+        background-color: var(--color-primary-sub-9);
+        /*color: var(--color-text-light);*/
+
+        .icon {
+          /*color: var(--color-text-light);*/
+        }
       }
 
-      tr:last-child td {
-        /*border-bottom: 0;*/
+      tbody tr:nth-child(even) {
+        background-color: var(--color-primary-sub-12);
       }
 
-      tr:nth-child(even) {
-        background-color: color-mix(in oklab, var(--color-main-2), transparent 45%);
-      }
-
-      tr:hover {
-        background-color: var(--color-primary-sub-6);
+      tbody tr:hover {
+        background-color: var(--color-primary-sub-11);
       }
     }
   }

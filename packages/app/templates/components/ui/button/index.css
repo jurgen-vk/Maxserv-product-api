@@ -8,7 +8,7 @@
     border: 1px solid var(--color-main-5);
     padding: var(--input-padding);
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: var(--text-xl-weight);
     text-decoration: none;
     box-shadow: var(--shadow-button);
     transform: translateY(-1px);

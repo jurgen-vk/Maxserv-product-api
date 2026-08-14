@@ -61,8 +61,8 @@
     --shadow-strength-5xl: color-mix(in oklab, black, transparent calc(62% / var(--shadow-base-strength)));
 
     /*---[ ▼ Input ▼ ]-------------------------------------------------------------------------------------------------*/
-    --input-background-color: var(--color-main-2);
-    --input-background-color-active: var(--color-main-3);
+    --input-background-color: var(--color-main-1);
+    --input-background-color-active: var(--color-main-2);
     --input-border-color: var(--color-main-5);
     --input-border-color-active: var(--color-main-10);
     --input-text-color: var(--color-text-1);

@@ -1,0 +1,17 @@
+@layer main {
+  .p_products__products-table__sortable-th {
+    .sort-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.1875rem;
+      border-radius: var(--radius-default);
+      text-decoration: none;
+      color: inherit;
+
+      .icon {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+  }
+}

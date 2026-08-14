@@ -40,7 +40,7 @@
 
     .code {
       font-size: var(--text-5xl);
-      font-weight: 700;
+      font-weight: var(--text-2xl-weight);
       letter-spacing: 0.1em;
       font-family: var(--font-mono);
       color: var(--color-danger-add-1);

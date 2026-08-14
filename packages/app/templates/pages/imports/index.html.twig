@@ -2,63 +2,9 @@
 
 {% block title %}Imports{% endblock %}
 
-{% set statusVariant = { pending: 'neutral', started: 'info', running: 'info', completed: 'success', failed: 'danger' } %}
-
 {% block content %}
   <div class="p_imports">
     {% include 'components.ui.page-header' with { title: 'Imports', icon: icon('lucide:import') } only %}
-
-    {% embed 'components.ui.table' with {
-      isEmpty: imports|length == 0,
-      paginator: paginator,
-      routeName: 'imports_index',
-      emptyIcon: icon('lucide:inbox'),
-      emptyTitle: 'No imports yet',
-      emptyDescription: 'Imports you start from different pages will show up here.',
-    } %}
-      {% block head %}
-        <tr>
-          <th>ID</th>
-          <th>Type</th>
-          <th>Progress</th>
-          <th>Status</th>
-          <th>Started</th>
-          <th>Completed</th>
-          <th>Processed</th>
-        </tr>
-      {% endblock %}
-
-      {% block body %}
-        {% for import in imports %}
-          {% set percent = import.total > 0 ? (import.processed / import.total * 100)|round : 0 %}
-          <tr class="import-row" data-import-id="{{ import.id }}" data-status="{{ import.status.value }}"
-              data-processed="{{ import.processed }}" data-total="{{ import.total }}">
-            <td class="num">#{{ import.id }}</td>
-            <td>{{ import.type|capitalize }}</td>
-            <td class="progress-cell">
-              {% if import.status.value in ['pending', 'started', 'running'] %}
-                <div class="progress">
-                  {% include 'components.ui.progress-bar' with {
-                    attributes: { style: '--progress: ' ~ percent ~ '%' },
-                  } only %}
-                  <span class="percent progress-text">{{ percent }}%</span>
-                </div>
-              {% else %}
-                <span class="percent">—</span>
-              {% endif %}
-            </td>
-            <td class="status-cell">
-              {% include 'components.ui.badge' with {
-                variant: statusVariant[import.status.value],
-                label: import.status.value|capitalize
-              } only %}
-            </td>
-            <td class="num">{{ import.startedAt|date('Y-m-d H:i') }}</td>
-            <td class="num completed-cell">{{ import.completedAt ? import.completedAt|date('Y-m-d H:i') : '—' }}</td>
-            <td class="num processed-cell">{{ import.processed }}</td>
-          </tr>
-        {% endfor %}
-      {% endblock %}
-    {% endembed %}
+    {% include 'pages.imports._imports-table' with { imports: imports, paginator: paginator } only %}
   </div>
 {% endblock %}

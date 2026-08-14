@@ -66,7 +66,7 @@
 
       .current {
         font-size: var(--text-2xl);
-        font-weight: 700;
+        font-weight: var(--text-2xl-weight);
         font-family: var(--font-mono);
         color: var(--color-success-add-6);
       }
@@ -82,7 +82,7 @@
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
         font-size: var(--text-xs);
-        font-weight: 600;
+        font-weight: var(--text-xl-weight);
         white-space: nowrap;
         color: var(--color-text-13);
 
@@ -117,7 +117,7 @@
 
       .value {
         font-size: var(--text-sm);
-        font-weight: 700;
+        font-weight: var(--text-2xl-weight);
         font-variant-numeric: tabular-nums;
         font-family: var(--font-mono);
         color: var(--color-text-1);

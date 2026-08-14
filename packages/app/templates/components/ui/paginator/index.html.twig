@@ -1,0 +1,60 @@
+<div {{ attrs(defaults: { class: 'c_ui_paginator', 'data-variant': variant }, attributes: attributes) }}
+  data-page-param="{{ paginator.pageParam }}" data-per-page-param="{{ paginator.perPageParam }}">
+  <label class="per-page">
+    <span>Per page</span>
+    {% include 'components.ui.input.select' with {
+      name: paginator.perPageParam,
+      options: [10, 25, 50, 100]|map(o => { value: o, label: o }),
+      value: paginator.perPage,
+      attributes: { class: 'per-page-select' },
+    } only %}
+  </label>
+
+  {% if paginator.totalPages > 1 %}
+    <nav class="pages">
+      {% if paginator.hasPreviousPage %}
+        <a href="#" class="page-link page-first" data-page="1">
+          {{ icon('lucide:chevrons-left') }}
+        </a>
+        <a href="#" class="page-link page-previous" data-page="{{ paginator.page - 1 }}">
+          {{ icon('lucide:chevron-left') }}
+        </a>
+      {% endif %}
+
+      {% set start = max(1, paginator.page - 1) %}
+      {% set end = min(paginator.totalPages, paginator.page + 1) %}
+
+      {% if start > 1 %}
+        <a href="#" class="page-link" data-page="1">1</a>
+        {% if start > 2 %}<span class="ellipsis">…</span>{% endif %}
+      {% endif %}
+
+      {% for p in start..end %}
+        <a href="#" class="page-link"{{ p == paginator.page ? ' data-active' : '' }}
+           data-page="{{ p }}">{{ p }}</a>
+      {% endfor %}
+
+      {% if end < paginator.totalPages %}
+        {% if end < paginator.totalPages - 1 %}<span class="ellipsis">…</span>{% endif %}
+        <a href="#" class="page-link" data-page="{{ paginator.totalPages }}">{{ paginator.totalPages }}</a>
+      {% endif %}
+
+      {% if paginator.hasNextPage %}
+        <a href="#" class="page-link page-next" data-page="{{ paginator.page + 1 }}">
+          {{ icon('lucide:chevron-right') }}
+        </a>
+        <a href="#" class="page-link page-last" data-page="{{ paginator.totalPages }}">
+          {{ icon('lucide:chevrons-right') }}
+        </a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+  <p class="summary">
+    {% if paginator.total > 0 %}
+      {{ paginator.offset + 1 }}–{{ min(paginator.offset + paginator.perPage, paginator.total) }} of {{ paginator.total }}
+    {% else %}
+      No results
+    {% endif %}
+  </p>
+</div>

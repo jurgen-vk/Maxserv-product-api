@@ -5,7 +5,7 @@
     flex: 1;
     min-height: 0;
 
-    .title-cell {
+    .product-td-title {
       /*width: 100%;*/
       min-width: 12rem;
       white-space: normal;
@@ -15,18 +15,17 @@
     /* this column should only ever be as big as the thumbnail itself, not
        padded out like a text cell */
 
-    .thumb-cell {
-      padding: 0;
+    .product-td-thumb {
+      /*padding: 0;*/
     }
 
     .thumb {
-      margin: 0.4375rem;
-      width: 2.125rem;
-      height: 2.125rem;
-      flex-shrink: 0;
+      /*margin: 0.4375rem;*/
+      width: 2rem;
+      height: 2rem;
       border-radius: var(--radius-default);
       object-fit: contain;
-      background-color: var(--color-main-2);
+      /*background-color: var(--color-main-2);*/
     }
 
     .thumb--empty {
@@ -42,35 +41,38 @@
     }
 
     .title-link {
-      font-weight: 600;
+      font-weight: var(--text-xl-weight);
       text-decoration: none;
       color: var(--color-text-1);
 
       &:hover {
         text-decoration: underline;
-        color: var(--color-primary-add-6);
+        color: var(--color-text-12);
       }
     }
 
-    .num {
-      font-variant-numeric: tabular-nums;
+    .product-td-price,
+    .product-td-discount,
+    .product-td-rating,
+    .product-td-stock {
       font-family: var(--font-mono);
-      color: var(--color-text-1);
     }
 
     .strike {
       text-decoration: line-through;
-      color: var(--color-text-13);
+      text-decoration-color: var(--color-text-18);
+      text-decoration-thickness: 1px;
+      color: var(--color-text-10);
     }
 
     .discount {
-      font-weight: 700;
-      color: var(--color-success-add-6);
+      font-weight: var(--text-2xl-weight);
+      color: var(--color-success);
     }
 
-    .num[data-low] {
-      font-weight: 700;
-      color: var(--color-danger-add-6);
+    [data-low] {
+      font-weight: var(--text-2xl-weight);
+      color: var(--color-danger);
     }
   }
 }

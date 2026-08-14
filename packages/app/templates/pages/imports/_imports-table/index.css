@@ -1,0 +1,38 @@
+@layer main {
+  .p_imports__imports-table {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+
+    .import-td-id,
+    .import-td-started,
+    .import-td-completed,
+    .import-td-processed,
+    .import-td-total {
+      font-family: var(--font-mono);
+    }
+
+    .import-td-progress {
+      .progress {
+        display: flex;
+        min-width: 8.75rem;
+        align-items: center;
+        gap: 0.5rem;
+
+        .progress-bar {
+          flex: 1 1 0%;
+        }
+      }
+
+      .percent {
+        display: inline-block;
+        min-width: 2rem;
+        text-align: right;
+        font-size: var(--text-xs);
+        font-family: var(--font-mono);
+        color: var(--color-text-13);
+      }
+    }
+  }
+}

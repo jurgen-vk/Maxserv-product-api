@@ -1,84 +1,78 @@
-{% set hasActiveFilter = filter.search or filter.category or filter.brand or filter.minPrice or filter.maxPrice or filter.minRating %}
+{% set hasActiveFilter = filter.hasActiveFilter %}
+{% set percent = activeImport and activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
 
-<div class="p_products__products-table">
-  {% set progressBar = null %}
-  {% if activeImport %}
-    {% set percent = activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
-    {% set progressBar %}
-      {% include 'components.ui.progress-bar' with {
-        attributes: { style: '--progress: ' ~ percent ~ '%' },
-      } only %}
-    {% endset %}
-  {% endif %}
-
-  {% embed 'components.ui.table' with {
-    isEmpty: items|length == 0,
-    paginator: paginator,
-    routeName: 'products_index',
-    progressBar: progressBar,
-    extraParams: {
-      search: filter.search,
-      category: filter.category,
-      brand: filter.brand,
-      minPrice: filter.minPrice,
-      maxPrice: filter.maxPrice,
-      minRating: filter.minRating,
-      sort: filter.sortBy,
-      order: filter.order,
-    },
-    emptyIcon: hasActiveFilter ? icon('lucide:search-x') : icon('lucide:package-open'),
-    emptyTitle: hasActiveFilter ? 'No products match your filters' : 'No products yet',
-    emptyDescription: hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Import products to get started.',
-    emptyActionLabel: hasActiveFilter ? 'Clear filters' : null,
-    emptyActionAttributes: hasActiveFilter ? { class: 'filter-clear' } : {},
-  } %}
+<div {{ attrs(defaults: { class: 'p_products__products-table' }, attributes: attributes) }}>
+  {% embed 'components.ui.table' %}
     {% block head %}
       <tr>
         <th></th>
-        {% include 'pages.products._products-table._sort-link' with { label: 'Title', column: 'title', filter: filter, attributes: { class: 'title-cell' } } only %}
-        {% include 'pages.products._products-table._sort-link' with { label: 'Brand', column: 'brand', filter: filter } only %}
-        {% include 'pages.products._products-table._sort-link' with { label: 'Category', column: 'category', filter: filter } only %}
-        {% include 'pages.products._products-table._sort-link' with { label: 'Price', column: 'price', filter: filter } only %}
-        {% include 'pages.products._products-table._sort-link' with { label: 'Discount price', column: 'discounted', filter: filter } only %}
-        {% include 'pages.products._products-table._sort-link' with { label: 'Rating', column: 'rating', filter: filter } only %}
-        {% include 'pages.products._products-table._sort-link' with { label: 'Stock', column: 'stock', filter: filter } only %}
+        {% include 'pages.products._products-table._sortable-th' with { label: 'Title', column: 'title', filter: filter } only %}
+        {% include 'pages.products._products-table._sortable-th' with { label: 'Brand', column: 'brand', filter: filter } only %}
+        {% include 'pages.products._products-table._sortable-th' with { label: 'Category', column: 'category', filter: filter } only %}
+        {% include 'pages.products._products-table._sortable-th' with { label: 'Price', column: 'price', filter: filter } only %}
+        {% include 'pages.products._products-table._sortable-th' with { label: 'Discount price', column: 'discounted', filter: filter } only %}
+        {% include 'pages.products._products-table._sortable-th' with { label: 'Rating', column: 'rating', filter: filter } only %}
+        {% include 'pages.products._products-table._sortable-th' with { label: 'Stock', column: 'stock', filter: filter } only %}
       </tr>
+      {% if activeImport %}
+        <tr class="progress-row">
+          <td colspan="100">
+            {% include 'components.ui.progress-bar' with { attributes: { style: '--progress: ' ~ percent ~ '%' } } only %}
+          </td>
+        </tr>
+      {% endif %}
     {% endblock %}
 
     {% block body %}
       {% for product in items %}
         {% set thumbnail = product.thumbnail %}
         <tr>
-          <td class="thumb-cell">
+          <td class="product-td-thumb">
             {% if thumbnail %}
               <img src="{{ thumbnail.url }}" alt="" class="thumb">
             {% else %}
               <div class="thumb thumb--empty">{{ icon('lucide:image', { class: 'thumb-icon' }) }}</div>
             {% endif %}
           </td>
-          <td class="title-cell">
+          <td class="product-td-title">
             <a href="{{ path('products_show', { id: product.id }) }}" class="title-link">{{ product.title }}</a>
           </td>
-          <td>{{ product.brand ? product.brand.name : '—' }}</td>
-          <td>{% include 'components.ui.badge' with { variant: 'neutral', label: product.category.name } only %}</td>
-          <td class="num">
-            {% if product.discountPercentage > 0 %}
-              <span class="strike">€{{ product.price|number_format(2) }}</span>
-            {% else %}
+          <td class="product-td-brand">{{ product.brand ? product.brand.name : '—' }}</td>
+          <td
+            class="product-td-category">{% include 'components.ui.badge' with { variant: 'neutral', label: product.category.name } only %}</td>
+          <td class="product-td-price">
+            <span class="{{ product.discountPercentage > 0 ? 'strike' : '' }}">
               €{{ product.price|number_format(2) }}
-            {% endif %}
+            </span>
           </td>
-          <td class="num">
+          <td class="product-td-discount">
             {% if product.discountPercentage > 0 %}
               <span class="discount">€{{ product.discountPrice|number_format(2) }}</span>
             {% else %}
               —
             {% endif %}
           </td>
-          <td class="num">{{ product.rating|number_format(1) }}</td>
-          <td class="num"{{ product.stock < 10 ? ' data-low' : '' }}>{{ product.stock }}</td>
+          <td class="product-td-rating">{{ product.rating|number_format(1) }}</td>
+          <td class="product-td-stock"{{ product.stock < 10 ? ' data-low' : '' }}>{{ product.stock }}</td>
         </tr>
       {% endfor %}
     {% endblock %}
+
+    {% block empty %}
+      {% embed 'components.ui.table._empty' with { attributes: hasActiveFilter ? { 'data-variant': 'primary' } : {} } %}
+        {% block icon %}{{ icon(hasActiveFilter ? 'lucide:search-x' : 'lucide:package-open') }}{% endblock %}
+        {% block title %}{{ hasActiveFilter ? 'No products match your filters' : 'No products yet' }}{% endblock %}
+        {% block description %}{{ hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Import products to get started.' }}{% endblock %}
+        {% block action %}
+          {% if hasActiveFilter %}
+            {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear' } } %}
+              {% block label %}Clear filters{% endblock %}
+            {% endembed %}
+          {% endif %}
+        {% endblock %}
+      {% endembed %}
+    {% endblock %}
   {% endembed %}
+
+  {% include 'components.ui.paginator' with { paginator: paginator, variant: 'primary' } only %}
 </div>

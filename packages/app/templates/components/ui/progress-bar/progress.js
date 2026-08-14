@@ -1,10 +1,10 @@
 import $ from 'jquery';
 
-function updateProgress(progressComponent, current, total) {
-  const $progressComponent = $(progressComponent);
+function updateProgress(progressFragment, current, total) {
+  const $progressFragment = $(progressFragment);
   const percent = total > 0 ? Math.round((current / total) * 100) : 0;
 
-  $progressComponent.find('.fill').css('--progress', `${percent}%`);
+  $progressFragment.find('.fill').css('--progress', `${percent}%`);
 
   return percent;
 }

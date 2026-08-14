@@ -1,11 +1,11 @@
-@property --progress {
-  syntax: '<percentage>';
-  inherits: false;
-  initial-value: 0%;
-}
-
 @layer main {
   .c_ui_progress-bar {
+    @property --progress {
+      syntax: "<percentage>";
+      inherits: true;
+      initial-value: 0%;
+    }
+    
     height: 3px;
     width: 100%;
     overflow: hidden;
@@ -18,19 +18,34 @@
       overflow: hidden;
       border-radius: var(--radius-default);
       width: var(--progress, 0%);
-      background: linear-gradient(90deg, var(--color-primary-sub-6), var(--color-primary));
+      background: var(--color-primary);
       transition: width 0.3s ease;
 
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         inset: 0;
-        width: 40%;
-        /* light mode: a soft white glint. dark mode: a soft dark highlight
-           instead — --color-main already flips direction between modes,
-           so this adapts automatically with zero redeclaration */
+        width: 80%;
         background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-main), transparent 45%), transparent);
-        animation: progress-bar-shimmer 1.6s ease-in-out infinite;
+        animation: progress-bar-shimmer 1.5s ease-in-out infinite;
+      }
+    }
+
+    /* --- Variants --- */
+
+    &[data-variant="success"] .fill {
+      background: var(--color-success);
+
+      &::after {
+        display: none;
+      }
+    }
+
+    &[data-variant="danger"] .fill {
+      background: var(--color-danger);
+
+      &::after {
+        display: none;
       }
     }
   }
