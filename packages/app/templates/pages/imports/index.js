@@ -31,7 +31,7 @@ $root.find('.import-row').each(function () {
 
   mercure.subscribe(`imports/${importId}`, (update, unsubscribe) => {
     if (update.status === 'running') {
-      const percent = updateProgress($row.find('.progress-bar'), update.processed, update.total);
+      const percent = updateProgress($row.find('.c_ui_progress-bar'), update.processed, update.total);
       $row.find('.progress-text').text(`${percent}%`);
       $row.find('.import-td-processed').text(update.processed);
       return;

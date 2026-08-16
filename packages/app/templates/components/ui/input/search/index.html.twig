@@ -2,10 +2,12 @@
 {% set value = value|default('') %}
 {% set name = name|default('search') %}
 {% set variant = variant|default('primary') %}
+{% set pageParam = pageParam|default('page') %}
 
 <div {{ attrs(defaults: {
   class: 'c_ui_input_search',
-  'data-variant': variant
+  'data-variant': variant,
+  'data-page-param': pageParam
 }, attributes: attributes) }}>
   <label class="field">
     {{ icon('lucide:search') }}

@@ -167,7 +167,7 @@ final readonly class ImportRepository
         $stmt = $this->connection->pdo->prepare(
             query: "
               SELECT * FROM imports
-              WHERE type = :type AND status IN ('pending', 'running')
+              WHERE type = :type AND status IN ('pending', 'running', 'started')
               ORDER BY started_at DESC
               LIMIT 1
             ",

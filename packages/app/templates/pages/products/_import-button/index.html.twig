@@ -1,4 +1,4 @@
-<div {{ attrs(defaults: { class: 'p_products__import-button' }, attributes: attributes) }} >
+<div {{ attrs(defaults: { class: 'p_products__import-button', 'data-active-import-id': activeImport ? activeImport.id : null }, attributes: attributes) }} >
   {% embed 'components.ui.button' with {
     variant: 'primary',
     attributes: {

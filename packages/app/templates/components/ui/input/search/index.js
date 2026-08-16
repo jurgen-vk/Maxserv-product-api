@@ -1,37 +1,50 @@
-import $ from "jquery";
-import debounce from "@app/utils/debounce";
+import $ from 'jquery';
+import debounce from '@app/utils/debounce';
+import { Url } from '@app/utils/Url';
 
-$(".c_ui_input_search").each(function () {
+$('.c_ui_input_search').each(function () {
   const $root = $(this);
-  const $input = $root.find(".search-input");
-  const $button = $root.find(".search-button");
-  const $clear = $root.find(".clear");
-
-  const emit = (value) => $root.trigger("table:search", [value]);
-  const emitDebounced = debounce(emit, 500);
+  const $input = $root.find('.search-input');
+  const $button = $root.find('.search-button');
+  const $clear = $root.find('.clear');
+  const name = $input.attr('name');
+  const pageParam = $root.data('pageParam');
 
   function syncClearButton() {
-    $clear.toggle($input.val() !== "");
+    $clear.toggle($input.val() !== '');
   }
 
-  $input.on("input", function () {
-    syncClearButton();
-    emitDebounced($(this).val());
-  });
+  // the one place that actually updates the URL — reached either natively
+  // (the browser fires 'search' on Enter for free, type="search" already
+  // does this) or by the three manual triggers below
+  $input.on('search', function () {
+    triggerSearchDebounced.cancel(); // a pending debounce shouldn't fire again after an explicit trigger already ran
 
-  $input.on("keydown", function (event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      emit($(this).val());
+    const url = new Url();
+    const value = $(this).val();
+
+    if (value) {
+      url.searchParams.set(name, value);
+    } else {
+      url.searchParams.delete(name);
     }
+    url.searchParams.delete(pageParam);
+    url.push();
   });
 
-  $button.on("click", () => emit($input.val()));
+  const triggerSearchDebounced = debounce(() => $input.trigger('search'), 500);
 
-  $clear.on("click", () => {
-    $input.val("").trigger("focus");
+  $input.on('input', function () {
     syncClearButton();
-    emit("");
+    triggerSearchDebounced();
+  });
+
+  $button.on('click', () => $input.trigger('search'));
+
+  $clear.on('click', () => {
+    $input.val('').trigger('focus');
+    syncClearButton();
+    $input.trigger('search');
   });
 
   syncClearButton();

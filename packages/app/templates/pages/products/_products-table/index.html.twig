@@ -1,7 +1,7 @@
 {% set hasActiveFilter = filter.hasActiveFilter %}
 {% set percent = activeImport and activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
 
-<div {{ attrs(defaults: { class: 'p_products__products-table' }, attributes: attributes) }}>
+<div {{ attrs(defaults: { class: 'p_products__products-table', 'data-active-import-id': activeImport ? activeImport.id : null }, attributes: attributes) }}>
   {% embed 'components.ui.table' %}
     {% block head %}
       <tr>
@@ -14,13 +14,11 @@
         {% include 'pages.products._products-table._sortable-th' with { label: 'Rating', column: 'rating', filter: filter } only %}
         {% include 'pages.products._products-table._sortable-th' with { label: 'Stock', column: 'stock', filter: filter } only %}
       </tr>
-      {% if activeImport %}
-        <tr class="progress-row">
-          <td colspan="100">
-            {% include 'components.ui.progress-bar' with { attributes: { style: '--progress: ' ~ percent ~ '%' } } only %}
-          </td>
-        </tr>
-      {% endif %}
+      <tr class="progress-row"{{ activeImport ? '' : ' hidden' }}>
+        <td colspan="100">
+          {% include 'components.ui.progress-bar' with { attributes: { style: '--progress: ' ~ percent ~ '%' } } only %}
+        </td>
+      </tr>
     {% endblock %}
 
     {% block body %}

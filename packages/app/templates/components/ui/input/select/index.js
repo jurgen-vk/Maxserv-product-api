@@ -60,3 +60,10 @@ new MutationObserver((mutations) => {
     }
   }
 }).observe(document.body, {childList: true, subtree: true});
+
+// select2 only mirrors its underlying <select>'s value on 'change' — a
+// native form.reset() updates the raw element but never fires that, so
+// select2's own visual state would otherwise go stale after Clear filters.
+$(document).on('reset', 'form', function () {
+  $(this).find('.select-input').trigger('change');
+});

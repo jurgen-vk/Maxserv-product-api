@@ -11,9 +11,11 @@
     {% endembed %}
 
     <div class="toolbar">
-      {% include 'components.ui.input.search' with { value: filter.search, placeholder: 'Search products…' } only %}
-
-      {# TODO: attributes are not proper data attributes here #}
+      {% include 'components.ui.input.search' with {
+        value: filter.search,
+        placeholder: 'Search products…',
+        pageParam: paginator.pageParam,
+      } only %}
 
       {% embed 'components.ui.button' with {
         variant: 'neutral',
@@ -33,6 +35,7 @@
         brands: brands,
         minPrice: minPrice,
         maxPrice: maxPrice,
+        pageParam: paginator.pageParam,
       } only %}
     </div>
 
