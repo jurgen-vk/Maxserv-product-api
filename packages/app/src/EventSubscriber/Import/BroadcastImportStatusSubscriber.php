@@ -81,7 +81,7 @@ final readonly class BroadcastImportStatusSubscriber implements EventSubscriberI
         $this->hub->publishSafely(
             new Update(
                 topics: "imports/{$import->id}",
-                data: json_encode($this->extractor->extract(import: $import)),
+                data: json_encode(value: $this->extractor->extract(import: $import)),
             ),
         );
     }
