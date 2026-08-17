@@ -1,0 +1,7 @@
+@layer main {
+  .c_ui_input_date {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

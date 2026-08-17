@@ -1,0 +1,22 @@
+{% set typeOptions = types|map(t => { value: t, label: t|capitalize }) %}
+{% set statusOptions = statuses|map(s => { value: s.value, label: s.value|capitalize }) %}
+
+{% embed 'components.ui.filter-panel' with { id: 'imports-filter-panel', pageParam: pageParam } %}
+  {% block fields %}
+    {% include 'components.ui.input.select' with { label: 'Type', name: 'type', value: filter.type, placeholder: 'All types', options: typeOptions } only %}
+
+    {% include 'components.ui.input.select' with { label: 'Status', name: 'statuses', value: filter.statuses, placeholder: 'All statuses', options: statusOptions, multiselect: true } only %}
+
+    <div class="date-range">
+      <span>Started</span>
+      {% include 'components.ui.input.date' with { name: 'startedFrom', value: filter.startedFrom } only %}
+      {% include 'components.ui.input.date' with { name: 'startedTo', value: filter.startedTo } only %}
+    </div>
+
+    <div class="date-range">
+      <span>Ended</span>
+      {% include 'components.ui.input.date' with { name: 'endedFrom', value: filter.endedFrom } only %}
+      {% include 'components.ui.input.date' with { name: 'endedTo', value: filter.endedTo } only %}
+    </div>
+  {% endblock %}
+{% endembed %}

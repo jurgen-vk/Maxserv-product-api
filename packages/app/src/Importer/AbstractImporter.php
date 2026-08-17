@@ -47,7 +47,7 @@ abstract readonly class AbstractImporter implements ImporterInterface
 
     final protected function updateProgress(Import $import, int $processed): void
     {
-        $import->updateProgress(processed: $processed);
+        $import->processed = $processed;
         $this->importRepository->save(import: $import);
         $this->eventDispatcher->dispatch(event: new ImportProgressEvent(import: $import));
     }
@@ -63,6 +63,7 @@ abstract readonly class AbstractImporter implements ImporterInterface
     {
         $import->markFailed();
         $this->importRepository->save(import: $import);
+        $import = $this->importRepository->find(id: $import->id);
         $this->eventDispatcher->dispatch(event: new ImportFailedEvent(import: $import));
     }
 
@@ -70,6 +71,7 @@ abstract readonly class AbstractImporter implements ImporterInterface
     {
         $import->markCompleted();
         $this->importRepository->save(import: $import);
+        $import = $this->importRepository->find(id: $import->id);
         $this->eventDispatcher->dispatch(event: new ImportCompletedEvent(import: $import));
     }
 }

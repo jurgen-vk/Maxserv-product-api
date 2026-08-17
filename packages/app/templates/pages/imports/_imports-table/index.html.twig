@@ -1,15 +1,16 @@
 {% set statusVariant = { pending: 'neutral', started: 'info', running: 'info', completed: 'success', failed: 'danger' } %}
 
 <div {{ attrs(defaults: { class: 'p_imports__imports-table' }, attributes: attributes) }}>
-  {% embed 'components.ui.table' %}
+  {% embed 'components.ui.table' with { pageParam: paginator.pageParam } %}
     {% block head %}
       <tr>
-        <th>ID</th>
-        <th>Type</th>
+        {% include 'components.ui.table._sortable-th' with { label: 'ID', column: 'id', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Type', column: 'type', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
         <th>Progress</th>
         <th>Status</th>
-        <th>Started</th>
-        <th>Completed</th>
+        {% include 'components.ui.table._sortable-th' with { label: 'Started', column: 'startedAt', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Ended', column: 'endedAt', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Duration', column: 'duration', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
         <th>Processed</th>
         <th>Total</th>
       </tr>
@@ -20,26 +21,22 @@
         {% set percent = import.total > 0 ? (import.processed / import.total * 100)|round : 0 %}
 
         <tr class="import-row" data-import-id="{{ import.id }}" data-status="{{ import.status.value }}"
+            data-started-at="{{ import.startedAt|date('c') }}"
             data-processed="{{ import.processed }}" data-total="{{ import.total }}">
           <td class="import-td-id">#{{ import.id }}</td>
           <td class="import-td-type">{{ import.type|capitalize }}</td>
           <td class="import-td-progress">
             <div class="progress">
-              {% include 'components.ui.progress-bar' with {
-                variant: statusVariant[import.status.value],
-                attributes: { style: '--progress: ' ~ percent ~ '%' },
-              } only %}
+              {% include 'components.ui.progress-bar' with { variant: statusVariant[import.status.value], attributes: { style: '--progress: ' ~ percent ~ '%' } } only %}
               <span class="percent progress-text">{{ percent }}%</span>
             </div>
           </td>
           <td class="import-td-status">
-            {% include 'components.ui.badge' with {
-              variant: statusVariant[import.status.value],
-              label: import.status.value|capitalize
-            } only %}
+            {% include 'components.ui.badge' with { variant: statusVariant[import.status.value], label: import.status.value|capitalize } only %}
           </td>
-          <td class="import-td-started">{{ import.startedAt|date('Y-m-d H:i') }}</td>
-          <td class="import-td-completed">{{ import.completedAt ? import.completedAt|date('Y-m-d H:i') : '—' }}</td>
+          <td class="import-td-started">{{ import.startedAt|date('Y-m-d H:i', timezone) }}</td>
+          <td class="import-td-ended">{{ import.endedAt ? import.endedAt|date('Y-m-d H:i', timezone) : '—' }}</td>
+          <td class="import-td-duration">{{ import.durationSeconds !== null ? import.durationSeconds|date('H:i:s', timezone='UTC') : '—' }}</td>
           <td class="import-td-processed">{{ import.processed }}</td>
           <td class="import-td-total">{{ import.total }}</td>
         </tr>
@@ -47,9 +44,16 @@
     {% endblock %}
 
     {% block empty %}
-      {% embed 'components.ui.table._empty' %}
-        {% block title %}No imports yet{% endblock %}
-        {% block description %}Imports you start from different pages will show up here.{% endblock %}
+      {% embed 'components.ui.table._empty' with { attributes: filter.hasActiveFilter ? { 'data-variant': 'primary' } : {} } %}
+        {% block title %}{{ filter.hasActiveFilter ? 'No imports match your filters' : 'No imports yet' }}{% endblock %}
+        {% block description %}{{ filter.hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Imports you start from different pages will show up here.' }}{% endblock %}
+        {% block action %}
+          {% if filter.hasActiveFilter %}
+            {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear', 'data-clear-target': 'imports-filter-panel' } } %}
+              {% block label %}Clear filters{% endblock %}
+            {% endembed %}
+          {% endif %}
+        {% endblock %}
       {% endembed %}
     {% endblock %}
   {% endembed %}

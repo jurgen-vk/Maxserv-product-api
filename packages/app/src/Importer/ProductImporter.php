@@ -64,7 +64,7 @@ final readonly class ProductImporter extends AbstractImporter
         }
 
         do {
-//            usleep(250000);
+//            usleep(microseconds: 50000);
             $response = $this->client->get(
                 uri: 'https://dummyjson.com/products',
                 options: [

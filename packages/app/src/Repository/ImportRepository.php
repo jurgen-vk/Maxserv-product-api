@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace MaxServ\App\Repository;
 
+use InvalidArgumentException;
 use MaxServ\App\Dto\Pagination\PaginatedResult;
 use MaxServ\App\Dto\Pagination\Paginator;
 use MaxServ\App\Entity\Import;
 use MaxServ\App\Enum\ImportStatus;
+use MaxServ\App\Filter\ImportFilter;
 use MaxServ\App\Hydrator\ImportHydrator;
 use MaxServ\App\Utility\QueryUtility;
 use MaxServ\Core\Database\Connection;
@@ -19,6 +21,8 @@ final readonly class ImportRepository
         private Connection $connection,
         private ImportHydrator $hydrator,
     ) {}
+
+    private const array PLUCKABLE_COLUMNS = ['type'];
 
     public function find(int $id): ?Import
     {
@@ -36,26 +40,26 @@ final readonly class ImportRepository
     public function save(Import $import): void
     {
         $sql = '
-      INSERT INTO imports
-        (id, type, status, started_at, completed_at, processed, total)
-      VALUES
-        (:id, :type, :status, :startedAt, :completedAt, :processed, :total)
-      AS new_row
-      ON DUPLICATE KEY UPDATE
-        type         = new_row.type,
-        status       = new_row.status,
-        started_at   = new_row.started_at,
-        completed_at = new_row.completed_at,
-        processed    = new_row.processed,
-        total        = new_row.total
-    ';
+          INSERT INTO imports
+            (id, type, status, started_at, ended_at, processed, total)
+          VALUES
+            (:id, :type, :status, :startedAt, :endedAt, :processed, :total)
+          AS new_row
+          ON DUPLICATE KEY UPDATE
+            type         = new_row.type,
+            status       = new_row.status,
+            started_at   = new_row.started_at,
+            ended_at     = new_row.ended_at,
+            processed    = new_row.processed,
+            total        = new_row.total
+        ';
 
         $this->connection->pdo->prepare(query: $sql)->execute(params: [
             ':id' => $import->id,
             ':type' => $import->type,
             ':status' => $import->status->value,
             ':startedAt' => $import->startedAt->format(format: 'Y-m-d H:i:s'),
-            ':completedAt' => $import->completedAt?->format(format: 'Y-m-d H:i:s'),
+            ':endedAt' => $import->endedAt?->format(format: 'Y-m-d H:i:s'),
             ':processed' => $import->processed,
             ':total' => $import->total,
         ]);
@@ -105,7 +109,7 @@ final readonly class ImportRepository
 
         $sql = "
           INSERT INTO imports
-            (id, type, status, started_at, completed_at, processed, total)
+            (id, type, status, started_at, ended_at, processed, total)
           VALUES
             $placeholders
           AS new_row
@@ -113,7 +117,7 @@ final readonly class ImportRepository
             type         = new_row.type,
             status       = new_row.status,
             started_at   = new_row.started_at,
-            completed_at = new_row.completed_at,
+            ended_at     = new_row.ended_at,
             processed    = new_row.processed,
             total        = new_row.total
         ";
@@ -126,7 +130,7 @@ final readonly class ImportRepository
                 $import->type,
                 $import->status->value,
                 $import->startedAt->format('Y-m-d H:i:s'),
-                $import->completedAt?->format('Y-m-d H:i:s'),
+                $import->endedAt?->format('Y-m-d H:i:s'),
                 $import->processed,
                 $import->total,
             );
@@ -198,29 +202,47 @@ final readonly class ImportRepository
         );
     }
 
-    public function findAllPaginated(int|string|null $page, int|string|null $perPage): PaginatedResult
+    public function count(?ImportFilter $filter = null): int
     {
-        $countStmt = $this->connection->pdo->query(query: 'SELECT COUNT(*) FROM imports');
-
-        $paginator = new Paginator(
-            page: $page,
-            perPage: $perPage,
-            total: (int)$countStmt->fetchColumn(),
+        $stmt = $this->connection->pdo->prepare(
+            query: "SELECT COUNT(*) FROM imports {$filter?->joins} {$filter?->filters}",
         );
+        $stmt->execute(params: $filter?->bindings);
 
-        $stmt = $this->connection->pdo->query(
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function searchPaginated(ImportFilter $filter, int|string|null $page, int|string|null $perPage): PaginatedResult
+    {
+        $paginator = new Paginator(page: $page, perPage: $perPage, total: $this->count(filter: $filter));
+
+        $stmt = $this->connection->pdo->prepare(
             query: "
-              SELECT * FROM imports
-              ORDER BY started_at DESC
+              SELECT imports.* FROM imports
+              {$filter->joins}
+              {$filter->filters}
+              {$filter->sorts}
               LIMIT {$paginator->perPage} OFFSET {$paginator->offset}
             ",
         );
+        $stmt->execute(params: $filter->bindings);
 
         $items = array_map(
-            callback: fn(array $row) => $this->hydrator->hydrateFromDatabase(row: $row),
+            callback: fn(array $row): Import => $this->hydrator->hydrateFromDatabase(row: $row),
             array: $stmt->fetchAll(mode: PDO::FETCH_ASSOC),
         );
 
         return new PaginatedResult(items: $items, paginator: $paginator);
+    }
+
+    public function pluckDistinct(string $column): array
+    {
+        if (!in_array(needle: $column, haystack: self::PLUCKABLE_COLUMNS, strict: true)) {
+            throw new InvalidArgumentException(message: "Column \"$column\" is not allowed for pluckDistinct().");
+        }
+
+        return $this->connection->pdo
+            ->query(query: "SELECT DISTINCT $column FROM imports ORDER BY $column")
+            ->fetchAll(mode: PDO::FETCH_COLUMN);
     }
 }

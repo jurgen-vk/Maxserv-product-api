@@ -15,13 +15,14 @@ final readonly class ImportHydrator
         return new Import(
             id: (int)$row['id'],
             type: $row['type'],
-            status: ImportStatus::from($row['status']),
+            status: ImportStatus::from(value: $row['status']),
             startedAt: new DateTimeImmutable(datetime: $row['started_at']),
-            completedAt: $row['completed_at'] !== null
-                ? new DateTimeImmutable(datetime: $row['completed_at'])
+            endedAt: $row['ended_at'] !== null
+                ? new DateTimeImmutable(datetime: $row['ended_at'])
                 : null,
             processed: (int)$row['processed'],
             total: (int)$row['total'],
+            durationSeconds: $row['duration_seconds'] !== null ? (int)$row['duration_seconds'] : null,
         );
     }
 }

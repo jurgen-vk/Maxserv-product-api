@@ -6,10 +6,6 @@ namespace MaxServ\App\Entity;
 
 final class Product
 {
-    public float $discountPrice {
-        get => $this->price * (1 - $this->discountPercentage / 100);
-    }
-
     public function __construct(
         public string $title,
         public string $description,
@@ -22,6 +18,6 @@ final class Product
         public ?int $id = null,
         public ?Media $thumbnail = null,
         public array $media = [],
+        public ?float $discountPrice = null,
     ) {}
-
 }

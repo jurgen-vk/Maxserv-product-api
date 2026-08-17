@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace MaxServ\App\Controller;
 
 use MaxServ\App\Entity\Import;
+use MaxServ\App\Enum\ImportStatus;
 use MaxServ\App\Extractor\ImportExtractor;
+use MaxServ\App\Filter\ImportFilter;
 use MaxServ\App\Message\RunImportMessage;
 use MaxServ\App\Repository\ImportRepository;
+use MaxServ\Core\Twig\FragmentRenderer;
 use MaxServ\Core\Twig\TemplateRenderer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,30 +20,41 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final readonly class ImportController
 {
-
     public function __construct(
         private MessageBusInterface $bus,
         private ImportRepository $importRepository,
         private ImportExtractor $extractor,
         private TemplateRenderer $templateRenderer,
+        private FragmentRenderer $fragmentRenderer,
     ) {}
 
     #[Route(path: '/imports', name: 'imports_index', methods: ['GET'])]
     public function index(Request $request, array $parameters): Response
     {
-        $result = $this->importRepository->findAllPaginated(
+        $filter = ImportFilter::fromRequest(request: $request);
+        $result = $this->importRepository->searchPaginated(
+            filter: $filter,
             page: $request->query->get(key: 'page'),
             perPage: $request->query->get(key: 'perPage'),
         );
 
+        $data = [
+            'imports' => $result->items,
+            'paginator' => $result->paginator,
+            'filter' => $filter,
+            'types' => $this->importRepository->pluckDistinct(column: 'type'),
+            'statuses' => ImportStatus::cases(),
+        ];
+
+        $requestedFragments = $request->query->all(key: 'fragments');
+        if ($requestedFragments !== []) {
+            return new JsonResponse(
+                $this->fragmentRenderer->renderMany(page: 'imports', fragments: $requestedFragments, data: $data),
+            );
+        }
+
         return new Response(
-            content: $this->templateRenderer->render(
-                template: 'pages.imports',
-                data: [
-                    'imports' => $result->items,
-                    'paginator' => $result->paginator,
-                ],
-            ),
+            content: $this->templateRenderer->render(template: 'pages.imports', data: $data),
         );
     }
 

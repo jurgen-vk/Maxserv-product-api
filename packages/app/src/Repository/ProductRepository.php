@@ -133,9 +133,8 @@ final readonly class ProductRepository
 
     public function count(?ProductFilter $filter = null): int
     {
-        $filters = $filter?->filters ?? 'TRUE';
         $stmt = $this->connection->pdo->prepare(
-            query: "SELECT COUNT(*) FROM products WHERE {$filters}",
+            query: "SELECT COUNT(*) FROM products {$filter?->joins} {$filter?->filters}",
         );
         $stmt->execute(params: $filter?->bindings);
 
@@ -169,9 +168,9 @@ final readonly class ProductRepository
         $stmt = $this->connection->pdo->prepare(
             query: "
               SELECT products.* FROM products
-              {$filter->sortJoins}
-              WHERE {$filter->filters}
-              ORDER BY {$filter->sorts}
+              {$filter->joins}
+              {$filter->filters}
+              {$filter->sorts}
               LIMIT {$paginator->perPage} OFFSET {$paginator->offset}
             ",
         );

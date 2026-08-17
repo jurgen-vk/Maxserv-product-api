@@ -2,17 +2,17 @@
 {% set percent = activeImport and activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
 
 <div {{ attrs(defaults: { class: 'p_products__products-table', 'data-active-import-id': activeImport ? activeImport.id : null }, attributes: attributes) }}>
-  {% embed 'components.ui.table' %}
+  {% embed 'components.ui.table' with { pageParam: paginator.pageParam } %}
     {% block head %}
       <tr>
         <th></th>
-        {% include 'pages.products._products-table._sortable-th' with { label: 'Title', column: 'title', filter: filter } only %}
-        {% include 'pages.products._products-table._sortable-th' with { label: 'Brand', column: 'brand', filter: filter } only %}
-        {% include 'pages.products._products-table._sortable-th' with { label: 'Category', column: 'category', filter: filter } only %}
-        {% include 'pages.products._products-table._sortable-th' with { label: 'Price', column: 'price', filter: filter } only %}
-        {% include 'pages.products._products-table._sortable-th' with { label: 'Discount price', column: 'discounted', filter: filter } only %}
-        {% include 'pages.products._products-table._sortable-th' with { label: 'Rating', column: 'rating', filter: filter } only %}
-        {% include 'pages.products._products-table._sortable-th' with { label: 'Stock', column: 'stock', filter: filter } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Title', column: 'title', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Brand', column: 'brand', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Category', column: 'category', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Price', column: 'price', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Discount price', column: 'discounted', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Rating', column: 'rating', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with { label: 'Stock', column: 'stock', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
       </tr>
       <tr class="progress-row"{{ activeImport ? '' : ' hidden' }}>
         <td colspan="100">
@@ -63,7 +63,7 @@
         {% block description %}{{ hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Import products to get started.' }}{% endblock %}
         {% block action %}
           {% if hasActiveFilter %}
-            {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear' } } %}
+            {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear', 'data-clear-target': 'products-filter-panel' } } %}
               {% block label %}Clear filters{% endblock %}
             {% endembed %}
           {% endif %}

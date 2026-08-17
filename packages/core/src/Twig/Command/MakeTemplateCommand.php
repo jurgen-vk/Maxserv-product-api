@@ -158,8 +158,10 @@ final class MakeTemplateCommand extends Command
                 path: "$directory/index.js",
                 contents: <<<JS
                     import \$ from 'jquery';
-                    
-                    const \$root = \$('.$className');
+
+                    \$('.$className').found(async function (\$root) {
+
+                    });
                     JS,
                 created: $created,
                 skipped: $skipped,

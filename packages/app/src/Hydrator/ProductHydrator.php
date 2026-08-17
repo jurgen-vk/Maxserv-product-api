@@ -32,6 +32,7 @@ final readonly class ProductHydrator
             brand: $brand,
             thumbnail: $thumbnail,
             media: $rest,
+            discountPrice: (float)$row['discounted_price'],
         );
     }
 

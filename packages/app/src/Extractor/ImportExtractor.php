@@ -15,9 +15,10 @@ final class ImportExtractor
             'type' => $import->type,
             'status' => $import->status->value,
             'startedAt' => $import->startedAt->format(format: DATE_ATOM),
-            'completedAt' => $import->completedAt?->format(format: DATE_ATOM),
+            'endedAt' => $import->endedAt?->format(format: DATE_ATOM),
             'processed' => $import->processed,
             'total' => $import->total,
+            'durationSeconds' => $import->durationSeconds,
         ];
     }
 }

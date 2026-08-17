@@ -134,6 +134,8 @@ services:
         arguments: [ 'app', '@Symfony\Bridge\Twig\AppVariable' ]
       - method: addGlobal
         arguments: [ 'notifications', '@MaxServ\Core\Notification\Notifications' ]
+      - method: addGlobal
+        arguments: [ 'timezone', '@MaxServ\Core\Time\Timezone' ]
 
   # ==========================================================================
   # Vite

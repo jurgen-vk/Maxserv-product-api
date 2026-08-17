@@ -28,6 +28,20 @@
       color: var(--input-text-color);
     }
 
+    /* The multi-select's always-present typing field is a real input[type="search"], so it
+       otherwise inherits the site-wide boxed input styling from base.css (border/padding/
+       background) — reset it here so it blends into the outer selection box instead of
+       rendering as a second, mismatched input nested inside the first. */
+    .select2-search--inline .select2-search__field {
+      border: none;
+      margin: 0;
+      padding: 0;
+      background-color: transparent;
+      font-size: var(--text-md);
+      font-family: var(--font-sans);
+      color: var(--input-text-color);
+    }
+
     .select2-selection__placeholder {
       color: var(--color-text-13);
     }
@@ -55,7 +69,7 @@
       }
     }
 
-    .select2-selection--multiple .select2-selection__rendered {
+    &.select2-selection--multiple .select2-selection__rendered {
       display: flex;
       flex-wrap: wrap;
       gap: 0.25rem;

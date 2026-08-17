@@ -1,8 +1,6 @@
 import $ from 'jquery';
 import { runImport } from '@app/api/runImport';
 import mercure from '@core/sse/mercure';
-import bus from '@core/event-bus/EventBus';
-import { ImportStartedEvent } from '@app/event/import/ImportStartedEvent';
 
 const $root = $('.p_products__import-button');
 const $buttonImport = $root.find('.btn-import');
@@ -32,7 +30,6 @@ $buttonImport.on('click', async () => {
 
   try {
     const importRecord = await runImport('products');
-    bus.emit(new ImportStartedEvent(importRecord));
     watchImport(importRecord.id);
   } catch (error) {
     setImportingState(false);

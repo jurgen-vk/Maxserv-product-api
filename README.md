@@ -8,13 +8,18 @@ To execute the project, you will need to install the following prerequisites:
 - `Docker` - A platform for developing, shipping, and running applications. [Learn more](https://www.docker.com/get-started).
 - `Composer` - A dependency manager for PHP. [Learn more](https://getcomposer.org/).
 - `Git` - A distributed version control system. (Only required if your code is managed in a Git repository) [Learn more](https://git-scm.com/).
+- `mkcert` - Generates locally-trusted development certificates. [Learn more](https://github.com/FiloSottile/mkcert). Needed once per machine, for local HTTPS:
+  ```
+  mkcert -install
+  mkcert -cert-file certs/localhost.pem -key-file certs/localhost-key.pem localhost 127.0.0.1 ::1
+  ```
 
 Now that all prerequisites are installed, we can initiate the project by following the steps below:
 
 1. Execute the `composer install` command to install the project dependencies.
 2. Execute the `docker-compose up -d` command to launch the application.
 
-The project should now be operational and accessible at `http://localhost:8080`.
+The project should now be operational and accessible at `https://localhost`.
 You can also access phpMyAdmin at `http://localhost:8081`.
 
 ### Application flow

@@ -38,6 +38,7 @@ final class ClearStuckImportsCommand extends Command
         foreach ($stuck as $import) {
             $import->markFailed();
             $this->importRepository->save(import: $import);
+            $import = $this->importRepository->find(id: $import->id);
             $this->eventDispatcher->dispatch(event: new ImportFailedEvent(import: $import));
 
             $io->writeln(messages: "  Marked import #{$import->id} as failed");

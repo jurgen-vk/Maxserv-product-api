@@ -5,6 +5,14 @@
     flex: 1;
     min-height: 0;
 
+    .c_ui_table {
+      border-radius: var(--radius-default) var(--radius-default) 0 0;
+    }
+
+    .c_ui_paginator {
+      border-radius: 0 0 var(--radius-default) var(--radius-default);
+    }
+
     .product-td-title {
       /*width: 100%;*/
       min-width: 12rem;

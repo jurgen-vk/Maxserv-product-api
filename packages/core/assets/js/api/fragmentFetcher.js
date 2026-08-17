@@ -1,16 +1,12 @@
-async function fetchFragments(path, fragments, {params = {}, excludeUrlParams = false, signal} = {}) {
-  const base = excludeUrlParams
-    ? {}
-    : Object.fromEntries(new URLSearchParams(window.location.search));
-  delete base.fragments;
+async function fetchFragments(path, fragments, {params = new URLSearchParams(), excludeUrlParams = false, signal} = {}) {
+  const search = excludeUrlParams ? new URLSearchParams() : new URLSearchParams(window.location.search);
+  search.delete('fragments');
 
-  const merged = {...base, ...params};
-
-  for (const [key, value] of Object.entries(merged)) {
-    if (value == null) delete merged[key];
+  new Set(params.keys()).forEach((key) => search.delete(key));
+  for (const [key, value] of params.entries()) {
+    search.append(key, value);
   }
 
-  const search = new URLSearchParams(merged);
   fragments.forEach((fragment) => search.append('fragments[]', fragment));
 
   const response = await fetch(`${path}?${search}`, {signal});

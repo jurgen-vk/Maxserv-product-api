@@ -528,10 +528,12 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "4feb8c56e4e21b1e9fa694835be94fdce2707b9c"
+                "reference": "580b9d519235b3f64d4106c2fcb8c39710c188e0"
             },
             "require": {
                 "doctrine/dbal": "^4.0",
+                "ext-dom": "*",
+                "ext-libxml": "*",
                 "ext-pdo": "*",
                 "ext-tokenizer": "*",
                 "php": "^8.5",

@@ -1,0 +1,7 @@
+{% set label = label|default('') %}
+{% set value = value|default('') %}
+
+<label {{ attrs(defaults: { class: 'c_ui_input_date' }, attributes: attributes) }}>
+  {% if label %}<span>{{ label }}</span>{% endif %}
+  <input type="date" name="{{ name }}" value="{{ value }}">
+</label>

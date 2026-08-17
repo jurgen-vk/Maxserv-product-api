@@ -1,0 +1,14 @@
+{% set isSorted = sortBy == column %}
+{% set sortIconUp = sortIconUp|default(icon('lucide:arrow-up')) %}
+{% set sortIconDown = sortIconDown|default(icon('lucide:arrow-down')) %}
+
+<th {{ attrs(defaults: { class: 'c_ui_table__sortable-th', 'data-sorted': isSorted ? true : null }, attributes: attributes) }}>
+  <a href="#" class="sort-link" data-column="{{ column }}" data-dir="{{ isSorted ? sortDir : '' }}">
+    {{ label }}
+    {% if isSorted %}
+      {{ sortDir|upper == 'ASC' ? sortIconUp|raw : sortIconDown|raw }}
+    {% else %}
+      {{ icon('lucide:chevrons-up-down') }}
+    {% endif %}
+  </a>
+</th>

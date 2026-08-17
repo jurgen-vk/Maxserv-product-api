@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS products (
   description         TEXT,
   price               DECIMAL(10, 2)  NOT NULL,
   discount_percentage DECIMAL(5, 2)   NOT NULL DEFAULT 0,
+  discounted_price    DECIMAL(10, 2) GENERATED ALWAYS AS (price * (1 - discount_percentage / 100)) STORED NOT NULL,
   rating              DECIMAL(3, 2)   NOT NULL DEFAULT 0,
   stock               INT             NOT NULL DEFAULT 0,
   category_id         INT             NOT NULL,
@@ -13,5 +14,8 @@ CREATE TABLE IF NOT EXISTS products (
   INDEX idx_products_category_id (category_id),
   INDEX idx_products_brand_id (brand_id),
   INDEX idx_products_price (price),
-  INDEX idx_products_rating (rating)
+  INDEX idx_products_rating (rating),
+  INDEX idx_products_discounted_price (discounted_price),
+  INDEX idx_products_title (title),
+  INDEX idx_products_stock (stock)
 );

@@ -19,6 +19,8 @@
 !/Dockerfile
 !/docker-compose.yml
 !/.dockerignore
+!/Caddyfile
+!/Caddyfile.dev
 
 # Configuration
 !.env.example

@@ -1,5 +1,5 @@
 @layer main {
-  .p_products__products-table__sortable-th {
+  .c_ui_table__sortable-th {
     .sort-link {
       display: inline-flex;
       align-items: center;

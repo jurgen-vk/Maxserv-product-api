@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace MaxServ\App\Event\Import;
 
 use MaxServ\App\Entity\Import;
-use Symfony\Contracts\EventDispatcher\Event;
+use MaxServ\Core\Event\AppEvent;
 
-final class ImportFailedEvent extends Event
+final class ImportFailedEvent extends AppEvent
 {
     public function __construct(
         public readonly Import $import,

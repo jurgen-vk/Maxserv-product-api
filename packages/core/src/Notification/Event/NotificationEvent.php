@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MaxServ\Core\Notification\Event;
 
+use MaxServ\Core\Event\AppEvent;
 use MaxServ\Core\Notification\Enum\NotificationType;
-use Symfony\Contracts\EventDispatcher\Event;
 
-final class NotificationEvent extends Event
+final class NotificationEvent extends AppEvent
 {
     public readonly string $icon;
 

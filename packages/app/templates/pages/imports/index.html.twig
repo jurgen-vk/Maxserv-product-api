@@ -5,6 +5,24 @@
 {% block content %}
   <div class="p_imports">
     {% include 'components.ui.page-header' with { title: 'Imports', icon: icon('lucide:import') } only %}
-    {% include 'pages.imports._imports-table' with { imports: imports, paginator: paginator } only %}
+
+    {% embed 'components.ui.table.toolbar' %}
+      {% block contentLeft %}
+        {% include 'components.ui.input.search' with { value: filter.search, placeholder: 'Search imports…', pageParam: paginator.pageParam } only %}
+      {% endblock %}
+      {% block contentRight %}
+        {% embed 'components.ui.button' with {
+          variant: 'neutral',
+          attributes: { type: 'button', popovertarget: 'imports-filter-panel', popovertargetaction: 'toggle' },
+        } %}
+          {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
+          {% block label %}Filters{% endblock %}
+        {% endembed %}
+
+        {% include 'pages.imports._filter-panel' with { filter: filter, types: types, statuses: statuses, pageParam: paginator.pageParam } only %}
+      {% endblock %}
+    {% endembed %}
+
+    {% include 'pages.imports._imports-table' with { imports: imports, paginator: paginator, filter: filter } only %}
   </div>
 {% endblock %}

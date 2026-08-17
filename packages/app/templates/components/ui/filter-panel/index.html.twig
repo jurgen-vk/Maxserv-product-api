@@ -1,0 +1,19 @@
+<form {{ attrs(defaults: {
+  class: 'c_ui_filter-panel',
+  popover: true,
+  id: id,
+  'data-page-param': pageParam,
+}, attributes: attributes) }}>
+  {% block fields %}{% endblock %}
+
+  <hr>
+
+  <div class="actions">
+    {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear' } } %}
+      {% block label %}Clear filters{% endblock %}
+    {% endembed %}
+    {% embed 'components.ui.button' with { variant: 'primary', attributes: { type: 'submit' } } %}
+      {% block label %}Apply{% endblock %}
+    {% endembed %}
+  </div>
+</form>

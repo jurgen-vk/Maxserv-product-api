@@ -11,12 +11,12 @@
     font-weight: var(--text-xl-weight);
     text-decoration: none;
     box-shadow: var(--shadow-button);
-    transform: translateY(-1px);
+    /*transform: translateY(-1px);*/
     transition: transform 0.01s ease, box-shadow 0.01s ease, background-color 0.01s ease;
     -webkit-tap-highlight-color: transparent;
 
     &:active:not(:disabled) {
-      transform: translateY(1px);
+      transform: translateY(2px);
       box-shadow: none;
     }
 

@@ -1,0 +1,15 @@
+@layer main {
+  .c_ui_input_number {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    input:focus {
+      border-color: var(--input-border-color-active);
+    }
+
+    &[data-variant="primary"] input:focus {
+      border-color: var(--color-primary-add-1);
+    }
+  }
+}

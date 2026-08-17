@@ -1,5 +1,5 @@
 @layer main {
-  .p_products__products-table__filter-panel {
+  .c_ui_filter-panel {
     --input-background-color: var(--color-main-2);
     --input-border-color: var(--color-main-5);
 
@@ -16,6 +16,7 @@
     box-shadow: var(--shadow-size-sm) var(--shadow-strength-sm);
     overflow: visible;
     flex-direction: column;
+    gap: 0.75rem;
     transition: opacity 0.15s ease, scale 0.15s ease,
     display 0.15s allow-discrete, overlay 0.15s allow-discrete;
     opacity: 0;
@@ -35,36 +36,18 @@
     }
 
     @supports (anchor-name: --a) {
-      top: calc(anchor(bottom) + 1rem);
-      right: anchor(right);
+      position-anchor: auto;
+      position-area: bottom span-left;
+      position-try-fallbacks: flip-block, flip-inline;
+      top: auto;
+      right: auto;
       left: auto;
       bottom: auto;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+      margin-top: 1rem;
     }
 
     hr {
       margin: -0.1875rem 0;
-    }
-
-    .minimum-rating {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-
-      input:focus {
-        border-color: var(--input-border-color-active);
-      }
-
-      &[data-variant="primary"] input {
-        &:focus {
-          border-color: var(--color-primary-add-1);
-        }
-      }
     }
 
     .actions {

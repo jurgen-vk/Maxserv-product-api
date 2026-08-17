@@ -10,34 +10,22 @@
       {% endblock %}
     {% endembed %}
 
-    <div class="toolbar">
-      {% include 'components.ui.input.search' with {
-        value: filter.search,
-        placeholder: 'Search products…',
-        pageParam: paginator.pageParam,
-      } only %}
+    {% embed 'components.ui.table.toolbar' %}
+      {% block contentLeft %}
+        {% include 'components.ui.input.search' with { value: filter.search, placeholder: 'Search products…', pageParam: paginator.pageParam } only %}
+      {% endblock %}
+      {% block contentRight %}
+        {% embed 'components.ui.button' with {
+          variant: 'neutral',
+          attributes: { type: 'button', popovertarget: 'products-filter-panel', popovertargetaction: 'toggle' },
+        } %}
+          {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
+          {% block label %}Filters{% endblock %}
+        {% endembed %}
 
-      {% embed 'components.ui.button' with {
-        variant: 'neutral',
-        attributes: {
-          type: 'button',
-          popovertarget: 'products-filter-panel',
-          popovertargetaction: 'toggle',
-        },
-      } %}
-        {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
-        {% block label %}Filters{% endblock %}
-      {% endembed %}
-
-      {% include 'pages.products._products-table._filter-panel' with {
-        filter: filter,
-        categories: categories,
-        brands: brands,
-        minPrice: minPrice,
-        maxPrice: maxPrice,
-        pageParam: paginator.pageParam,
-      } only %}
-    </div>
+        {% include 'pages.products._filter-panel' with { filter: filter, categories: categories, brands: brands, minPrice: minPrice, maxPrice: maxPrice, pageParam: paginator.pageParam } only %}
+      {% endblock %}
+    {% endembed %}
 
     {% include 'pages.products._products-table' with { items: items, paginator: paginator, filter: filter, activeImport: activeImport } only %}
   </div>

@@ -65,8 +65,20 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+  app-proxy:
+    image: caddy:2-alpine
+    container_name: app-proxy
+    restart: always
+    environment:
+      APP_SERVER_NAME: ${APP_SERVER_NAME}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
     ports:
-      - "8080:80"
+      - "443:443"
+    depends_on:
+      - app
   messenger-imports:
     build:
       context: .
@@ -94,16 +106,26 @@ services:
     container_name: mercure
     restart: always
     environment:
-      SERVER_NAME: ${MERCURE_SERVER_NAME:-:80}
+      SERVER_NAME: ${MERCURE_SERVER_NAME}
       MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_PUBLISHER_JWT_KEY}
       MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_SUBSCRIBER_JWT_KEY}
       MERCURE_EXTRA_DIRECTIVES: |
         anonymous
         cors_origins ${APP_URL}
+      CADDY_SERVER_EXTRA_DIRECTIVES: tls ${ACME_EMAIL}
+      GLOBAL_OPTIONS: auto_https disable_redirects
+      CADDY_EXTRA_CONFIG: |
+        :80 {
+        	mercure {
+        		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
+        		subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
+        	}
+        }
     ports:
-      - "${MERCURE_PORT:-3000}:80"
+      - "${MERCURE_PORT:-3443}:443"
     volumes:
       - mercure_data:/data
 volumes:
   mysql_data:
   mercure_data:
+  caddy_data:

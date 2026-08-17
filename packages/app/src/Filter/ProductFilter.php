@@ -6,55 +6,44 @@ namespace MaxServ\App\Filter;
 
 use Symfony\Component\HttpFoundation\Request;
 
-final readonly class ProductFilter
+final class ProductFilter extends AbstractFilter
 {
     public function __construct(
-        public ?string $category = null,
-        public ?string $brand = null,
-        public ?string $search = null,
-        public string $sortBy = 'title',
-        public string $order = 'ASC',
-        public ?float $minPrice = null,
-        public ?float $maxPrice = null,
-        public ?float $minRating = null,
+        public readonly ?string $category = null,
+        public readonly ?string $brand = null,
+        public readonly ?string $search = null,
+        public readonly ?float $minPrice = null,
+        public readonly ?float $maxPrice = null,
+        public readonly ?float $minRating = null,
+        public readonly ?string $sortBy = 'title',
+        public readonly ?string $sortDir = 'ASC',
     ) {
-        [$this->filters, $this->bindings] = $this->buildFilters();
-        $this->hasActiveFilter = $this->filters !== 'TRUE';
-        $this->sorts = $this->buildSort();
-        $this->sortJoins = $this->buildSortJoins();
+        parent::__construct();
     }
 
-    private const array SORTABLE_COLUMNS = [
+    protected const array SORTABLE_COLUMNS = [
         'title' => 'products.title',
         'price' => 'products.price',
         'rating' => 'products.rating',
         'stock' => 'products.stock',
         'brand' => 'brands.name',
         'category' => 'categories.name',
-        'discounted' => 'products.price * (1 - products.discount_percentage / 100)',
+        'discounted' => 'products.discounted_price',
     ];
 
-    private const array SORT_JOINS = [
-        'brand' => 'LEFT JOIN brands ON brands.id = products.brand_id',
-        'category' => 'LEFT JOIN categories ON categories.id = products.category_id',
+    protected const array SEARCHABLE_COLUMNS = ['products.title', 'brands.name', 'categories.name'];
+
+    protected const array RELATION_JOINS = [
+        'brands' => 'LEFT JOIN brands ON brands.id = products.brand_id',
+        'categories' => 'LEFT JOIN categories ON categories.id = products.category_id',
     ];
-
-    private const array SEARCHABLE_COLUMNS = ['products.title'];
-
-    public string $filters;
-    public array $bindings;
-    public bool $hasActiveFilter;
-    public string $sorts;
-    public string $sortJoins;
 
     public static function fromRequest(Request $request): self
     {
         return new self(
-            category: $request->query->getString(key: 'category') ?: null,
-            brand: $request->query->getString(key: 'brand') ?: null,
-            search: $request->query->getString(key: 'search') ?: null,
-            sortBy: $request->query->getString(key: 'sort', default: 'title'),
-            order: $request->query->getString(key: 'order', default: 'ASC'),
+            category: $request->query->get(key: 'category'),
+            brand: $request->query->get(key: 'brand'),
+            search: $request->query->get(key: 'search'),
             minPrice: $request->query->filter(
                 key: 'minPrice',
                 filter: \FILTER_VALIDATE_FLOAT,
@@ -70,90 +59,49 @@ final readonly class ProductFilter
                 filter: \FILTER_VALIDATE_FLOAT,
                 options: \FILTER_NULL_ON_FAILURE,
             ),
+            sortBy: $request->query->getString(key: 'sortBy', default: 'title'),
+            sortDir: $request->query->getString(key: 'sortDir', default: 'ASC'),
         );
     }
 
-    private function applyCategory(string $value): array
+    protected function filter(): void
     {
-        return [
-            'EXISTS (
-                SELECT 1 FROM categories 
-                WHERE categories.id = products.category_id 
-                AND categories.name = :category
-            )',
-            [':category' => $value],
-        ];
-    }
+        $this->search(value: $this->search);
 
-    private function applyBrand(string $value): array
-    {
-        return [
-            'EXISTS (
-                SELECT 1 FROM brands 
-                WHERE brands.id = products.brand_id 
-                AND brands.name = :brand
-            )',
-            [':brand' => $value],
-        ];
-    }
-
-    private function applySearch(string $value): array
-    {
-        $conditions = array_map(
-            callback: fn($column) => "$column LIKE :search",
-            array: self::SEARCHABLE_COLUMNS,
-        );
-        return [
-            '(' . implode(separator: ' OR ', array: $conditions) . ')',
-            [':search' => '%' . $value . '%'],
-        ];
-    }
-
-    private function applyMinPrice(float $value): array
-    {
-        return ['products.price >= :minPrice', [':minPrice' => $value]];
-    }
-
-    private function applyMaxPrice(float $value): array
-    {
-        return ['products.price <= :maxPrice', [':maxPrice' => $value]];
-    }
-
-    private function applyMinRating(float $value): array
-    {
-        return ['products.rating >= :minRating', [':minRating' => $value]];
-    }
-
-    private function buildFilters(): array
-    {
-        $conditions = [];
-        $bindings = [];
-
-        foreach (get_object_vars($this) as $property => $value) {
-            if ($value === null || in_array(needle: $property, haystack: ['sortBy', 'order'])) {
-                continue;
-            }
-
-            $method = 'apply' . ucfirst(string: $property);
-            [$sql, $binding] = $this->$method($value);
-            $conditions[] = $sql;
-            $bindings = [...$bindings, ...$binding];
+        if ($this->category !== null) {
+            $this->where(
+                sql: 'EXISTS (
+                    SELECT 1 FROM categories
+                    WHERE categories.id = products.category_id
+                    AND categories.name = :category
+                )',
+                bindings: [':category' => $this->category],
+            );
         }
 
-        $filters = $conditions !== [] ? implode(separator: ' AND ', array: $conditions) : 'TRUE';
+        if ($this->brand !== null) {
+            $this->where(
+                sql: 'EXISTS (
+                    SELECT 1 FROM brands
+                    WHERE brands.id = products.brand_id
+                    AND brands.name = :brand
+                )',
+                bindings: [':brand' => $this->brand],
+            );
+        }
 
-        return [$filters, $bindings];
-    }
+        if ($this->minPrice !== null) {
+            $this->where(sql: 'products.price >= :minPrice', bindings: [':minPrice' => $this->minPrice]);
+        }
 
-    private function buildSort(): string
-    {
-        $column = self::SORTABLE_COLUMNS[$this->sortBy] ?? 'products.title';
-        $direction = strtoupper($this->order) === 'DESC' ? 'DESC' : 'ASC';
-        return "$column $direction";
-    }
+        if ($this->maxPrice !== null) {
+            $this->where(sql: 'products.price <= :maxPrice', bindings: [':maxPrice' => $this->maxPrice]);
+        }
 
-    private function buildSortJoins(): string
-    {
-        return self::SORT_JOINS[$this->sortBy] ?? '';
+        if ($this->minRating !== null) {
+            $this->where(sql: 'products.rating >= :minRating', bindings: [':minRating' => $this->minRating]);
+        }
+
+        $this->sort(column: $this->sortBy, direction: $this->sortDir);
     }
 }

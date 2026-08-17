@@ -5,9 +5,18 @@
     min-height: 0;
     flex: 1;
 
+    .c_ui_table {
+      border-radius: var(--radius-default) var(--radius-default) 0 0;
+    }
+
+    .c_ui_paginator {
+      border-radius: 0 0 var(--radius-default) var(--radius-default);
+    }
+
     .import-td-id,
     .import-td-started,
-    .import-td-completed,
+    .import-td-ended,
+    .import-td-duration,
     .import-td-processed,
     .import-td-total {
       font-family: var(--font-mono);
