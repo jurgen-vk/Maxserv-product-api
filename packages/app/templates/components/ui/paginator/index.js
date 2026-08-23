@@ -11,7 +11,7 @@ $(document).on('click', '.c_ui_paginator .page-link', function (event) {
   url.push();
 });
 
-$(document).on('change', '.c_ui_paginator .per-page-select .select-input', function () {
+$(document).on('change', '.c_ui_paginator .per-page-select .input', function () {
   const $paginator = $(this).closest('.c_ui_paginator');
   const pageParam = $paginator.data('pageParam');
   const perPageParam = $paginator.data('perPageParam');

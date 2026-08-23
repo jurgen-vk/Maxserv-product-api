@@ -3,5 +3,16 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    width: 100%;
+
+    input {
+      color: var(--input-text-color);
+    }
+
+    &[data-variant="primary"] {
+      input:focus {
+        border-color: var(--input-border-color-primary);
+      }
+    }
   }
 }

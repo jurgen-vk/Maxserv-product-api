@@ -5,7 +5,7 @@
     align-items: center;
     gap: 0.5rem;
 
-    .search-input {
+    .input {
       padding: 0;
     }
 
@@ -57,7 +57,11 @@
     }
 
     &[data-variant="primary"] {
-      --input-border-color-active: var(--color-primary-add-1);
+      .field {
+        &:has(:focus) {
+          border-color: var(--input-border-color-primary);
+        }
+      }
     }
   }
 }

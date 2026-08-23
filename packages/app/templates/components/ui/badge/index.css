@@ -8,6 +8,9 @@
     font-weight: var(--text-xl-weight);
     white-space: nowrap;
     background-color: var(--color-main-3);
+    color: var(--color-text-6);
+
+    /*:::[ ▼ Variants ▼ ]:::::*/
 
     &[data-variant="success"] {
       background-color: var(--color-success-sub-8);
@@ -27,11 +30,6 @@
     &[data-variant="info"] {
       background-color: var(--color-info-sub-8);
       color: var(--color-info-add-6);
-    }
-
-    &[data-variant="neutral"] {
-      background-color: var(--color-main-3);
-      color: var(--color-text-6);
     }
   }
 }

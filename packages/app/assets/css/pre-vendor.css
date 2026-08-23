@@ -1,0 +1,11 @@
+@layer pre-vendor {
+  .c_ui_input_select {
+    div.ts-wrapper.multi div.ts-control div.item {
+      /*padding-right: var(--option-padding-width) !important;*/
+    }
+
+    div.ts-wrapper div.ts-control:not(.rtl) {
+      padding-right: calc((var(--input-padding-width) * 2) + 1rem) !important;
+    }
+  }
+}

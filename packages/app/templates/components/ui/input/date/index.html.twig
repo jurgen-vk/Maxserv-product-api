@@ -1,7 +1,14 @@
 {% set label = label|default('') %}
 {% set value = value|default('') %}
+{% set variant = variant|default(null) %}
 
-<label {{ attrs(defaults: { class: 'c_ui_input_date' }, attributes: attributes) }}>
-  {% if label %}<span>{{ label }}</span>{% endif %}
-  <input type="date" name="{{ name }}" value="{{ value }}">
+<label {{ attrs(
+  defaults: {
+    class: 'c_ui_input_date',
+    'data-variant': variant
+  },
+  attributes: attributes
+) }}>
+  {% if label %}<span class="label">{{ label }}</span>{% endif %}
+  <input class="input" type="date" name="{{ name }}" value="{{ value }}">
 </label>

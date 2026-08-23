@@ -28,9 +28,13 @@
         min-height: 0;
         overflow-y: auto;
         scrollbar-gutter: stable;
-        container-type: inline-size; /* Section 6.2 */
+        container-type: inline-size;
         container-name: page;
         padding: 1.5rem 2.5rem;
+
+        @media (--under-lg) {
+          padding: 1rem 1.5rem;
+        }
       }
     }
   }

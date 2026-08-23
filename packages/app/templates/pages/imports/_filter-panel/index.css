@@ -1,8 +1,24 @@
 @layer main {
-  .date-range {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .p_imports__filter-panel {
+    display: contents;
+
+    label {
+      /*border-bottom: 1px solid var(--border-color-main);*/
+    }
+
+    .date-range {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      .c_ui_input_date {
+        width: 100%;
+
+        input {
+          color: var(--color-text-13)
+        }
+      }
+    }
   }
 }

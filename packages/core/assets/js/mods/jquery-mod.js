@@ -13,6 +13,24 @@ $.fn.toggle = function (state) {
   return shouldShow ? this.show() : this.hide();
 };
 
+$.fn.outerHtml = function (value) {
+  if (value === undefined) {
+    return this[0] ? this[0].outerHTML : undefined;
+  }
+
+  return this.each(function () {
+    this.outerHTML = value;
+  });
+};
+
+$.fn.innerHtml = function (value) {
+  if (value === undefined) {
+    return this.html();
+  }
+
+  return this.html(value);
+};
+
 $.fn.found = function (callback) {
   if (this.length > 0) {
     this.each(function (index, element) {
@@ -22,9 +40,8 @@ $.fn.found = function (callback) {
   return this;
 };
 
-// A property, not a method — `$('.foo').exist`, not `$('.foo').exist()`.
 Object.defineProperty($.fn, 'exist', {
   get() {
     return this.length > 0;
-  },
+  }
 });

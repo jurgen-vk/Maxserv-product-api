@@ -1,0 +1,68 @@
+import $ from 'jquery';
+import TomSelect from 'tom-select';
+import { createPopper } from '@popperjs/core';
+
+function initSelect(element) {
+  const $select = $(element).find('.select-input');
+  const select = $select.get(0);
+
+  if (!select || select.tomselect) {
+    return;
+  }
+
+  const variant = $select.data('variant') || 'primary';
+  const settings = $select.data('settings') || {};
+
+  const plugins = { change_listener: {}, clear_button: {} };
+  if (select.multiple) plugins.remove_button = {};
+
+  new TomSelect($select, {
+    ...settings,
+    plugins,
+    onInitialize() {
+      this.wrapper.dataset.variant = variant;
+
+      this.popper = createPopper(this.control, this.dropdown, {
+        placement: 'bottom-start',
+        modifiers: [{ name: 'flip', enabled: false }]
+      });
+    },
+
+    onDropdownOpen() {
+
+      const VERTICAL_PADDING = 16;
+      const maxContentHeight = parseFloat(getComputedStyle(this.dropdown_content).maxHeight) || Infinity;
+      const fullHeight = Math.min(this.dropdown_content.scrollHeight, maxContentHeight) + VERTICAL_PADDING;
+
+      const controlRect = this.control.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - controlRect.bottom;
+      const spaceAbove = controlRect.top;
+      const placement = spaceBelow < fullHeight && spaceAbove > spaceBelow ? 'top-start' : 'bottom-start';
+
+      this.popper.setOptions({ placement });
+      this.popper.update();
+    }
+  });
+}
+
+function initSelects(root = document) {
+  $(root).find('.c_ui_input_select').each(function () {
+    initSelect(this);
+  });
+}
+
+initSelects();
+
+new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (node.nodeType !== Node.ELEMENT_NODE) continue;
+
+      if (node.matches('.c_ui_input_select')) {
+        initSelect(node);
+      } else {
+        initSelects(node);
+      }
+    }
+  }
+}).observe(document.body, { childList: true, subtree: true });

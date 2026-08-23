@@ -2,24 +2,47 @@
   .c_ui_media-carousel {
     display: flex;
     flex-direction: column;
-    gap: 0.625rem;
+    gap: 0.5rem;
 
     .main {
       position: relative;
       aspect-ratio: 4 / 3;
       overflow: hidden;
       border-radius: var(--radius-default);
-      border: 1px solid var(--color-main-8);
+      border: 1px solid var(--border-color-main);
       background-color: var(--color-main);
 
       @media (--under-lg) {
         aspect-ratio: 1 / 1;
       }
 
-      img {
+      .slides {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        touch-action: pan-x;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      .slide {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
         width: 100%;
         height: 100%;
         object-fit: contain;
+        -webkit-user-drag: none;
+        user-select: none;
+      }
+
+      &:hover .arrow,
+      .arrow:focus-visible {
+        opacity: 1;
       }
     }
 
@@ -31,81 +54,83 @@
       justify-content: center;
       color: var(--color-text-13);
 
-      svg {
+      .icon {
         width: 2.5rem;
         height: 2.5rem;
       }
     }
 
+    .c_ui_button.arrow,
+    .c_ui_button.thumbs-scroll {
+      padding: 0.25rem;
+    }
+
     .arrow {
       position: absolute;
       top: 50%;
-      display: flex;
-      width: 2rem;
-      height: 2rem;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-default);
-      border: 1px solid var(--color-main-8);
+      z-index: var(--z-add-1);
       transform: translateY(-50%);
-      background-color: var(--color-main);
-      color: var(--color-text-1);
-      box-shadow: var(--shadow-button);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.08s ease;
-      -webkit-tap-highlight-color: transparent;
+      opacity: 0;
+      transition: opacity 0.1s ease;
 
-      &:active {
+      &:active:not(:disabled) {
         transform: translateY(calc(-50% + 2px));
-        box-shadow: none;
-      }
-
-      &:hover {
-        background-color: var(--color-main-2);
-      }
-
-      svg {
-        width: 1rem;
-        height: 1rem;
       }
     }
 
     .arrow.prev {
-      left: 0.625rem;
+      left: 0.5rem;
     }
 
     .arrow.next {
-      right: 0.625rem;
+      right: 0.5rem;
     }
 
     .thumbs-row {
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
+      position: relative;
+    }
+
+    .thumbs-scroll {
+      position: absolute;
+      top: 50%;
+      z-index: var(--z-add-1);
+      transform: translateY(-50%);
+
+      &:active:not(:disabled) {
+        transform: translateY(calc(-50% + 2px));
+      }
+    }
+
+    .thumbs-scroll.prev {
+      left: 0.5rem;
+    }
+
+    .thumbs-scroll.next {
+      right: 0.5rem;
     }
 
     .thumbs {
       display: flex;
       gap: 0.5rem;
       overflow-x: auto;
+      overflow-y: hidden;
       scroll-behavior: smooth;
       touch-action: pan-x;
-      /* keeps off-axis touch-drags from being
-             captured as a vertical page scroll instead of a horizontal one */
-    }
+      scrollbar-width: none;
 
-    /* thumbnails read comfortably at a size closer to the main image's own
-       aspect, not a cramped strip of tiny squares */
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
 
     .thumb {
       flex-shrink: 0;
       overflow: hidden;
       border-radius: var(--radius-default);
-      border: 2px solid transparent;
+      border: 1px solid var(--input-border-color);
       padding: 0;
-      width: 5.5rem;
+      width: 6rem;
       aspect-ratio: 4 / 3;
-      box-shadow: var(--shadow-button);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.15s ease;
       -webkit-tap-highlight-color: transparent;
 
       @media (--under-lg) {
@@ -114,12 +139,11 @@
       }
 
       &:active {
-        transform: translateY(2px);
-        box-shadow: none;
+        transform: scale(95%);
       }
 
-      &[data-active] {
-        border-color: var(--color-primary);
+      &[data-active], &:hover, &:active {
+        border-color: var(--input-border-color-active);
       }
 
       img {
@@ -129,33 +153,13 @@
       }
     }
 
-    .thumbs-row > button {
-      display: flex;
-      width: 1.5rem;
-      height: 1.5rem;
-      flex-shrink: 0;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-default);
-      border: 1px solid var(--color-main-8);
-      background-color: var(--color-main);
-      color: var(--color-text-13);
-      box-shadow: var(--shadow-button);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.08s ease;
-      -webkit-tap-highlight-color: transparent;
+    /* --- Variants --- */
 
-      &:active {
-        transform: translateY(2px);
-        box-shadow: none;
-      }
-
-      &:hover {
-        background-color: var(--color-main-2);
-      }
-
-      svg {
-        width: 0.8125rem;
-        height: 0.8125rem;
+    &[data-variant="primary"] {
+      .thumb {
+        &[data-active], &:hover, &:active {
+          border-color: var(--color-primary);
+        }
       }
     }
   }

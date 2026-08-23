@@ -5,7 +5,6 @@
     overflow: auto;
     border: 1px solid var(--border-color-main);
     background-color: var(--color-main);
-    scrollbar-color: var(--color-main-10) var(--color-main-3);
 
     table {
       width: 100%;
@@ -45,7 +44,7 @@
             background-color: var(--color-main-1);
           }
 
-          &:hover {
+          &:hover:not(.empty-row) {
             background-color: var(--color-main-2);
           }
         }

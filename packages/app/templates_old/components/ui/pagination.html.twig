@@ -1,8 +1,8 @@
 {#
-  Variables expected:
-    paginator   — Paginator DTO
-    extraParams — array of additional query params to preserve (e.g. { category: 'phones', sort: 'price' })
-    baseUrl     — string (e.g. '/products')
+Variables expected:
+  paginator   — Paginator DTO
+  extraParams — array of additional query params to preserve (e.g. { category: 'phones', sort: 'price' })
+  baseUrl     — str (e.g. '/products')
 #}
 {% set extraParams = extraParams ?? {} %}
 
@@ -19,7 +19,7 @@
   {% if paginator.totalPages > 1 %}
     <div class="flex items-center gap-1">
 
-      {# Build base query string from extraParams #}
+      {# Build base query str from extraParams #}
       {% set qs = '' %}
       {% for k, v in extraParams %}
         {% if v is not empty or v == 0 %}

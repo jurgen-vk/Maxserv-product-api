@@ -9,13 +9,8 @@
       align-items: center;
       gap: 0.5rem;
 
-      input {
+      .c_ui_input_number {
         width: 100%;
-        font-family: var(--font-mono);
-
-        &:focus {
-          border-color: var(--input-border-color-active);
-        }
       }
 
       span {
@@ -88,10 +83,6 @@
     }
 
     &[data-variant="primary"] {
-      .values input:focus {
-        border-color: var(--color-primary-add-1);
-      }
-
       .fill {
         background-color: var(--color-primary);
       }

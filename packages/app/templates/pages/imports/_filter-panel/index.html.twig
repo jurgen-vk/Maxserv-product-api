@@ -1,22 +1,73 @@
 {% set typeOptions = types|map(t => { value: t, label: t|capitalize }) %}
 {% set statusOptions = statuses|map(s => { value: s.value, label: s.value|capitalize }) %}
 
-{% embed 'components.ui.filter-panel' with { id: 'imports-filter-panel', pageParam: pageParam } %}
-  {% block fields %}
-    {% include 'components.ui.input.select' with { label: 'Type', name: 'type', value: filter.type, placeholder: 'All types', options: typeOptions } only %}
+<div {{ attrs(defaults: {
+  class: 'p_imports__filter-panel'
+}, attributes: attributes) }}>
+  {% embed 'components.ui.filter-panel' with {
+    id: 'imports-filter-panel',
+    pageParam: pageParam,
+  } %}
+    {% block fields %}
+      {% include 'components.ui.input.select' with {
+        variant: 'primary',
+        label: 'Type',
+        name: 'type',
+        value: filter.type,
+        placeholder: 'Types',
+        options: typeOptions,
+        settings: {
+          plugins: {
+            clear_button,
+          }
+        },
+      } only %}
 
-    {% include 'components.ui.input.select' with { label: 'Status', name: 'statuses', value: filter.statuses, placeholder: 'All statuses', options: statusOptions, multiselect: true } only %}
+      {% include 'components.ui.input.select' with {
+        variant: 'primary',
+        label: 'Status',
+        name: 'statuses',
+        value: filter.statuses,
+        placeholder: 'Statuses',
+        options: statusOptions,
+        multiselect: true,
+        settings: {
+          plugins: {
+            remove_button,
+            clear_button
+          }
+        }
+      } only %}
 
-    <div class="date-range">
-      <span>Started</span>
-      {% include 'components.ui.input.date' with { name: 'startedFrom', value: filter.startedFrom } only %}
-      {% include 'components.ui.input.date' with { name: 'startedTo', value: filter.startedTo } only %}
-    </div>
+      <div class="date-range">
+        <label>Started Range</label>
+        {% include 'components.ui.input.date' with {
+          variant: 'primary',
+          name: 'startedFrom',
+          value: filter.startedFrom,
+        } only %}
 
-    <div class="date-range">
-      <span>Ended</span>
-      {% include 'components.ui.input.date' with { name: 'endedFrom', value: filter.endedFrom } only %}
-      {% include 'components.ui.input.date' with { name: 'endedTo', value: filter.endedTo } only %}
-    </div>
-  {% endblock %}
-{% endembed %}
+        {% include 'components.ui.input.date' with {
+          variant: 'primary',
+          name: 'startedTo',
+          value: filter.startedTo,
+        } only %}
+      </div>
+
+      <div class="date-range">
+        <label>Ended Range</label>
+        {% include 'components.ui.input.date' with {
+          variant: 'primary',
+          name: 'endedFrom',
+          value: filter.endedFrom,
+        } only %}
+
+        {% include 'components.ui.input.date' with {
+          variant: 'primary',
+          name: 'endedTo',
+          value: filter.endedTo,
+        } only %}
+      </div>
+    {% endblock %}
+  {% endembed %}
+</div>

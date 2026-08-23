@@ -37,7 +37,7 @@
           </td>
           <td class="product-td-brand">{{ product.brand ? product.brand.name : '—' }}</td>
           <td
-            class="product-td-category">{% include 'components.ui.badge' with { variant: 'neutral', label: product.category.name } only %}</td>
+            class="product-td-category">{% include 'components.ui.badge' with { label: product.category.name } only %}</td>
           <td class="product-td-price">
             <span class="{{ product.discountPercentage > 0 ? 'strike' : '' }}">
               €{{ product.price|number_format(2) }}

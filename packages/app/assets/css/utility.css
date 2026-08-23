@@ -10,6 +10,11 @@
   .--spin {
     animation: spin 1s linear infinite;
   }
+
+  .invisible {
+    display: contents;
+    outline: none;
+  }
 }
 
 @keyframes spin {

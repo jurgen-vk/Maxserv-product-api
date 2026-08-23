@@ -1,9 +1,11 @@
-@layer vendor, reset, base, default, default-dark, theme, theme-dark, main, utility;
+@layer pre-vendor, vendor, reset, base, default, default-dark, theme, theme-dark, main, utility;
 
+@import "./pre-vendor.css";
 @import "./fonts.css";
 @import "./reset.css";
 @import "./base.css";
 @import "./theme/default.css";
 @import "select2/dist/css/select2.css" layer(vendor);
+@import "tom-select/dist/css/tom-select.css" layer(vendor);
 @import "./_components.generated.css";
 @import "./utility.css";

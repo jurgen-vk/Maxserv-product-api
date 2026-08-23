@@ -1,12 +1,16 @@
 <div {{ attrs(defaults: { class: 'c_ui_paginator', 'data-variant': variant }, attributes: attributes) }}
   data-page-param="{{ paginator.pageParam }}" data-per-page-param="{{ paginator.perPageParam }}">
   <label class="per-page">
-    <span>Per page</span>
     {% include 'components.ui.input.select' with {
       name: paginator.perPageParam,
+      variant: 'primary',
       options: [10, 25, 50, 100]|map(o => { value: o, label: o }),
       value: paginator.perPage,
       attributes: { class: 'per-page-select' },
+      settings: {
+        allowEmptyOption: false,
+        controlInput: null
+      },
     } only %}
   </label>
 

@@ -2,14 +2,18 @@
 {% set brandOptions = brands|map(b => { value: b.name, label: b.name }) %}
 {% set priceMax = maxPrice ?? 0 %}
 
-{% embed 'components.ui.filter-panel' with { id: 'products-filter-panel', pageParam: pageParam } %}
-  {% block fields %}
-    {% include 'components.ui.input.select' with { label: 'Category', name: 'category', value: filter.category, placeholder: 'All categories', options: categoryOptions, searchable: true } only %}
+<div {{ attrs(defaults: {
+  class: 'p_products__filter-panel'
+}, attributes: attributes) }}>
+  {% embed 'components.ui.filter-panel' with { id: 'products-filter-panel', pageParam: pageParam } %}
+    {% block fields %}
+      {% include 'components.ui.input.select' with { label: 'Category', name: 'category', value: filter.category, placeholder: 'All categories', options: categoryOptions, searchable: true, variant: 'primary', settings: { allowEmptyOption: false } } only %}
 
-    {% include 'components.ui.input.select' with { label: 'Brand', name: 'brand', value: filter.brand, placeholder: 'All brands', options: brandOptions, searchable: true, variant: 'neutral' } only %}
+      {% include 'components.ui.input.select' with { label: 'Brand', name: 'brand', value: filter.brand, placeholder: 'All brands', options: brandOptions, searchable: true, variant: 'primary', settings: { allowEmptyOption: false } } only %}
 
-    {% include 'components.ui.input.range-slider' with { label: 'Price', min: 0, max: priceMax, step: 0.01, valueMin: filter.minPrice ?? 0, valueMax: filter.maxPrice ?? priceMax, nameMin: 'minPrice', nameMax: 'maxPrice' } only %}
+      {% include 'components.ui.input.range-slider' with { label: 'Price', min: 0, max: priceMax, step: 0.01, valueMin: filter.minPrice ?? 0, valueMax: filter.maxPrice ?? priceMax, nameMin: 'minPrice', nameMax: 'maxPrice', variant: 'primary' } only %}
 
-    {% include 'components.ui.input.number' with { label: 'Minimum rating', name: 'minRating', value: filter.minRating, min: 0, max: 5, step: 0.1 } only %}
-  {% endblock %}
-{% endembed %}
+      {% include 'components.ui.input.number' with { label: 'Minimum rating', name: 'minRating', value: filter.minRating, min: 0, max: 5, step: 0.1, variant: 'primary' } only %}
+    {% endblock %}
+  {% endembed %}
+</div>

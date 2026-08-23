@@ -3,9 +3,9 @@
 {% set variant = variant|default('primary') %}
 
 <label {{ attrs(defaults: { class: 'c_ui_input_number', 'data-variant': variant }, attributes: attributes) }}>
-  {% if label %}<span>{{ label }}</span>{% endif %}
-  <input type="number" name="{{ name }}" value="{{ value }}"
-    {% if min is not null %}min="{{ min }}"{% endif %}
+  {% if label %}<span class="label">{{ label }}</span>{% endif %}
+  <input class="input" type="number" name="{{ name }}" value="{{ value }}"
+         {% if min is not null %}min="{{ min }}"{% endif %}
     {% if max is not null %}max="{{ max }}"{% endif %}
     {% if step is not null %}step="{{ step }}"{% endif %}>
 </label>

@@ -9,7 +9,7 @@ function clearFilters($form) {
   const pageParam = $form.data('pageParam');
 
   $form[0].reset();
-  $form.find('.select-input').trigger('change'); // resync select2 after native reset
+  $form.find('.input').trigger('change');
 
   const url = new Url();
   fieldNames($form).forEach((name) => url.searchParams.delete(name));

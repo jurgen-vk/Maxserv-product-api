@@ -24,6 +24,10 @@
       0.988 13.9%, 0.965 16%, 0.979 18%, 1 19.6%, 1
     );
     --shoot: cubic-bezier(0.25, 1.15, 0.3, 1);
+    --shoot-bounce: linear(0, 0.23 8%, 0.42 15%, 0.578 22.2%, 0.709 29.5%, 0.815 35.8%, 0.91 43.5%, 0.97 49.7%, 1.012 55.1%, 1.039 61.2%, 1.049 66.6%, 1.036 72%, 1.007 76.6%, 0.975 80.4%, 0.965 84.3%, 0.975 87.9%, 0.999 91.3%, 1.007 93.9%, 0.999 96.6%, 1);
+    --ramp: cubic-bezier(1, 0, 1, 1);
+    --blast: cubic-bezier(.25, 1.15, .3, 1);
+    --test: cubic-bezier(.25, 1, .75, 1);
     --bounce-inout: linear(
       0, -0.01 5%, -0.069 17.3%, -0.082 23%, -0.064 29%, -0.006 34.4%,
       0.089 39.2%, 0.227 43.8%, 0.671 53.6%, 0.839 58.2%, 0.966 63.3%,
@@ -61,25 +65,45 @@
     --shadow-strength-5xl: color-mix(in oklab, black, transparent calc(62% / var(--shadow-base-strength)));
 
     /*---[ ▼ Input ▼ ]-------------------------------------------------------------------------------------------------*/
-    --input-background-color: var(--color-main-1);
-    --input-background-color-active: var(--color-main-2);
+    --input-color: var(--color-main-1);
+    --input-color-active: var(--color-main-2);
+    --input-color-item: var(--color-main-5);
+    --input-color-item-hover: var(--color-main-6);
+    --input-color-item-active: var(--color-main-8);
+    --input-color-item-click: var(--color-main-7);
     --input-border-color: var(--color-main-5);
-    --input-border-color-active: var(--color-main-10);
+    --input-border-color-active: var(--color-main-8);
     --input-text-color: var(--color-text-1);
-    --input-padding: 0.4rem 0.7rem;
+
+    --input-color-primary: var(--color-primary-add-1);
+    --input-color-active-primary: var(--color-primary-add-2);
+    --input-color-item-primary: var(--color-primary);
+    --input-color-item-hover-primary: var(--color-primary-sub-4);
+    --input-color-item-active-primary: var(--color-primary-sub-6);
+    --input-color-item-click-primary: var(--color-primary-sub-5);
+    --input-border-color-primary: var(--color-primary-add-1);
+    --input-border-color-active-primary: var(--color-primary-sub-3);
+
+    --input-padding: 0.4rem 0.6rem;
+    --input-padding-length: 0.4rem;
+    --input-padding-width: 0.6rem;
   }
 
   /*===[ ▲ App Variables ▲ ]============================================================================</editor-fold>*/
   /*                                                                                                                  */
   /*===[ ▼ Default Styling ▼ ]===========================================================================<editor-fold>*/
   /*---[ ▼ Global Defaults ▼ ]----------------------------------------------------------------------------------------*/
+  * {
+    scrollbar-color: var(--color-main-10) var(--color-main-3);
+  }
+
   body {
     font-family: var(--font-sans);
     font-size: var(--text-md);
     line-height: var(--text-md-line-height);
     letter-spacing: var(--text-md-letter-spacing);
     font-weight: var(--text-md-weight);
-    color: var(--color-text-3);
+    color: var(--color-text-1);
   }
 
   /*---[ ▼ Layout ▼ ]-------------------------------------------------------------------------------------------------*/
@@ -92,7 +116,7 @@
   /*---[ ▼ Media ▼ ]--------------------------------------------------------------------------------------------------*/
   /*:::[ ▼ Media: Images ▼ ]:::::*/
   .icon {
-    color: var(--color-text-3);
+    color: var(--color-text-1);
     vertical-align: middle;
   }
 
@@ -177,7 +201,7 @@
   input[type="text"], input[type="search"], input[type="email"], input[type="password"],
   input[type="tel"], input[type="url"], input[type="number"], input[type="date"],
   input[type="datetime-local"], input[type="month"], input[type="time"], input[type="week"],
-  textarea {
+  textarea, .ts-wrapper .ts-control, .ts-wrapper .ts-dropdown {
     border-radius: var(--radius-default);
     border: 1px solid var(--input-border-color);
     padding: var(--input-padding);
@@ -186,12 +210,16 @@
     letter-spacing: var(--text-md-letter-spacing);
     text-transform: none;
     font-family: var(--font-sans);
-    background-color: var(--input-background-color);
+    background-color: var(--input-color);
     color: var(--input-text-color);
+
+    &:focus {
+      border-color: var(--input-border-color-active)
+    }
   }
 
   option {
-    background-color: var(--input-background-color);
+    background-color: var(--input-color);
     color: var(--input-text-color);
   }
 
@@ -215,7 +243,7 @@
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 
-    &:is(input) {
+    &:is(input), &:is(.ts-control) {
       outline: none;
     }
   }

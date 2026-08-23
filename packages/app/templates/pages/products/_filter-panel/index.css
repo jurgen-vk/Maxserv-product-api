@@ -1,0 +1,5 @@
+@layer main {
+  .p_products__filter-panel {
+    display: contents;
+  }
+}

@@ -5,7 +5,7 @@
 {% block content %}
   <div class="p_products_show">
     {% embed 'components.ui.button' with {
-      variant: 'neutral',
+      variant: 'primary',
       href: path('products_index'),
       attributes: { class: 'back' },
     } %}
@@ -16,6 +16,7 @@
     <div class="layout">
       {% include 'components.ui.media-carousel' with {
         items: product.media|map(m => { url: m.url, alt: product.title }),
+        variant: 'primary'
       } only %}
 
       <div class="info">

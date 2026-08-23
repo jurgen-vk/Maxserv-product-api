@@ -1,227 +1,359 @@
 @layer main {
   .c_ui_input_select {
+    --dd-padding-length: 0.2rem;
+    --dd-padding-width: 0.2rem;
+
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    position: relative;
-  }
 
-  .c_ui_input_select__container {
-    &.select2-selection--single,
-    &.select2-selection--multiple {
-      height: auto;
-      min-height: 0;
-      border-radius: var(--radius-default);
-      border: 1px solid var(--input-border-color);
-      padding: var(--input-padding);
-      padding-right: 2rem;
-      background-color: var(--input-background-color);
-    }
+    .ts-wrapper {
+      --option-padding-length: 0.2rem;
+      --option-padding-width: 0.4rem;
+      position: relative;
 
-    .select2-selection__rendered {
-      /*padding: 0;*/
-      font-size: var(--text-md);
-      font-weight: var(--text-md-weight);
-      letter-spacing: var(--text-md-letter-spacing);
-      font-family: var(--font-sans);
-      line-height: normal;
-      color: var(--input-text-color);
-    }
-
-    /* The multi-select's always-present typing field is a real input[type="search"], so it
-       otherwise inherits the site-wide boxed input styling from base.css (border/padding/
-       background) — reset it here so it blends into the outer selection box instead of
-       rendering as a second, mismatched input nested inside the first. */
-    .select2-search--inline .select2-search__field {
-      border: none;
-      margin: 0;
-      padding: 0;
-      background-color: transparent;
-      font-size: var(--text-md);
-      font-family: var(--font-sans);
-      color: var(--input-text-color);
-    }
-
-    .select2-selection__placeholder {
-      color: var(--color-text-13);
-    }
-
-    .select2-selection__arrow {
-      height: auto;
-      top: 50%;
-      right: 0.7rem;
-      width: 0.8125rem;
-      translate: 0 -50%;
-
-      b {
-        display: none;
+      &.focus {
+        .ts-control {
+          border-color: var(--input-border-color-active);
+        }
       }
 
-      &::after {
-        content: "";
+      .ts-control {
+        line-height: initial;
+
+        &:not(&:has(.item)) {
+          .clear-button {
+            pointer-events: none;
+          }
+        }
+
+        &:has(.item) {
+          .clear-button {
+            opacity: 1;
+          }
+        }
+
+        .item {
+          overflow: hidden;
+          text-align: left;
+
+          &[data-value=""] {
+            color: var(--color-text-13);
+          }
+        }
+
+        .clear-button {
+          transition: none;
+          overflow: hidden;
+          font-size: var(--text-lg);
+          color: var(--color-text-8);
+          right: calc(var(--input-padding-width) + 3.1px);
+
+          &:hover {
+            color: var(--color-text-1);
+          }
+
+          &:active {
+            color: var(--color-danger-add-5);
+          }
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          pointer-events: none;
+          top: 50%;
+          right: var(--input-padding-width);
+          translate: 0 -50%;
+          width: 1rem;
+          height: 1rem;
+          background-color: var(--color-text-13);
+          mask-image: url("~app/icons/lucide/chevron-down.svg");
+          mask-size: contain;
+          mask-repeat: no-repeat;
+          transition: rotate 200ms ease;
+        }
+
+        &:hover&::after, &:focus&::after {
+          background-color: var(--color-text-1);
+        }
+      }
+
+      .ts-dropdown {
         display: block;
-        width: 0.8125rem;
-        height: 0.8125rem;
-        background-color: var(--color-text-13);
-        mask-image: url("~app/icons/lucide/chevron-down.svg");
-        mask-size: contain;
-        mask-repeat: no-repeat;
+        position-area: bottom span-right;
+        position-try-fallbacks: flip-block;
+        min-width: anchor-size(width);
+        height: 0;
+        max-height: 0;
+        width: fit-content;
+        scrollbar-width: thin;
+        overflow: hidden;
+        box-shadow: none;
+        position: fixed;
+        inset: auto;
+        margin: 0;
+        padding: 0;
+        border: none;
+        visibility: hidden;
+
+        .ts-dropdown-content {
+          min-height: 0;
+          max-height: unset;
+          overflow: hidden auto;
+
+          .option {
+            overflow: hidden;
+            padding: var(--option-padding-length) var(--option-padding-width);
+            border-radius: var(--radius-default);
+            vertical-align: baseline;
+
+            .highlight {
+              background: var(--color-main-6);
+            }
+
+            &:not(:last-child) {
+              margin-bottom: 0.2rem;
+            }
+
+            &.active {
+              background-color: var(--input-color-item-hover);
+              padding-left: 0.6rem;
+            }
+
+            &.selected {
+              background-color: var(--input-color-item-active);
+            }
+
+            &:active {
+              background-color: var(--input-color-item-click);
+            }
+          }
+        }
+      }
+
+      &:has(.plugin-clear_button)&:has(.ts-control .item) {
+        .ts-control::after {
+          opacity: 0;
+          content: none;
+        }
+      }
+
+      &.multi {
+        .ts-control {
+          gap: 0.375rem;
+          /*padding: var(--dd-padding-length) var(--dd-padding-width);*/
+
+          .item {
+            /*display: flex;*/
+            background-color: var(--input-color-item);
+            padding: 0 var(--option-padding-width);
+            line-height: 1.5rem;
+            border-radius: var(--radius-default);
+
+            .remove {
+              overflow: hidden;
+              padding: 0 calc(var(--option-padding-width) / 1);
+              margin-left: calc(var(--option-padding-width) / 1);
+              border-left: 1px solid var(--color-text-18);
+              font-size: var(--text-lg);
+              color: var(--color-text-8);
+
+              &:hover {
+                background: var(--input-color-item-hover);
+                color: var(--color-text-1);
+              }
+
+              &:active {
+                background: var(--input-color-item-click);
+                /*color: var(--color-text-1);*/
+                color: var(--color-danger-add-5);
+              }
+            }
+
+            &.active {
+              background-color: var(--input-color-item-active);
+            }
+          }
+        }
+      }
+
+      /*---[ ▼ Animation ▼ ]-----*/
+
+      &:has(.ts-dropdown[data-state]) {
+        &:not(:has(.ts-dropdown[data-state="closed"])) {
+          .ts-dropdown {
+            height: auto;
+            max-height: var(--DD-MAX-HEIGHT);
+            padding: var(--dd-padding-length) var(--dd-padding-width);
+            border: 1px solid var(--input-border-color-active);
+            visibility: visible;
+          }
+
+          &[data-position-area~="top"] {
+            .ts-control {
+              border-radius: 0 0 var(--radius-default) var(--radius-default);
+            }
+
+            .ts-dropdown {
+              border-radius: var(--radius-default) var(--radius-default) 0 0;
+            }
+          }
+
+          &[data-position-area~="bottom"] {
+            .ts-control {
+              border-radius: var(--radius-default) var(--radius-default) 0 0;
+            }
+
+            .ts-dropdown {
+              border-radius: 0 0 var(--radius-default) var(--radius-default);
+            }
+          }
+        }
+
+        &:has(.ts-dropdown[data-state="opening"]), &:has(.ts-dropdown[data-state="open"]) {
+          .ts-control {
+            &::after {
+              rotate: 180deg;
+            }
+          }
+        }
+
+        .ts-dropdown[data-state="opening"] {
+          animation: selectOpen 200ms cubic-bezier(.25, 1, .75, 1) forwards;
+        }
+
+        .ts-dropdown[data-state="closing"] {
+          animation: selectClose 200ms cubic-bezier(.25, 1, .75, 1) forwards;
+        }
+
+        .ts-dropdown[data-state="open"] {
+          max-height: var(--DD-MAX-HEIGHT);
+          overflow: hidden auto;
+        }
+
+        .ts-dropdown[data-state="closed"] {
+          visibility: hidden;
+        }
+
+        &.dropdown-active {
+        }
       }
     }
 
-    &.select2-selection--multiple .select2-selection__rendered {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.25rem;
-    }
+    /*:::[ ▼ Variants ▼ ]:::::*/
 
-    .select2-selection__choice {
-      margin: 0;
-      border-radius: var(--radius-tight);
-      border: none;
-      padding: 0.0625rem 0.375rem;
-      /*background-color: var(--color-primary-sub-8); !* shouldn't be primary *!*/
-      background-color: var(--color-main); /* shouldn't be primary */
-      color: var(--color-text-1);
-    }
+    &[data-variant="primary"] {
+      .ts-wrapper {
+        .ts-control {
+        }
 
-    .select2-selection__choice__remove {
-      margin-right: 0.25rem;
-      border: none;
-      color: inherit;
-    }
-  }
+        .ts-dropdown {
+          .ts-dropdown-content {
+            .option {
+              .highlight {
+                background: var(--color-primary-add-2); /* test this */
+              }
 
-  .select2-selection--single:has(.select2-selection__clear) .select2-selection__arrow {
-    display: none;
-  }
+              &.active {
+                background-color: var(--input-color-item-hover-primary);
+              }
 
-  .select2-selection__clear {
-    position: absolute;
-    top: 50%;
-    right: 0.4rem;
-    translate: 0 -50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 0; /* hides select2's own "×" text content, the icon below replaces it visually */
-    border-radius: var(--radius-default);
+              &.selected {
+                background-color: var(--input-color-item-active-primary);
+              }
 
-    &::after {
-      content: "";
-      width: 0.8125rem;
-      height: 0.8125rem;
-      background-color: var(--color-text-13);
-      mask-image: url("~app/icons/lucide/x.svg");
-      mask-size: contain;
-      mask-repeat: no-repeat;
-    }
+              &:active {
+                background-color: var(--input-color-item-click-primary);
+              }
+            }
+          }
+        }
 
-    &:hover {
-      background-color: var(--color-main-2);
-    }
+        &.focus {
+          .ts-control {
+            border-color: var(--input-border-color-primary);
+          }
+        }
 
-    &:hover::after {
-      background-color: var(--color-text-1);
-    }
-  }
+        &:has(.ts-dropdown[data-state]) {
+          .ts-control {
 
-  .select2-selection__arrow {
-    width: 1.5rem !important;
-    height: 1.5rem !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+          }
 
-    &::after {
-      background-color: var(--color-text-13);
-    }
+          &:not(:has(.ts-dropdown[data-state="closed"])) {
+            .ts-dropdown {
+              border-color: var(--input-border-color-active-primary);
+            }
+          }
+        }
 
-    &:hover {
-      background-color: var(--color-main-2);
-    }
+        &.multi {
+          .ts-control {
+            .item {
+              background-color: var(--input-color-item-primary);
+              color: var(--color-text-light);
 
-    &:hover::after {
-      background-color: var(--color-text-1);
-    }
-  }
+              .remove {
+                border-left: 1px solid var(--color-primary-add-3);
+                color: var(--color-text-light);
 
-  .select2-container--open .c_ui_input_select__container {
-    border-color: var(--input-border-color-active);
-  }
+                &:hover {
+                  background: var(--color-primary-sub-1);
+                  color: var(--color-text-light);
+                }
 
-  .c_ui_input_select__dropdown {
-    overflow: hidden;
-    padding: 0.5rem;
-    border-radius: 0 0 var(--radius-default) var(--radius-default);
-    border: 1px solid var(--input-border-color);
-    background-color: var(--input-background-color);
-    box-shadow: var(--shadow-size-xs) var(--shadow-strength-xs);
+                &:active {
+                  background: var(--color-primary-sub-2);
+                  /*color: var(--color-danger-add-5);*/
+                }
+              }
 
-    .select2-search--dropdown {
-      margin-bottom: 0.375rem;
-    }
-
-    .select2-search__field {
-      border-radius: var(--radius-default);
-      border: 1px solid var(--input-border-color);
-      padding: var(--input-padding);
-      font-size: var(--text-sm);
-      font-family: var(--font-sans);
-      background-color: var(--input-background-color);
-      color: var(--input-text-color);
-      outline: none;
-
-      &:focus {
-        border-color: var(--input-border-color-active);
+              &.active {
+                background-color: var(--input-color-item-active-primary);
+              }
+            }
+          }
+        }
       }
     }
+  }
 
-    .select2-results__options {
-      max-height: 13rem;
+  @keyframes selectOpen {
+    0% {
+      max-height: var(--DD-CURRENT-HEIGHT);
+      /*max-height: 0;*/
+      overflow: hidden;
+      padding-top: 0;
+      padding-bottom: 0;
     }
 
-    .select2-results__option {
-      border-radius: var(--radius-default);
-      padding: 0.375rem 0.5rem;
-      font-size: var(--text-sm);
-      color: var(--input-text-color);
+    99% {
+      max-height: var(--DD-HEIGHT);
+      padding-top: var(--dd-padding-length);
+      padding-bottom: var(--dd-padding-length);
+      overflow: hidden;
     }
 
-    &.select2-dropdown--above {
-      top: auto;
-      bottom: 0;
+    100% {
+      max-height: var(--DD-MAX-HEIGHT);
+      padding-top: var(--dd-padding-length);
+      padding-bottom: var(--dd-padding-length);
+      overflow: hidden auto;
     }
   }
 
-  /*---[ ▼ Variants ▼ ]-----*/
-  .select-input[data-variant="primary"] + .select2-container,
-  .c_ui_input_select__dropdown[data-variant="primary"] {
-    --input-border-color-active: var(--color-primary-add-1);
-
-    .select2-results__option--highlighted {
-      background-color: var(--color-primary-sub-7);
+  @keyframes selectClose {
+    0% {
+      padding-top: var(--dd-padding-length);
+      padding-bottom: var(--dd-padding-length);
+      max-height: var(--DD-CURRENT-HEIGHT);
     }
 
-    .select2-results__option[aria-selected="true"] {
-      font-weight: var(--text-2xl-weight);
-      background-color: var(--color-primary-sub-5);
-    }
-  }
-
-  .select-input[data-variant="neutral"] + .select2-container,
-  .c_ui_input_select__dropdown[data-variant="neutral"] {
-    --input-border-color-active: var(--color-main-3);
-
-    .select2-results__option--highlighted {
-      background-color: color-mix(in oklab, var(--color-main-13) 10%, transparent);
-    }
-
-    .select2-results__option[aria-selected="true"] {
-      font-weight: var(--text-2xl-weight);
-      background-color: color-mix(in oklab, var(--color-main-13) 16%, transparent);
+    100% {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
     }
   }
 }

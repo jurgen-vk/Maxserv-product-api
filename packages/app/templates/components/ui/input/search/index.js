@@ -4,7 +4,7 @@ import { Url } from '@app/utils/Url';
 
 $('.c_ui_input_search').each(function () {
   const $root = $(this);
-  const $input = $root.find('.search-input');
+  const $input = $root.find('.input');
   const $button = $root.find('.search-button');
   const $clear = $root.find('.clear');
   const name = $input.attr('name');

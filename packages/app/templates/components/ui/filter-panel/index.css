@@ -1,13 +1,12 @@
 @layer main {
   .c_ui_filter-panel {
-    --input-background-color: var(--color-main-2);
+    --input-color: var(--color-main-2);
     --input-border-color: var(--color-main-5);
 
     position: absolute;
-    top: 5.5rem;
-    right: 1rem;
     margin: 0;
-    width: 16rem;
+    width: 18rem;
+    /*width: auto;*/
     max-width: calc(100vw - 32px);
     border-radius: var(--radius-default);
     border: none; /* reset the UA popover default border */
@@ -21,6 +20,10 @@
     display 0.15s allow-discrete, overlay 0.15s allow-discrete;
     opacity: 0;
     scale: 0.95;
+    position-anchor: auto;
+    position-area: bottom span-left;
+    position-try-fallbacks: flip-block, flip-inline;
+    margin-top: 1rem;
 
     &:popover-open {
       display: flex;
@@ -35,17 +38,6 @@
       }
     }
 
-    @supports (anchor-name: --a) {
-      position-anchor: auto;
-      position-area: bottom span-left;
-      position-try-fallbacks: flip-block, flip-inline;
-      top: auto;
-      right: auto;
-      left: auto;
-      bottom: auto;
-      margin-top: 1rem;
-    }
-
     hr {
       margin: -0.1875rem 0;
     }
@@ -55,7 +47,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
-      padding-top: 0.25rem;
+      /*padding-top: 0.25rem;*/
     }
   }
 }

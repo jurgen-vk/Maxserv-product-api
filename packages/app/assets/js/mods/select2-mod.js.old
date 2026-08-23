@@ -64,7 +64,7 @@ $.fn.select2.defaults.set('width', '100%');
 // *original*, unpatched AttachBody this whole time, patch or no patch
 // (confirmed live: calling the decorated instance's own _hideDropdown
 // directly had none of the effects patched in below). Almond's own source
-// names the fix in its own comment: the *string* form, require('id'),
+// names the fix in its own comment: the *str* form, require('id'),
 // resolves synchronously against the same module registry — exactly what's needed here, since
 // 'select2/dropdown/attachBody' is already fully defined by the time
 // select2(window, $) above returns.
@@ -184,11 +184,11 @@ const AttachBody = $.fn.select2.amd.require('select2/dropdown/attachBody');
   // then visibly climb back up slightly before actually finishing. Plain
   // 'ease' for close avoids that overshoot entirely.
   $.fn.select2.defaults.set('animateDropdown', {
-    open: { duration: 200, easing: '--shoot' },
-    close: { duration: 200, easing: 'ease' },
+    open: {duration: 200, easing: '--shoot'},
+    close: {duration: 200, easing: '--shoot'}
   });
 
-  // animate()'s easing needs a literal string, not a var() reference —
+  // animate()'s easing needs a literal str, not a var() reference —
   // this resolves either a literal ('ease', 'cubic-bezier(...)') or a bare
   // custom-property name ('--shoot') against :root, so callers can reuse
   // the same design tokens used everywhere else in the app instead of
@@ -220,10 +220,31 @@ const AttachBody = $.fn.select2.amd.require('select2/dropdown/attachBody');
   function measureNaturalHeightAndReposition(instance) {
     const el = instance.$dropdown[0];
     const prevHeight = el.style.height;
+    // padding/border are pinned alongside height now (see _showDropdown and
+    // animateDropdownSize) — clearing only height here would measure a
+    // height that's missing whatever padding is currently pinned to,
+    // understating the real natural height by however much of it is
+    // pinned away at the moment this runs
+    const prevPaddingTop = el.style.paddingTop;
+    const prevPaddingBottom = el.style.paddingBottom;
+    const prevBorderTopWidth = el.style.borderTopWidth;
+    const prevBorderBottomWidth = el.style.borderBottomWidth;
+
     el.style.height = 'auto';
+    el.style.paddingTop = '';
+    el.style.paddingBottom = '';
+    el.style.borderTopWidth = '';
+    el.style.borderBottomWidth = '';
+
     const height = el.getBoundingClientRect().height;
     instance._positionDropdown();
+
     el.style.height = prevHeight;
+    el.style.paddingTop = prevPaddingTop;
+    el.style.paddingBottom = prevPaddingBottom;
+    el.style.borderTopWidth = prevBorderTopWidth;
+    el.style.borderBottomWidth = prevBorderBottomWidth;
+
     return height;
   }
 
@@ -247,24 +268,95 @@ const AttachBody = $.fn.select2.amd.require('select2/dropdown/attachBody');
   // that placeholder function instead of the real number, since the
   // decorator shifted it into an undeclared second argument. Not being a
   // decorated method at all sidesteps that entirely.
+  // padding/border are fixed by index.css and never change per-instance — measured
+  // once and cached from then on. _showDropdown now pins padding/border to 0
+  // before this ever runs for a fresh open (matching what it already did for
+  // height), so — unlike the very first version of this function — this can no
+  // longer assume computed style is untouched on that first call; it has to
+  // clear any pinned inline override first, the same "temporarily release, read,
+  // restore" trick measureNaturalHeightAndReposition already uses for height.
+  function naturalBoxEdges(instance, el) {
+    if (!instance._naturalBoxEdges) {
+      const prevPaddingTop = el.style.paddingTop;
+      const prevPaddingBottom = el.style.paddingBottom;
+      const prevBorderTopWidth = el.style.borderTopWidth;
+      const prevBorderBottomWidth = el.style.borderBottomWidth;
+
+      el.style.paddingTop = '';
+      el.style.paddingBottom = '';
+      el.style.borderTopWidth = '';
+      el.style.borderBottomWidth = '';
+
+      const cs = getComputedStyle(el);
+      instance._naturalBoxEdges = {
+        paddingTop: parseFloat(cs.paddingTop),
+        paddingBottom: parseFloat(cs.paddingBottom),
+        borderTopWidth: parseFloat(cs.borderTopWidth),
+        borderBottomWidth: parseFloat(cs.borderBottomWidth)
+      };
+
+      el.style.paddingTop = prevPaddingTop;
+      el.style.paddingBottom = prevPaddingBottom;
+      el.style.borderTopWidth = prevBorderTopWidth;
+      el.style.borderBottomWidth = prevBorderBottomWidth;
+    }
+    return instance._naturalBoxEdges;
+  }
+
+  // Animating height alone hits a hard floor: even with box-sizing: border-box,
+  // the height property only controls the content area — padding and border are
+  // fixed, non-negotiable sizes that height can't compress below. Confirmed live:
+  // closing (0.5rem padding + 1px border = 18px total) shrank smoothly down to
+  // exactly 18px, sat there rendering no visible change for the remainder of the
+  // 200ms duration (the animation was still running the whole time — the *target*
+  // height genuinely reached 0 — none of it below the 18px floor could ever paint),
+  // then vanished outright once _hideDropdown's originalHide call detached the
+  // element the instant the animation finished. Animating padding/border to 0 in
+  // lockstep with height removes that floor entirely — real 0 by the time the
+  // animation completes, on both edges, closing or opening.
   function animateDropdownSize(instance, targetHeight) {
     const el = instance.$dropdown[0];
     if (!el || !el.isConnected) {
       return null;
     }
 
+    const natural = naturalBoxEdges(instance, el);
+    const cs = getComputedStyle(el);
     const startHeight = el.getBoundingClientRect().height;
+    const startPaddingTop = parseFloat(cs.paddingTop);
+    const startPaddingBottom = parseFloat(cs.paddingBottom);
+    const startBorderTopWidth = parseFloat(cs.borderTopWidth);
+    const startBorderBottomWidth = parseFloat(cs.borderBottomWidth);
 
     if (instance._sizeAnimation) {
       instance._sizeAnimation.cancel();
     }
 
     const directionKey = targetHeight === 0 ? 'close' : 'open';
-    const { duration, easing, ...rest } = instance.options.get('animateDropdown')[directionKey];
+    const {duration, easing, ...rest} = instance.options.get('animateDropdown')[directionKey];
+
+    const target = targetHeight === 0
+      ? {paddingTop: 0, paddingBottom: 0, borderTopWidth: 0, borderBottomWidth: 0}
+      : natural;
 
     instance._sizeAnimation = el.animate(
-      [{ height: `${startHeight}px` }, { height: `${targetHeight}px` }],
-      { ...rest, duration, easing: resolveEasing(easing), fill: 'forwards' },
+      [
+        {
+          height: `${startHeight}px`,
+          paddingTop: `${startPaddingTop}px`,
+          paddingBottom: `${startPaddingBottom}px`,
+          borderTopWidth: `${startBorderTopWidth}px`,
+          borderBottomWidth: `${startBorderBottomWidth}px`
+        },
+        {
+          height: `${targetHeight}px`,
+          paddingTop: `${target.paddingTop}px`,
+          paddingBottom: `${target.paddingBottom}px`,
+          borderTopWidth: `${target.borderTopWidth}px`,
+          borderBottomWidth: `${target.borderBottomWidth}px`
+        }
+      ],
+      {...rest, duration, easing: resolveEasing(easing), fill: 'forwards'}
     );
 
     return instance._sizeAnimation;
@@ -278,6 +370,30 @@ const AttachBody = $.fn.select2.amd.require('select2/dropdown/attachBody');
     // this interrupts a still-running close.
     const currentHeight = el.getBoundingClientRect().height;
 
+    // padding/border can't reuse that same rect trick: getComputedStyle keeps
+    // resolving a fixed-unit declaration like padding: 0.5rem even on a
+    // disconnected element, since that only needs the cascade plus root
+    // font-size, not real layout — confirmed live, it read back the full 8px/
+    // 1px natural values here, not 0, unlike the rect above. The only case
+    // that actually needs a *live* read is interrupting a still-running
+    // close, where the current value is genuinely mid-interpolation; a fresh
+    // open has no animation to interrupt, so it's explicitly zeroed instead
+    // of trusting a read that — for this specific pair of properties, for
+    // this specific reason — doesn't naturally come back as 0 the way
+    // height's does.
+    const wasAnimating = !!this._sizeAnimation;
+    let currentPaddingTop = 0;
+    let currentPaddingBottom = 0;
+    let currentBorderTopWidth = 0;
+    let currentBorderBottomWidth = 0;
+    if (wasAnimating) {
+      const currentCs = getComputedStyle(el);
+      currentPaddingTop = parseFloat(currentCs.paddingTop);
+      currentPaddingBottom = parseFloat(currentCs.paddingBottom);
+      currentBorderTopWidth = parseFloat(currentCs.borderTopWidth);
+      currentBorderBottomWidth = parseFloat(currentCs.borderBottomWidth);
+    }
+
     // cancels a running close so it can never finish and detach the
     // element out from under a reopen — matters most once results can
     // arrive asynchronously (AJAX): the gap between this and the next
@@ -287,17 +403,23 @@ const AttachBody = $.fn.select2.amd.require('select2/dropdown/attachBody');
       this._sizeAnimation.cancel();
     }
 
-    // pins the element at exactly the height just captured, immediately
-    // — without this, nothing constrains height at all between now and
-    // the eventual results:all-triggered grow (see bind() below), so the
-    // element would render at its natural full size the instant
-    // originalShow attaches it below, confirmed live: by the time
-    // results:all's handler ran, this was already the *full* height,
-    // making its own start and end keyframes identical (no visible
-    // animation at all, despite no error — the animation genuinely had
-    // nothing to interpolate). Pinning here keeps it visually collapsed
-    // (or wherever an interrupted close left it) through that whole gap.
+    // pins the element at exactly the height (and padding/border — see
+    // animateDropdownSize's own comment for why those need to move
+    // together with height) just captured, immediately — without this,
+    // nothing constrains height at all between now and the eventual
+    // results:all-triggered grow (see bind() below), so the element would
+    // render at its natural full size the instant originalShow attaches
+    // it below, confirmed live: by the time results:all's handler ran,
+    // this was already the *full* height, making its own start and end
+    // keyframes identical (no visible animation at all, despite no error
+    // — the animation genuinely had nothing to interpolate). Pinning here
+    // keeps it visually collapsed (or wherever an interrupted close left
+    // it) through that whole gap.
     el.style.height = `${currentHeight}px`;
+    el.style.paddingTop = `${currentPaddingTop}px`;
+    el.style.paddingBottom = `${currentPaddingBottom}px`;
+    el.style.borderTopWidth = `${currentBorderTopWidth}px`;
+    el.style.borderBottomWidth = `${currentBorderBottomWidth}px`;
 
     originalShow.call(this); // real attach + position + resize, unanimated
 
@@ -325,10 +447,13 @@ const AttachBody = $.fn.select2.amd.require('select2/dropdown/attachBody');
     const self = this;
     animation.finished
       // only actually detach once the shrink genuinely finishes
-      .then(() => { originalHide.call(self); })
+      .then(() => {
+        originalHide.call(self);
+      })
       // interrupted by a reopen — _showDropdown above already canceled
       // this and a fresh results:all-triggered grow takes over
-      .catch(() => {});
+      .catch(() => {
+      });
   };
 
   AttachBody.prototype.bind = function (decorated, container, $container) {
@@ -348,7 +473,7 @@ const AttachBody = $.fn.select2.amd.require('select2/dropdown/attachBody');
     // reading it directly) takes a single literal event name per call —
     // no jQuery-style space-separated shorthand — so results:all and
     // results:message each need their own .on() call, not one call with
-    // a combined string (confirmed live: that registered a listener
+    // a combined str (confirmed live: that registered a listener
     // under the literal, never-triggered key "results:all
     // results:message", silently never firing at all).
     //
