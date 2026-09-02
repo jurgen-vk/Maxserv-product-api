@@ -1,18 +1,17 @@
-<form {{ attrs(defaults: {
-  class: 'c_ui_filter-panel',
-  popover: true,
-  id: id,
-  'data-page-param': pageParam,
-}, attributes: attributes) }}>
+<form {{ attrs(
+  defaults: { class: 'c_ui_filter-panel', popover: true, id: id, 'data-page-param': pageParam },
+  attributes: attributes
+) }}>
   {% block fields %}{% endblock %}
 
   <hr>
 
   <div class="actions">
-    {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear' } } %}
+    {% embed 'components.ui.filter-panel.clear-button' with { filterPanel: id } only %}
       {% block label %}Clear filters{% endblock %}
     {% endembed %}
-    {% embed 'components.ui.button' with { variant: 'primary', attributes: { type: 'submit' } } %}
+
+    {% embed 'components.ui.button' with { variant: 'primary', attributes: { type: 'submit' } } only %}
       {% block label %}Apply{% endblock %}
     {% endembed %}
   </div>

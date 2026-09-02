@@ -5,19 +5,19 @@
       class: 'btn-import',
       hidden: activeImport ? true : null,
     },
-  } %}
+  } only %}
     {% block iconBefore %} {{ icon('lucide:import') }} {% endblock %}
     {% block label %} Import products {% endblock %}
   {% endembed %}
 
   {% embed 'components.ui.button' with {
     variant: 'primary',
+    disabled: true,
     attributes: {
       class: 'btn-importing',
       hidden: activeImport ? null : true,
-      disabled: true,
     },
-  } %}
+  } only %}
     {% block iconBefore %} {{ icon('lucide:loader-circle', { class: '--spin' }) }} {% endblock %}
     {% block label %} Importing... {% endblock %}
   {% endembed %}

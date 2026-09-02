@@ -23,7 +23,7 @@ mercure.subscribe('notifications', (notification) => {
   );
 });
 
-const serverNotifications = $root.data('server-notifications') || [];
+const serverNotifications = $root.data('serverNotifications') || [];
 serverNotifications.forEach(
   (notification) => pushNotification(
     new NotificationEvent(

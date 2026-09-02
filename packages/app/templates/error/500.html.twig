@@ -7,7 +7,7 @@
     <p class="code">500</p>
     <h1 class="title">Something went wrong</h1>
     <p class="message raw">{{ message }}</p>
-    {% embed 'components.ui.button' with { variant: 'primary', href: path('home_index') } %}
+    {% embed 'components.ui.button' with { variant: 'primary', href: path('home_index') } only %}
       {% block label %}Go Home{% endblock %}
     {% endembed %}
   </div>

@@ -8,19 +8,22 @@
       variant: 'primary',
       href: path('products_index'),
       attributes: { class: 'back' },
-    } %}
+    } only %}
       {% block iconBefore %}{{ icon('lucide:arrow-left') }}{% endblock %}
       {% block label %}Back to products{% endblock %}
     {% endembed %}
 
     <div class="layout">
       {% include 'components.ui.media-carousel' with {
+        variant: 'primary',
         items: product.media|map(m => { url: m.url, alt: product.title }),
-        variant: 'primary'
       } only %}
 
       <div class="info">
-        {% include 'components.ui.badge' with { variant: 'neutral', label: product.category.name, attributes: { class: 'category' } } only %}
+        {% include 'components.ui.badge' with {
+          label: product.category.name,
+          attributes: { class: 'category' }
+        } only %}
 
         <h1>{{ product.title }}</h1>
         <p class="brand">{{ product.brand ? product.brand.name : 'No brand' }}</p>
@@ -31,7 +34,10 @@
             {% if product.discountPercentage > 0 %}
               <span class="strike">€{{ product.price|number_format(2) }}</span>
               <span class="current">€{{ product.discountPrice|number_format(2) }}</span>
-              {% include 'components.ui.badge' with { variant: 'success', label: '-' ~ product.discountPercentage|number_format(0) ~ '%' } only %}
+              {% include 'components.ui.badge' with {
+                variant: 'success',
+                label: '-' ~ product.discountPercentage|number_format(0) ~ '%'
+              } only %}
             {% else %}
               <span class="current">€{{ product.price|number_format(2) }}</span>
             {% endif %}

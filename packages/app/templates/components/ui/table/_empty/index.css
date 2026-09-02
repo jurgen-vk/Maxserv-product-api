@@ -30,22 +30,17 @@
       color: var(--color-primary);
     }
 
-    h3 {
-      /* smaller than a normal h3 — this is a quiet inline note, not a
-         section heading */
-      font-size: var(--h5-font);
-      font-weight: var(--h5-weight);
-      letter-spacing: var(--h5-letter-spacing);
-      color: var(--color-text-1);
+    .title {
+      
     }
 
-    p {
+    .description {
       font-size: var(--text-sm);
       color: var(--color-text-13);
     }
 
     .action {
-      margin-top: 0.25rem;
+      margin-top: 1rem;
     }
   }
 }

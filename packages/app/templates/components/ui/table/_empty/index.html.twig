@@ -1,10 +1,12 @@
 {% set descriptionContent %}{% block description %}{% endblock %}{% endset %}
+{% set actionContent %}{% block action %}{% endblock %}{% endset %}
 
 <div {{ attrs(defaults: { class: 'c_ui_table__empty', 'data-variant': variant }, attributes: attributes) }}>
   <div class="content">
     {% block icon %}{{ icon('lucide:inbox') }}{% endblock %}
-    <h3>{% block title %}Nothing here yet.{% endblock %}</h3>
-    {% if descriptionContent|trim is not empty %}<p>{{ descriptionContent|raw }}</p>{% endif %}
-    {% block action %}{% endblock %}
+    <h4 class="title">{% block title %}Nothing here yet.{% endblock %}</h4>
+    {% if descriptionContent|trim is not empty %}<p class="description">{{ descriptionContent|raw }}</p>{% endif %}
+    {% if actionContent|trim is not empty %}
+      <div class="action">{{ actionContent|raw }}</div>{% endif %}
   </div>
 </div>

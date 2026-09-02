@@ -48,6 +48,12 @@ final class MakeTemplateCommand extends Command
                 description: "Override the wrapping element's class name",
             )
             ->addOption(
+                name: 'name',
+                mode: InputOption::VALUE_REQUIRED,
+                description: 'Override the base filename',
+                default: 'index',
+            )
+            ->addOption(
                 name: 'package',
                 mode: InputOption::VALUE_OPTIONAL,
                 description: 'Which package to generate into (e.g. core, app)',
@@ -102,6 +108,7 @@ final class MakeTemplateCommand extends Command
 
         $relativePath = implode(separator: '/', array: $segments);
         $directory = APPLICATION_ROOT . "/packages/$package/templates/$relativePath";
+        $fileName = $input->getOption(name: 'name');
 
         $generateTwig = (bool)$input->getOption(name: 'twig');
         $generateCss = (bool)$input->getOption(name: 'css');
@@ -125,7 +132,7 @@ final class MakeTemplateCommand extends Command
 
         if ($generateTwig) {
             $this->writeIfMissing(
-                path: "$directory/index.html.twig",
+                path: "$directory/$fileName.html.twig",
                 contents: <<<TWIG
                     <div {{ attrs(defaults: { class: '$className' }, attributes: attributes) }}>
                     
@@ -139,7 +146,7 @@ final class MakeTemplateCommand extends Command
 
         if ($generateCss) {
             $this->writeIfMissing(
-                path: "$directory/index.css",
+                path: "$directory/$fileName.css",
                 contents: <<<CSS
                     @layer main {
                       .$className {
@@ -155,12 +162,12 @@ final class MakeTemplateCommand extends Command
 
         if ($generateJs) {
             $this->writeIfMissing(
-                path: "$directory/index.js",
+                path: "$directory/$fileName.js",
                 contents: <<<JS
                     import \$ from 'jquery';
-
-                    \$('.$className').found(async function (\$root) {
-
+                    
+                    \$('.$className').found(function (\$root) {
+                    
                     });
                     JS,
                 created: $created,

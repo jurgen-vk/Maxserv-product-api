@@ -1,7 +1,7 @@
 {% set bodyContent %}{% block body %}{% endblock %}{% endset %}
 {% set emptyContent %}
   {% block empty %}
-    {% embed 'components.ui.table._empty' %}{% endembed %}
+    {% embed 'components.ui.table._empty' only %}{% endembed %}
   {% endblock %}
 {% endset %}
 
@@ -10,11 +10,13 @@
     {% block colgroup %}{% endblock %}
     <thead>{% block head %}{% endblock %}</thead>
     <tbody>
-      {% if bodyContent|trim is not empty %}
-        {{ bodyContent|raw }}
-      {% elseif emptyContent|trim is not empty %}
-        <tr class="empty-row"><td colspan="100">{{ emptyContent|raw }}</td></tr>
-      {% endif %}
+    {% if bodyContent|trim is not empty %}
+      {{ bodyContent|raw }}
+    {% elseif emptyContent|trim is not empty %}
+      <tr class="empty-row">
+        <td colspan="100">{{ emptyContent|raw }}</td>
+      </tr>
+    {% endif %}
     </tbody>
   </table>
 </div>

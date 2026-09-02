@@ -1,7 +1,12 @@
 {% set statusVariant = { pending: 'neutral', started: 'info', running: 'info', completed: 'success', failed: 'danger' } %}
 
 <div {{ attrs(defaults: { class: 'p_imports__imports-table' }, attributes: attributes) }}>
-  {% embed 'components.ui.table' with { pageParam: paginator.pageParam } %}
+  {% embed 'components.ui.table' with {
+    pageParam: paginator.pageParam,
+    filter: filter,
+    imports: imports,
+    statusVariant: statusVariant,
+  } only %}
     {% block head %}
       <tr>
         {% include 'components.ui.table._sortable-th' with { label: 'ID', column: 'id', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
@@ -36,7 +41,8 @@
           </td>
           <td class="import-td-started">{{ import.startedAt|date('Y-m-d H:i', timezone) }}</td>
           <td class="import-td-ended">{{ import.endedAt ? import.endedAt|date('Y-m-d H:i', timezone) : '—' }}</td>
-          <td class="import-td-duration">{{ import.durationSeconds !== null ? import.durationSeconds|date('H:i:s', timezone='UTC') : '—' }}</td>
+          <td
+            class="import-td-duration">{{ import.durationSeconds !== null ? import.durationSeconds|date('H:i:s', timezone='UTC') : '—' }}</td>
           <td class="import-td-processed">{{ import.processed }}</td>
           <td class="import-td-total">{{ import.total }}</td>
         </tr>
@@ -44,12 +50,15 @@
     {% endblock %}
 
     {% block empty %}
-      {% embed 'components.ui.table._empty' with { attributes: filter.hasActiveFilter ? { 'data-variant': 'primary' } : {} } %}
+      {% embed 'components.ui.table._empty' with {
+        attributes: filter.hasActiveFilter ? { 'data-variant': 'primary' } : {},
+        filter: filter
+      } only %}
         {% block title %}{{ filter.hasActiveFilter ? 'No imports match your filters' : 'No imports yet' }}{% endblock %}
         {% block description %}{{ filter.hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Imports you start from different pages will show up here.' }}{% endblock %}
         {% block action %}
           {% if filter.hasActiveFilter %}
-            {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear', 'data-clear-target': 'imports-filter-panel' } } %}
+            {% embed 'components.ui.filter-panel.clear-button' with { filterPanel: 'imports-filter-panel', variant: 'primary' } only %}
               {% block label %}Clear filters{% endblock %}
             {% endembed %}
           {% endif %}

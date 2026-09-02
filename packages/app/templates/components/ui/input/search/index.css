@@ -1,7 +1,7 @@
 @layer main {
   .c_ui_input_search {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 0.5rem;
 
@@ -11,7 +11,9 @@
 
     .field {
       display: flex;
-      width: 16.25rem;
+      max-width: 16rem;
+      min-width: 6rem;
+      flex-basis: 16rem;
       align-items: center;
       gap: 0.5rem;
       border-radius: var(--radius-default);
@@ -19,13 +21,12 @@
       padding: var(--input-padding);
       background-color: var(--color-main-1);
 
-      &:has(:focus) {
-        border-color: var(--input-border-color-active);
+      @media not (--under-lg) {
+        flex-shrink: 0;
       }
 
-      /* TODO: fix the alignment of the filter and search button with this field for mobile*/
-      @media (--under-md) {
-        width: 100%;
+      &:has(:focus) {
+        border-color: var(--input-border-color-active);
       }
 
       .icon {
@@ -55,6 +56,8 @@
         }
       }
     }
+
+    /*:::[ ▼ Variants ▼ ]:::::*/
 
     &[data-variant="primary"] {
       .field {

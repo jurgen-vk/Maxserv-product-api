@@ -5,17 +5,16 @@
 
     position: absolute;
     margin: 0;
-    width: 18rem;
-    /*width: auto;*/
+    width: 16rem;
     max-width: calc(100vw - 32px);
     border-radius: var(--radius-default);
-    border: none; /* reset the UA popover default border */
+    border: 1px solid var(--input-border-color);
     padding: 1rem;
     background-color: var(--color-main-1);
     box-shadow: var(--shadow-size-sm) var(--shadow-strength-sm);
     overflow: visible;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
     transition: opacity 0.15s ease, scale 0.15s ease,
     display 0.15s allow-discrete, overlay 0.15s allow-discrete;
     opacity: 0;
@@ -47,7 +46,6 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
-      /*padding-top: 0.25rem;*/
     }
   }
 }

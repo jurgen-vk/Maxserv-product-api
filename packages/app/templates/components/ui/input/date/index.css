@@ -9,6 +9,8 @@
       color: var(--input-text-color);
     }
 
+    /*:::[ ▼ Variants ▼ ]:::::*/
+
     &[data-variant="primary"] {
       input:focus {
         border-color: var(--input-border-color-primary);

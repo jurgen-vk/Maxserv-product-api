@@ -6,15 +6,20 @@
   <div class="p_imports">
     {% include 'components.ui.page-header' with { title: 'Imports', icon: icon('lucide:import') } only %}
 
-    {% embed 'components.ui.table.toolbar' %}
+    {% embed 'components.ui.table.toolbar' with {
+      filter: filter,
+      paginator: paginator,
+      types: types,
+      statuses, statuses,
+      imports: imports
+    } only %}
       {% block contentLeft %}
-        {% include 'components.ui.input.search' with { value: filter.search, placeholder: 'Search imports…', pageParam: paginator.pageParam } only %}
+        {% include 'components.ui.input.search' with { variant: 'primary', value: filter.search, placeholder: 'Search imports…', pageParam: paginator.pageParam } only %}
       {% endblock %}
       {% block contentRight %}
         {% embed 'components.ui.button' with {
-          variant: 'neutral',
           attributes: { type: 'button', popovertarget: 'imports-filter-panel', popovertargetaction: 'toggle' },
-        } %}
+        } only %}
           {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
           {% block label %}Filters{% endblock %}
         {% endembed %}

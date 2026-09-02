@@ -2,71 +2,48 @@ import $ from 'jquery';
 import TomSelect from 'tom-select';
 import { str } from '@app/utils/str';
 
-//===[ ▼ Main ▼ ]============================================================================================<editor-fold>
+//===[ ▼ Main ▼ ]==========================================================================================<editor-fold>
 
-$('.c_ui_input_select').found(async function ($root) {
-  const maxHeight = 200;
-  initSelects(maxHeight);
-  observeSelects(maxHeight);
+const maxHeight = 200;
+
+$('.c_ui_input_select').foundEach(function ($root) {
+  initSelect($root, maxHeight);
 });
 
-//===[ ▲ Main ▲ ]===========================================================================================</editor-fold>
+$(document).watchEach('added subtree', '.c_ui_input_select', function ($root) {
+  initSelect($root, maxHeight);
+});
 
-//===[ ▼ Functions ▼ ]============================================================================================<editor-fold>
+//===[ ▲ Main ▲ ]=========================================================================================</editor-fold>
+
+//===[ ▼ Functions ▼ ]=====================================================================================<editor-fold>
 
 //:::[ Init ]:::::
-function initSelect(element, maxHeight) {
-  const $element = $(element);
-  const $select = $element.find('select');
+function initSelect($root, maxHeight) {
+  const $select = $root.find('select');
 
   const select = $select.get(0);
   if (!select || select.tomselect) {
     return;
   }
 
-  const variant = $element.data('variant');
-  const settings = $select.data('settings');
+  const {plugins: selectPlugins, ...selectSettings} = $select.data('settings') || {};
+  const plugins = {change_listener: {}, ...selectPlugins};
+
+  const variant = $root.data('variant');
   const randomString = str.random(16);
 
-  const tom = new TomSelect($select, {
+  const tomSelect = new TomSelect($select, {
     onInitialize: function () { onInitialize.call(this, randomString, variant); },
     render: {dropdown: function () { return renderDropdown.call(this, randomString); }},
-    onDelete: function () { onDelete.call(this, settings); },
+    onDelete: function () { onDelete.call(this, selectSettings); },
     onDropdownOpen: function () { onDropdownOpen.call(this, maxHeight); },
     onDropdownClose: function () { onDropdownClose.call(this, maxHeight); },
     refreshThrottle: 0,
-    ...settings
+    sortField: 'text',
+    ...selectSettings,
+    plugins
   });
-}
-
-function initSelects(maxHeight) {
-  $(document).find('.c_ui_input_select').each(function () {
-    initSelect(this, maxHeight);
-  });
-}
-
-function observeSelects(maxHeight) {
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType !== Node.ELEMENT_NODE) continue;
-
-        if (node.matches('.c_ui_input_select')) {
-          initSelect(node, maxHeight);
-        }
-
-        // const nestedSelects = node.querySelectorAll('.c_ui_input_select');
-        // nestedSelects.forEach((select) => initSelect(select, maxHeight));
-
-        $(node).find('.c_ui_input_select').each(function () {
-          initSelect(this, maxHeight);
-        });
-      }
-    }
-  });
-
-  observer.observe(document.body, {childList: true, subtree: true});
-  return observer;
 }
 
 //:::[ Configure ]:::::
@@ -77,6 +54,11 @@ function onInitialize(randomString, variant) {
   $control.addClass('input');
 
   $control.css({anchorName: `--ts-select-${randomString}`});
+
+  if (this.settings.mode === 'single') {
+    this.on('item_add', () => this.blur());
+    this.on('clear', () => this.blur());
+  }
 
   const $popoverButton = $('<button>', {
     type: 'button',
@@ -182,4 +164,4 @@ function configureDropdownState(state, maxHeight) {
   }
 }
 
-//===[ ▲ Functions ▲ ]===========================================================================================</editor-fold>
+//===[ ▲ Functions ▲ ]====================================================================================</editor-fold>

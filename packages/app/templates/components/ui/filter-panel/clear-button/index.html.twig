@@ -1,0 +1,18 @@
+{% set label_content %}
+  {% block label %}Apply{% endblock %}
+{% endset %}
+
+<div {{ attrs(
+  defaults: { class: 'c_ui_filter-panel_clear-button', 'data-filter-panel': filterPanel },
+  attributes: attributes
+) }}>
+  {% embed 'components.ui.button' with {
+    variant: variant,
+    label_content: label_content,
+    attributes: { class: 'filter-clear', type: 'submit' }
+  } only %}
+    {% block label %}
+      {{ label_content|raw }}
+    {% endblock %}
+  {% endembed %}
+</div>

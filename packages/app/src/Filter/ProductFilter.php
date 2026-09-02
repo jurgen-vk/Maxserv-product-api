@@ -99,7 +99,7 @@ final class ProductFilter extends AbstractFilter
         }
 
         if ($this->minRating !== null) {
-            $this->where(sql: 'products.rating >= :minRating', bindings: [':minRating' => $this->minRating]);
+            $this->where(sql: 'ROUND(products.rating, 1) >= :minRating', bindings: [':minRating' => $this->minRating]);
         }
 
         $this->sort(column: $this->sortBy, direction: $this->sortDir);

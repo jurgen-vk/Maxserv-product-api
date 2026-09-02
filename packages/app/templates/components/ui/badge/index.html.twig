@@ -1,10 +1,6 @@
-{% set variant = variant|default(null) %}
-
 <span {{ attrs(
-  defaults: {
-    class: 'c_ui_badge',
-    'data-variant': variant
-  },
-  attributes: attributes) }}>
+  defaults: { class: 'c_ui_badge', 'data-variant': variant },
+  attributes: attributes
+) }}>
   {{ label }}
 </span>

@@ -5,9 +5,13 @@
   class: 'p_imports__filter-panel'
 }, attributes: attributes) }}>
   {% embed 'components.ui.filter-panel' with {
+    variant: 'primary',
     id: 'imports-filter-panel',
     pageParam: pageParam,
-  } %}
+    filter: filter,
+    typeOptions: typeOptions,
+    statusOptions: statusOptions,
+  } only %}
     {% block fields %}
       {% include 'components.ui.input.select' with {
         variant: 'primary',

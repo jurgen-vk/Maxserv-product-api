@@ -25,6 +25,8 @@
     text-align: center;
 
     .message {
+      overflow: auto;
+      max-height: 75vh;
       color: var(--color-text-10);
 
       background-color: var(--color-main-1);

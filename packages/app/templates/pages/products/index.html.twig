@@ -4,21 +4,33 @@
 
 {% block content %}
   <div class="p_products">
-    {% embed 'components.ui.page-header' with { title: 'Products', icon: icon('lucide:layout-grid') } %}
+    {% embed 'components.ui.page-header' with {
+      title: 'Products',
+      icon: icon('lucide:layout-grid') ,
+      activeImport: activeImport
+    } only %}
       {% block actions %}
         {% include 'pages.products._import-button' with { activeImport: activeImport } only %}
       {% endblock %}
     {% endembed %}
 
-    {% embed 'components.ui.table.toolbar' %}
+    {% embed 'components.ui.table.toolbar' with {
+      filter: filter,
+      paginator: paginator,
+      categories: categories,
+      brands: brands,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      items: items,
+      activeImport: activeImport
+    } only %}
       {% block contentLeft %}
-        {% include 'components.ui.input.search' with { value: filter.search, placeholder: 'Search products…', pageParam: paginator.pageParam } only %}
+        {% include 'components.ui.input.search' with { variant: 'primary', value: filter.search, placeholder: 'Search products…', pageParam: paginator.pageParam } only %}
       {% endblock %}
       {% block contentRight %}
         {% embed 'components.ui.button' with {
-          variant: 'neutral',
           attributes: { type: 'button', popovertarget: 'products-filter-panel', popovertargetaction: 'toggle' },
-        } %}
+        } only %}
           {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
           {% block label %}Filters{% endblock %}
         {% endembed %}

@@ -3,10 +3,8 @@
 {% set step = step|default(1) %}
 {% set valueMin = valueMin|default(min) %}
 {% set valueMax = valueMax|default(max) %}
-{% set label = label|default('') %}
 {% set nameMin = nameMin|default('min') %}
 {% set nameMax = nameMax|default('max') %}
-{% set variant = variant|default('primary') %}
 
 <div {{ attrs(defaults: {
   class: 'c_ui_input_range-slider',
@@ -22,10 +20,13 @@
       max: max,
       step: step,
       attributes: {
-        'data-range-number': min
+        class: 'input',
+        'data-range-number': 'min'
       }
     } only %}
+
     <span>–</span>
+
     {% include 'components.ui.input.number' with {
       variant: 'primary',
       value: valueMax,
@@ -33,19 +34,48 @@
       max: max,
       step: step,
       attributes: {
-        'data-range-number': max
+        class: 'input',
+        'data-range-number': 'max'
       }
     } only %}
   </div>
 
   <div class="track">
     <div class="fill"></div>
-    <input class="input" type="range" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ valueMin }}"
-           data-range-slider="min">
-    <input class="input" type="range" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ valueMax }}"
-           data-range-slider="max">
+    <input
+      class="input"
+      type="range"
+      min="{{ min }}"
+      max="{{ max }}"
+      step="{{ step }}"
+      value="{{ valueMin }}"
+      data-range-slider="min"
+    >
+
+    <input
+      class="input"
+      type="range"
+      min="{{ min }}"
+      max="{{ max }}"
+      step="{{ step }}"
+      value="{{ valueMax }}"
+      data-range-slider="max"
+    >
   </div>
 
-  <input class="input" type="hidden" name="{{ nameMin }}" value="{{ valueMin }}" data-range-hidden="min">
-  <input class="input" type="hidden" name="{{ nameMax }}" value="{{ valueMax }}" data-range-hidden="max">
+  <input
+    class="input"
+    type="hidden"
+    name="{{ nameMin }}"
+    value="{{ valueMin }}"
+    data-range-hidden="min"
+  >
+
+  <input
+    class="input"
+    type="hidden"
+    name="{{ nameMax }}"
+    value="{{ valueMax }}"
+    data-range-hidden="max"
+  >
 </div>

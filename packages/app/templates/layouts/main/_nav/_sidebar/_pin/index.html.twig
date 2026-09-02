@@ -3,7 +3,7 @@
 {% embed 'components.ui.button' with {
   variant: 'bare',
   attributes: { class: 'l_main__nav__sidebar__pin', 'data-pressed': sidebarPinned == 'true' ? true : null },
-} %}
+} only %}
   {% block iconBefore %} {{ icon('lucide:pin') }} {% endblock %}
   {% block iconAfter %} {{ icon('lucide:pin-off') }} {% endblock %}
 {% endembed %}

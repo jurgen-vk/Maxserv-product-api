@@ -82,6 +82,8 @@
       }
     }
 
+    /*:::[ ▼ Variants ▼ ]:::::*/
+
     &[data-variant="primary"] {
       .fill {
         background-color: var(--color-primary);

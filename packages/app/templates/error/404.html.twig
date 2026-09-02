@@ -7,7 +7,7 @@
     <p class="code">404</p>
     <h1 class="title">Page not found</h1>
     <p class="message">{{ message }}</p>
-    {% embed 'components.ui.button' with { variant: 'primary', href: path('home_index') } %}
+    {% embed 'components.ui.button' with { variant: 'primary', href: path('home_index') } only %}
       {% block label %}Go Home{% endblock %}
     {% endembed %}
   </div>

@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+//===[ ▼ Functions ▼ ]=====================================================================================<editor-fold>
+
 function updateProgress(progressFragment, current, total) {
   const $progressFragment = $(progressFragment);
   const percent = total > 0 ? Math.round((current / total) * 100) : 0;
@@ -8,5 +10,7 @@ function updateProgress(progressFragment, current, total) {
 
   return percent;
 }
+
+//===[ ▲ Functions ▲ ]====================================================================================</editor-fold>
 
 export { updateProgress };

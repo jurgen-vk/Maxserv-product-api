@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import mercure from '@core/sse/mercure';
 import { Url } from '@app/utils/Url';
-import { updateProgress } from '#app/components/ui/progress-bar/progress';
+import { updateProgress } from '#app/components/ui/progress-bar';
 import { swapFragment } from '@app/api/swapFragment';
 
 const $root = $('.p_products__products-table');

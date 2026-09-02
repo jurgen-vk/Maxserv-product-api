@@ -36,6 +36,7 @@
         .item {
           overflow: hidden;
           text-align: left;
+          text-overflow: ellipsis;
 
           &[data-value=""] {
             color: var(--color-text-13);
@@ -82,7 +83,7 @@
       .ts-dropdown {
         display: block;
         position-area: bottom span-right;
-        position-try-fallbacks: flip-block;
+        position-try-fallbacks: flip-block, flip-inline;
         min-width: anchor-size(width);
         height: 0;
         max-height: 0;

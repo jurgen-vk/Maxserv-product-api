@@ -1,7 +1,4 @@
-{% set variant = variant|default('primary') %}
 {% set type = type|default('button') %}
-{% set href = href|default(null) %}
-{% set disabled = disabled|default(false) %} {# TODO: in some places, disabled is passed as attribute instead of this property, look into that #}
 {% set tag = href ? 'a' : 'button' %}
 
 {% set iconBefore %}{% block iconBefore %}{% endblock %}{% endset %}

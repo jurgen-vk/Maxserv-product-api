@@ -1,16 +1,18 @@
 {% set placeholder = placeholder|default('Search…') %}
-{% set value = value|default('') %}
 {% set name = name|default('search') %}
-{% set variant = variant|default('primary') %}
 {% set pageParam = pageParam|default('page') %}
 
-<div {{ attrs(defaults: {
-  class: 'c_ui_input_search',
-  'data-variant': variant,
-  'data-page-param': pageParam
-}, attributes: attributes) }}>
+<div {{ attrs(
+  defaults: {
+    class: 'c_ui_input_search',
+    'data-variant': variant,
+    'data-page-param': pageParam
+  },
+  attributes: attributes
+) }}>
   <label class="field">
     {{ icon('lucide:search') }}
+
     <input
       type="search"
       class="input"
@@ -18,14 +20,12 @@
       value="{{ value }}"
       placeholder="{{ placeholder }}"
     >
+
     <button type="button" class="clear" {{ value ? '' : 'hidden' }}>
       {{ icon('lucide:x') }}
     </button>
   </label>
-  {% embed 'components.ui.button' with {
-    variant: 'neutral',
-    attributes: { class: 'search-button' },
-  } %}
+  {% embed 'components.ui.button' with { attributes: { class: 'search-button' } } only %}
     {% block label %}Search{% endblock %}
   {% endembed %}
 </div>

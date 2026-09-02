@@ -2,7 +2,14 @@
 {% set percent = activeImport and activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
 
 <div {{ attrs(defaults: { class: 'p_products__products-table', 'data-active-import-id': activeImport ? activeImport.id : null }, attributes: attributes) }}>
-  {% embed 'components.ui.table' with { pageParam: paginator.pageParam } %}
+  {% embed 'components.ui.table' with {
+    pageParam: paginator.pageParam,
+    filter: filter,
+    activeImport: activeImport,
+    items: items,
+    hasActiveFilter: hasActiveFilter,
+    paginator: paginator,
+  } only %}
     {% block head %}
       <tr>
         <th></th>
@@ -57,13 +64,16 @@
     {% endblock %}
 
     {% block empty %}
-      {% embed 'components.ui.table._empty' with { attributes: hasActiveFilter ? { 'data-variant': 'primary' } : {} } %}
+      {% embed 'components.ui.table._empty' with {
+        attributes: hasActiveFilter ? { 'data-variant': 'primary' } : {},
+        hasActiveFilter: hasActiveFilter,
+      } only %}
         {% block icon %}{{ icon(hasActiveFilter ? 'lucide:search-x' : 'lucide:package-open') }}{% endblock %}
         {% block title %}{{ hasActiveFilter ? 'No products match your filters' : 'No products yet' }}{% endblock %}
         {% block description %}{{ hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Import products to get started.' }}{% endblock %}
         {% block action %}
           {% if hasActiveFilter %}
-            {% embed 'components.ui.button' with { variant: 'neutral', attributes: { class: 'filter-clear', 'data-clear-target': 'products-filter-panel' } } %}
+            {% embed 'components.ui.filter-panel.clear-button' with { filterPanel: 'products-filter-panel', variant: 'primary' } only %}
               {% block label %}Clear filters{% endblock %}
             {% endembed %}
           {% endif %}
