@@ -5,12 +5,13 @@
 {% set valueMax = valueMax|default(max) %}
 {% set nameMin = nameMin|default('min') %}
 {% set nameMax = nameMax|default('max') %}
+{% set id = id|default('range-slider-' ~ random()) %}
 
 <div {{ attrs(defaults: {
   class: 'c_ui_input_range-slider',
   'data-variant': variant
 }, attributes: attributes) }}>
-  {% if label %}<label class="label">{{ label }}</label>{% endif %}
+  {% if label %}<label class="label" for="{{ id }}">{{ label }}</label>{% endif %}
 
   <div class="values">
     {% include 'components.ui.input.number' with {
@@ -19,6 +20,7 @@
       min: min,
       max: max,
       step: step,
+      id: id,
       attributes: {
         class: 'input',
         'data-range-number': 'min'

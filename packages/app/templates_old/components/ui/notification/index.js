@@ -1,9 +1,9 @@
-import {notify} from "@app/notifiers";
+import { notify } from '@core/informer/notify';
 
-const mercureUrl = document.querySelector("meta[name=\"mercure-url\"]").content;
+const mercureUrl = document.querySelector('meta[name="mercure-url"]').content;
 
 const source = new EventSource(
-  mercureUrl + "?topic=" + encodeURIComponent("notifications")
+  mercureUrl + '?topic=' + encodeURIComponent('notifications')
 );
 
 source.onmessage = (event) => {
@@ -11,7 +11,7 @@ source.onmessage = (event) => {
   notify(data.message, data.type, data.duration ?? undefined);
 };
 
-const notificationsMeta = document.querySelector("meta[name=\"notifications\"]");
+const notificationsMeta = document.querySelector('meta[name="notifications"]');
 const pending = notificationsMeta ? JSON.parse(notificationsMeta.content) : [];
 
 pending.forEach((entry) => notify(entry.message, entry.type, entry.duration ?? undefined));

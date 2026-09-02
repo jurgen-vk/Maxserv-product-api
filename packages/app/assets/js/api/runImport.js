@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import notify from '@core/informer/notify';
+import { notify } from '@core/informer/notify';
 
 async function runImport(type) {
   const imports = await runImports([type]);

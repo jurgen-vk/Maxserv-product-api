@@ -1,3 +1,5 @@
+{% set id = id|default(null) %}
+
 <label {{ attrs(
   defaults: { class: 'c_ui_input_number', 'data-variant': variant },
   attributes: attributes
@@ -8,6 +10,7 @@
     defaults: {
       class: 'input',
       type: 'number',
+      id: id,
       name: name,
       value: value,
       min: min,

@@ -61,22 +61,13 @@
         }
 
         &:active {
-          transform: scale(1);
-          color: var(--color-danger-add-1);
+          transform: scale(0.9);
         }
 
         .icon {
           width: 1.2rem;
           height: 1.2rem;
           transform: scale(0.8);
-
-          &:hover {
-            color: var(--color-danger);
-          }
-
-          &:active {
-            color: var(--color-danger-sub-3)
-          }
         }
       }
     }

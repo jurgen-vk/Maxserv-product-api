@@ -1,7 +1,7 @@
 import bus from '@core/event-bus/EventBus';
 import { NotificationEvent } from '@core/event/NotificationEvent';
 
-const notifier = {
+const notify = {
   success(message, icon, duration) {
     bus.emit(new NotificationEvent(message, 'success', icon, duration));
   },
@@ -23,4 +23,4 @@ const notifier = {
   }
 };
 
-export default notifier;
+export { notify }; 

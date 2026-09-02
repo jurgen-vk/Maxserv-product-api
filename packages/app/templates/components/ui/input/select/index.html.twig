@@ -1,18 +1,20 @@
 {% set options = options|default([]) %}
 {% set multiselect = multiselect|default(false) %}
 {% set settings = settings|default({}) %}
+{% set id = id|default('select-' ~ random()) %}
 
 {% set customOptions %}{% block options %}{% endblock %}{% endset %}
 
-<div {{ attrs(
+<label for="{{ id }}" {{ attrs(
   defaults: {
     class: 'c_ui_input_select input',
     'data-variant': variant,
   },
   attributes: attributes
 ) }}>
-  {% if label %}<label class="label">{{ label }}</label>{% endif %}
+  {% if label %}<span class="label">{{ label }}</span>{% endif %}
   <select
+    id="{{ id }}"
     name="{{ name }}{{ multiselect ? '[]' : '' }}"
     class="select-input input"
     {% if multiselect %}multiple{% endif %}
@@ -27,4 +29,4 @@
     {% endfor %}
     {% if customOptions|trim is not empty %}{{ customOptions }}{% endif %}
   </select>
-</div>
+</label>
