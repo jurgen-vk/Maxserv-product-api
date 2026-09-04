@@ -1,11 +1,22 @@
-class NotificationEvent {
-  constructor(message, type, icon, duration) {
+import { AppEvent } from '@core/event/AppEvent';
+
+/**
+ * A notification to show in the toaster, created via `notify.*()` and emitted onto the bus
+ * for `components.ui.toaster` to render.
+ */
+class NotificationEvent extends AppEvent {
+  /**
+   * @param {string} message
+   * @param {'success'|'warning'|'danger'|'info'|'default'} [variant='default']
+   * @param {string} [icon] - defaults to a preset icon based on `variant`.
+   * @param {number} [duration=3000] - how long to show the notification, in milliseconds.
+   */
+  constructor(message, variant = 'default', icon = NotificationEvent.#defaultIconMap[variant] ?? NotificationEvent.#defaultIconMap['default'], duration = 3000) {
+    super();
     this.message = message;
-    this.type = type ?? 'default';
-    this.icon = icon
-      ?? NotificationEvent.#defaultIconMap[type]
-      ?? NotificationEvent.#defaultIconMap['default'];
-    this.duration = duration ?? 3000;
+    this.variant = NotificationEvent.#defaultIconMap[variant] ? variant : 'default';
+    this.icon = icon;
+    this.duration = duration;
   }
 
   static #defaultIconMap = {

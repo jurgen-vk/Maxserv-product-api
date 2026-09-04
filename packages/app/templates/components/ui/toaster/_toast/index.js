@@ -11,7 +11,7 @@ export default {
 async function createToast($template, event) {
   const $toast = $($template.prop('content')).clone(true, true).find('.c_ui_toaster__toast');
 
-  $toast.attr('data-type', event.type);
+  $toast.attr('data-type', event.variant);
   $toast.find('.icon-slot').html(await icon(event.icon));
   $toast.find('.message').text(event.message);
 
