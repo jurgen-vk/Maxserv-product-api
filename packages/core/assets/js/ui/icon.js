@@ -3,7 +3,8 @@ const resolved = new Map();
 function applyAttributes(svg, attributes) {
   const document = new DOMParser().parseFromString(svg, 'image/svg+xml');
 
-  if (document.querySelector('parsererror')) {
+  const parserErrorTag = 'parsererror'; // synthetic element DOMParser inserts on failure, not a real tag
+  if (document.querySelector(parserErrorTag)) {
     throw new Error('Malformed SVG.');
   }
 
@@ -26,7 +27,7 @@ function applyAttributes(svg, attributes) {
 }
 
 /**
- * Fetches (and caches) an SVG icon by name, and returns its markup with the given attributes
+ * Fetches (and caches) an SVG icon by name and returns its markup with the given attributes
  * applied to the root `<svg>` element. Any error (missing name, fetch failure, malformed SVG)
  * is logged to the console and resolves to an empty string rather than rejecting.
  * @param {string} name - icon identifier, e.g. `'lucide:message-square-check'` — maps to
@@ -41,6 +42,7 @@ function applyAttributes(svg, attributes) {
 async function icon(name, attributes = {}) {
   try {
     if (!name) {
+      // noinspection ExceptionCaughtLocallyJS
       throw new Error('No icon name provided.');
     }
 
@@ -50,6 +52,7 @@ async function icon(name, attributes = {}) {
       );
 
       if (!response.ok) {
+        // noinspection ExceptionCaughtLocallyJS
         throw new Error(`Icon not found: ${name}`);
       }
 
