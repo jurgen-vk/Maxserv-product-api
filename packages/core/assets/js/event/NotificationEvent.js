@@ -11,12 +11,17 @@ class NotificationEvent extends AppEvent {
    * @param {string} [icon] - defaults to a preset icon based on `variant`.
    * @param {number} [duration=3000] - how long to show the notification, in milliseconds.
    */
-  constructor(message, variant = 'default', icon = NotificationEvent.#defaultIconMap[variant] ?? NotificationEvent.#defaultIconMap['default'], duration = 3000) {
+  constructor(
+    message,
+    variant = 'default',
+    icon = NotificationEvent.#defaultIconMap[variant] ?? NotificationEvent.#defaultIconMap['default'],
+    duration = 3000
+  ) {
     super();
     this.message = message;
     this.variant = NotificationEvent.#defaultIconMap[variant] ? variant : 'default';
     this.icon = icon;
-    this.duration = duration;
+    this.duration = duration ?? 3000;
   }
 
   static #defaultIconMap = {

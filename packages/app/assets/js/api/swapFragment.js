@@ -12,7 +12,13 @@ import { fetchFragment } from '@core/api/fragmentFetcher';
  * @param {{signal?: AbortSignal}} [options]
  * @returns {Promise<JQuery>}
  */
-async function swapFragment(root, path, fragment, params, {signal} = {}) {
+async function swapFragment(
+  root,
+  path,
+  fragment,
+  params,
+  {signal} = {}
+) {
   const $root = $(root);
   const html = await fetchFragment(path, fragment, {params, signal});
   const $new = $(html);

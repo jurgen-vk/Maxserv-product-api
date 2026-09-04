@@ -45,7 +45,9 @@ async function icon(name, attributes = {}) {
     }
 
     if (!resolved.has(name)) {
-      const response = await fetch(`/assets/icons/${name.replaceAll(':', '/')}.svg`);
+      const response = await fetch(
+        `/assets/icons/${name.replaceAll(':', '/')}.svg`
+      );
 
       if (!response.ok) {
         throw new Error(`Icon not found: ${name}`);

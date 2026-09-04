@@ -16,8 +16,15 @@
  * @param {FetchFragmentsOptions} [options]
  * @returns {Promise<Record<string, string>>} the requested fragments' HTML, keyed by fragment name.
  */
-async function fetchFragments(path, fragments, {params = new URLSearchParams(), excludeUrlParams = false, signal} = {}) {
-  const search = excludeUrlParams ? new URLSearchParams() : new URLSearchParams(window.location.search);
+async function fetchFragments(
+  path,
+  fragments,
+  {params = new URLSearchParams(), excludeUrlParams = false, signal} = {}
+) {
+  const search = excludeUrlParams
+    ? new URLSearchParams()
+    : new URLSearchParams(window.location.search);
+
   search.delete('fragments');
 
   new Set(params.keys()).forEach((key) => search.delete(key));
