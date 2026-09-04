@@ -1,0 +1,28 @@
+services:
+  migrate:
+    volumes:
+      - ./:/var/www/html
+      - app_cache:/var/www/html/var/cache
+  app:
+    volumes:
+      - ./:/var/www/html
+      - app_cache:/var/www/html/var/cache
+  messenger-imports:
+    volumes:
+      - ./:/var/www/html
+      - app_cache:/var/www/html/var/cache
+  app-proxy:
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - ./certs:/certs:ro
+  mercure:
+    environment:
+      MERCURE_EXTRA_DIRECTIVES: |
+        anonymous
+        cors_origins ${APP_URL}
+      CADDY_SERVER_EXTRA_DIRECTIVES: tls /certs/localhost.pem /certs/localhost-key.pem
+    volumes:
+      - ./certs:/certs:ro
+
+volumes:
+  app_cache:
