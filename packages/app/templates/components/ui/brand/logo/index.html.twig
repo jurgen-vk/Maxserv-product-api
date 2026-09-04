@@ -1,3 +1,9 @@
+{% types {
+  attributes?: 'array|null',
+} %}
+
+{% set attributes = attributes|default(null) %}
+
 <div {{ attrs(defaults: { class: 'c_ui_brand_logo' }, attributes: attributes) }}>
   <span class="logo-mark">
     <img src="{{ vite_asset('site/logo.svg') }}" alt="Logo" width="38" height="38">

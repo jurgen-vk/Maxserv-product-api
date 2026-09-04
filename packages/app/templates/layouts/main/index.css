@@ -5,11 +5,11 @@
     height: 100dvh;
 
     @media (--under-lg) {
-      flex-direction: column; /* mobile: header stacks above content */
+      flex-direction: column;
     }
 
     .app-nav {
-      flex-shrink: 0; /* width tracks the sidebar's own width naturally */
+      flex-shrink: 0;
     }
 
     .app-content {
@@ -20,7 +20,7 @@
       flex-direction: column;
 
       @media (--under-lg) {
-        padding-top: 3.5rem; /* header is position:fixed and removed from flow — without this, content renders underneath it */
+        padding-top: 3.5rem;
       }
 
       .main-content {

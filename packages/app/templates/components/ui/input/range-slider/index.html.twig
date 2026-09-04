@@ -1,3 +1,20 @@
+{% types {
+  variant?: 'string',
+  label?: 'string',
+  min?: 'int',
+  max?: 'int',
+  step?: 'int',
+  valueMin?: 'int',
+  valueMax?: 'int',
+  nameMin?: 'string',
+  nameMax?: 'string',
+  id?: 'string',
+  attributes?: 'array|null',
+} %}
+
+{% set variant = variant|default(null) %}
+{% set label = label|default('') %}
+{% set attributes = attributes|default(null) %}
 {% set min = min|default(0) %}
 {% set max = max|default(100) %}
 {% set step = step|default(1) %}

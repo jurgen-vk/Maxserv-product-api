@@ -1,3 +1,12 @@
+{% types {
+  filterPanel: 'string',
+  variant?: 'string|null',
+  attributes?: 'array|null',
+} %}
+
+{% set variant = variant|default(null) %}
+{% set attributes = attributes|default(null) %}
+
 {% set label_content %}
   {% block label %}Apply{% endblock %}
 {% endset %}

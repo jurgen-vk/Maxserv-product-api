@@ -1,3 +1,9 @@
+{% types {
+  href: 'string',
+  icon: 'string',
+  label: 'string',
+} %}
+
 {% set currentPath = app.request.pathinfo %}
 {% set isActive = href and (currentPath == href or currentPath starts with (href ~ '/')) %}
 

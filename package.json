@@ -9,5 +9,9 @@
   },
   "dependencies": {
     "ci": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/jquery": "^4.0.1",
+    "navigation-api-types": "^0.6.1"
   }
 }

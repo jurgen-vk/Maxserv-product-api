@@ -4,7 +4,7 @@
   {% embed 'components.ui.toggle' with {
     checked: themeMode == 'dark'
   } only %}
-    {% block left %} {{ icon('lucide:sun') }} {% endblock %}
-    {% block right %} {{ icon('lucide:moon') }} {% endblock %}
+    {% block left %} {{ icon(name: 'lucide:sun') }} {% endblock %}
+    {% block right %} {{ icon(name: 'lucide:moon') }} {% endblock %}
   {% endembed %}
 </div>

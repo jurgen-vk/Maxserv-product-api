@@ -1,9 +1,27 @@
-{% set type = type|default('button') %}
-{% set tag = href ? 'a' : 'button' %}
+{% types {
+  type?: 'string',
+  href?: 'string|null',
+  variant?: 'string|null',
+  disabled?: 'bool',
+  attributes?: 'array|null',
+  label?: 'string',
+  iconBefore?: 'string',
+  iconAfter?: 'string',
+} %}
 
-{% set iconBefore %}{% block iconBefore %}{% endblock %}{% endset %}
-{% set label %}{% block label %}{% endblock %}{% endset %}
-{% set iconAfter %}{% block iconAfter %}{% endblock %}{% endset %}
+{% set type = type|default('button') %}
+{% set href = href|default(null) %}
+{% set variant = variant|default(null) %}
+{% set disabled = disabled|default(false) %}
+{% set attributes = attributes|default(null) %}
+{% set tag = href ? 'a' : 'button' %}
+{% set label = label|default('') %}
+{% set iconBefore = iconBefore|default('') %}
+{% set iconAfter = iconAfter|default('') %}
+
+{% set iconBeforeContent %}{% block iconBefore %}{{ iconBefore|raw }}{% endblock %}{% endset %}
+{% set labelContent %}{% block label %}{{ label }}{% endblock %}{% endset %}
+{% set iconAfterContent %}{% block iconAfter %}{{ iconAfter|raw }}{% endblock %}{% endset %}
 
 <{{ tag }} {{ attrs(
   defaults: {
@@ -15,15 +33,15 @@
   },
   attributes: attributes
 ) }}>
-{% if iconBefore|trim is not empty %}
-  <span class="icon-container icon--before">{{ iconBefore }}</span>
+{% if iconBeforeContent|trim is not empty %}
+  <span class="icon-container icon--before">{{ iconBeforeContent }}</span>
 {% endif %}
 
-{% if label|trim is not empty %}
-  <span class="label">{{ label }}</span>
+{% if labelContent|trim is not empty %}
+  <span class="label">{{ labelContent }}</span>
 {% endif %}
 
-{% if iconAfter|trim is not empty %}
-  <span class="icon-container icon--after">{{ iconAfter }}</span>
+{% if iconAfterContent|trim is not empty %}
+  <span class="icon-container icon--after">{{ iconAfterContent }}</span>
 {% endif %}
 </{{ tag }}>

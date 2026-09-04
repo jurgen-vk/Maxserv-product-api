@@ -1,45 +1,71 @@
+{% types {
+  items?: 'array<{url: string, alt?: string}>',
+  variant?: 'string|null',
+  attributes?: 'array|null',
+} %}
+
 {% set items = items|default([]) %}
 {% set variant = variant|default(null) %}
+{% set attributes = attributes|default(null) %}
 
-<div {{ attrs(defaults: { class: 'c_ui_media-carousel', 'data-variant': variant }, attributes: attributes) }}>
+<div {{ attrs(
+  defaults: { class: 'c_ui_media-carousel', 'data-variant': variant },
+  attributes: attributes
+) }}>
   <div class="main">
     {% if items|length > 1 %}
-      {% embed 'components.ui.button' with { variant: variant, attributes: { class: 'arrow prev', 'data-carousel-nav': 'prev' } } only %}
-        {% block iconBefore %}{{ icon('lucide:chevron-left') }}{% endblock %}
+      {% embed 'components.ui.button' with {
+        variant: variant,
+        attributes: { class: 'arrow prev' }
+      } only %}
+        {% block iconBefore %}{{ icon(name: 'lucide:chevron-left') }}{% endblock %}
       {% endembed %}
     {% endif %}
 
     {% if items|length > 0 %}
-      <div class="slides">
+      <div class="image-display">
         {% for item in items %}
           <img class="slide" src="{{ item.url }}" alt="{{ item.alt|default('') }}" draggable="false">
         {% endfor %}
       </div>
     {% else %}
-      <div class="placeholder">{{ icon('lucide:image') }}</div>
+      <div class="placeholder">{{ icon(name: 'lucide:image') }}</div>
     {% endif %}
 
     {% if items|length > 1 %}
-      {% embed 'components.ui.button' with { variant: variant, attributes: { class: 'arrow next', 'data-carousel-nav': 'next' } } only %}
-        {% block iconBefore %}{{ icon('lucide:chevron-right') }}{% endblock %}
+      {% embed 'components.ui.button' with {
+        variant: variant,
+        attributes: { class: 'arrow next' }
+      } only %}
+        {% block iconBefore %}{{ icon(name: 'lucide:chevron-right') }}{% endblock %}
       {% endembed %}
     {% endif %}
   </div>
 
   {% if items|length > 1 %}
     <div class="thumbs-row">
-      {% embed 'components.ui.button' with { variant: variant, attributes: { class: 'thumbs-scroll prev', 'data-carousel-scroll': 'prev' } } only %}
-        {% block iconBefore %}{{ icon('lucide:chevron-left') }}{% endblock %}
+      {% embed 'components.ui.button' with {
+        variant: variant,
+        attributes: { class: 'thumbs-scroll prev', hidden: true }
+      } only %}
+        {% block iconBefore %}{{ icon(name: 'lucide:chevron-left') }}{% endblock %}
       {% endembed %}
       <div class="thumbs">
         {% for item in items %}
-          <button type="button" class="thumb"{{ loop.first ? ' data-active' : '' }} data-index="{{ loop.index0 }}">
+          <button
+            type="button"
+            class="thumb"{{ loop.first ? ' data-active' : '' }}
+            data-index="{{ loop.index0 }}"
+          >
             <img src="{{ item.url }}" alt="{{ item.alt|default('') }}">
           </button>
         {% endfor %}
       </div>
-      {% embed 'components.ui.button' with { variant: variant, attributes: { class: 'thumbs-scroll next', 'data-carousel-scroll': 'next' } } only %}
-        {% block iconBefore %}{{ icon('lucide:chevron-right') }}{% endblock %}
+      {% embed 'components.ui.button' with {
+        variant: variant,
+        attributes: { class: 'thumbs-scroll next' }
+      } only %}
+        {% block iconBefore %}{{ icon(name: 'lucide:chevron-right') }}{% endblock %}
       {% endembed %}
     </div>
   {% endif %}

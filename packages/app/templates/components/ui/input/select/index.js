@@ -28,7 +28,9 @@ function initSelect($root, maxHeight) {
   }
 
   const {plugins: selectPlugins, ...selectSettings} = $select.data('settings') || {};
-  const plugins = {change_listener: {}, ...selectPlugins};
+  const plugins = {
+    change_listener: {}, ...selectPlugins
+  };
 
   const variant = $root.data('variant');
   const randomString = str.random(16);

@@ -1,3 +1,7 @@
+{% types {
+  product: 'MaxServ\\App\\Entity\\Product',
+} %}
+
 {% extends 'layouts.main' %}
 
 {% block title %}{{ product.title }}{% endblock %}
@@ -6,10 +10,10 @@
   <div class="p_products_show">
     {% embed 'components.ui.button' with {
       variant: 'primary',
-      href: path('products_index'),
+      href: path(name: 'products_index'),
       attributes: { class: 'back' },
     } only %}
-      {% block iconBefore %}{{ icon('lucide:arrow-left') }}{% endblock %}
+      {% block iconBefore %}{{ icon(name: 'lucide:arrow-left') }}{% endblock %}
       {% block label %}Back to products{% endblock %}
     {% endembed %}
 
@@ -32,18 +36,20 @@
         <div class="price-row">
           <div class="price">
             {% if product.discountPercentage > 0 %}
-              <span class="strike">€{{ product.price|number_format(2) }}</span>
-              <span class="current">€{{ product.discountPrice|number_format(2) }}</span>
+              <span class="strike">€{{ product.price|number_format(decimal: 2) }}</span>
+              <span class="current">€{{ product.discountPrice|number_format(decimal: 2) }}</span>
               {% include 'components.ui.badge' with {
                 variant: 'success',
-                label: '-' ~ product.discountPercentage|number_format(0) ~ '%'
+                label: '-' ~ product.discountPercentage|number_format(decimal: 0) ~ '%'
               } only %}
             {% else %}
-              <span class="current">€{{ product.price|number_format(2) }}</span>
+              <span class="current">€{{ product.price|number_format(decimal: 2) }}</span>
             {% endif %}
           </div>
 
-          <span class="stock"{{ product.stock < 10 ? ' data-low' : '' }}>{{ product.stock }} in stock</span>
+          <span class="stock"{{ product.stock < 10 ? ' data-low' : '' }}>
+            {{ product.stock }} in stock
+          </span>
         </div>
         <hr>
 
@@ -52,9 +58,12 @@
 
         <div class="rating">
           {% for i in 1..5 %}
-            {{ icon('lucide:star', i <= product.rating|round ? { 'data-filled': true } : {}) }}
+            {{ icon(
+              name: 'lucide:star',
+              attributes: i <= product.rating|round ? { 'data-filled': true } : {}
+            ) }}
           {% endfor %}
-          <span class="value">{{ product.rating|number_format(1) }}</span>
+          <span class="value">{{ product.rating|number_format(decimal: 1) }}</span>
         </div>
       </div>
     </div>

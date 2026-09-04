@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import { Url } from '@app/utils/Url';
 
+//===[ ▼ Main ▼ ]==========================================================================================<editor-fold>
+
 $(document).on('click', '.c_ui_table__sortable-th .sort-link', function (event) {
   event.preventDefault();
 
@@ -14,3 +16,7 @@ $(document).on('click', '.c_ui_table__sortable-th .sort-link', function (event) 
   url.searchParams.delete(pageParam);
   url.push();
 });
+
+//===[ ▲ Main ▲ ]=========================================================================================</editor-fold>
+
+

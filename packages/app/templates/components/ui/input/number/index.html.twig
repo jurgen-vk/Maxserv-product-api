@@ -1,4 +1,24 @@
+{% types {
+  variant?: 'string|null',
+  value?: 'int|string|null',
+  min?: 'int|null',
+  max?: 'int|null',
+  step?: 'int|null',
+  label?: 'string',
+  name?: 'string|null',
+  id?: 'string|null',
+  attributes?: 'array|null',
+} %}
+
 {% set id = id|default(null) %}
+{% set label = label|default('') %}
+{% set name = name|default(null) %}
+{% set attributes = attributes|default(null) %}
+{% set variant = variant|default(null) %}
+{% set value = value|default(null) %}
+{% set min = min|default(null) %}
+{% set max = max|default(null) %}
+{% set step = step|default(null) %}
 
 <label {{ attrs(
   defaults: { class: 'c_ui_input_number', 'data-variant': variant },

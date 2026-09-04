@@ -1,6 +1,18 @@
+{% types {
+  variant?: 'string|null',
+  value?: 'string',
+  placeholder?: 'string',
+  name?: 'string',
+  pageParam?: 'string',
+  attributes?: 'array|null',
+} %}
+
 {% set placeholder = placeholder|default('Search…') %}
 {% set name = name|default('search') %}
 {% set pageParam = pageParam|default('page') %}
+{% set attributes = attributes|default(null) %}
+{% set variant = variant|default(null) %}
+{% set value = value|default('') %}
 
 <div {{ attrs(
   defaults: {
@@ -11,7 +23,7 @@
   attributes: attributes
 ) }}>
   <label class="field">
-    {{ icon('lucide:search') }}
+    {{ icon(name: 'lucide:search') }}
 
     <input
       type="search"
@@ -22,7 +34,7 @@
     >
 
     <button type="button" class="clear" {{ value ? '' : 'hidden' }}>
-      {{ icon('lucide:x') }}
+      {{ icon(name: 'lucide:x') }}
     </button>
   </label>
   {% embed 'components.ui.button' with { attributes: { class: 'search-button' } } only %}

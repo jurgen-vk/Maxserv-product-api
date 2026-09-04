@@ -1,4 +1,10 @@
+{% types {
+  title: 'string',
+  icon?: 'string|null',
+  attributes?: 'array|null',
+} %}
 {% set icon = icon|default(null) %}
+{% set attributes = attributes|default(null) %}
 
 <div {{ attrs(defaults: { class: 'c_ui_page-header' }, attributes: attributes) }}>
   <div class="title">

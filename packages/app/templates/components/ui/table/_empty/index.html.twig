@@ -1,9 +1,16 @@
+{% types {
+  variant?: 'string|null',
+  attributes?: 'array|null',
+} %}
+{% set variant = variant|default(null) %}
+{% set attributes = attributes|default(null) %}
+
 {% set descriptionContent %}{% block description %}{% endblock %}{% endset %}
 {% set actionContent %}{% block action %}{% endblock %}{% endset %}
 
 <div {{ attrs(defaults: { class: 'c_ui_table__empty', 'data-variant': variant }, attributes: attributes) }}>
   <div class="content">
-    {% block icon %}{{ icon('lucide:inbox') }}{% endblock %}
+    {% block icon %}{{ icon(name: 'lucide:inbox') }}{% endblock %}
     <h4 class="title">{% block title %}Nothing here yet.{% endblock %}</h4>
     {% if descriptionContent|trim is not empty %}<p class="description">{{ descriptionContent|raw }}</p>{% endif %}
     {% if actionContent|trim is not empty %}

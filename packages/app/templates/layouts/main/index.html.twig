@@ -1,4 +1,5 @@
 {% set themeMode = app.request.cookies.get('themeMode') %}
+
 <!DOCTYPE html>
 <html lang="en"{% if themeMode %} data-theme-mode="{{ themeMode }}"{% endif %}>
 <head>
@@ -19,7 +20,6 @@
     <main class="main-content">
       {% block content %}{% endblock %}
     </main>
-    {#   additional future footer goes here   #}
   </div>
 </div>
 

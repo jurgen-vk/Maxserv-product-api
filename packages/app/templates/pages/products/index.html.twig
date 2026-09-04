@@ -1,3 +1,14 @@
+{% types {
+  activeImport: 'MaxServ\\App\\Entity\\Import|null',
+  filter: 'MaxServ\\App\\Filter\\ProductFilter',
+  paginator: 'MaxServ\\App\\Dto\\Pagination\\Paginator',
+  categories: 'array<MaxServ\\App\\Entity\\Category>',
+  brands: 'array<MaxServ\\App\\Entity\\Brand>',
+  minPrice: 'float|null',
+  maxPrice: 'float|null',
+  items: 'array<MaxServ\\App\\Entity\\Product>',
+} %}
+
 {% extends 'layouts.main' %}
 
 {% block title %}Products{% endblock %}
@@ -6,7 +17,7 @@
   <div class="p_products">
     {% embed 'components.ui.page-header' with {
       title: 'Products',
-      icon: icon('lucide:layout-grid') ,
+      icon: icon(name: 'lucide:layout-grid') ,
       activeImport: activeImport
     } only %}
       {% block actions %}
@@ -25,20 +36,42 @@
       activeImport: activeImport
     } only %}
       {% block contentLeft %}
-        {% include 'components.ui.input.search' with { variant: 'primary', value: filter.search, placeholder: 'Search products…', pageParam: paginator.pageParam } only %}
+        {% include 'components.ui.input.search' with {
+          variant: 'primary',
+          value: filter.search,
+          placeholder: 'Search products…',
+          pageParam: paginator.pageParam
+        } only %}
       {% endblock %}
       {% block contentRight %}
         {% embed 'components.ui.button' with {
-          attributes: { type: 'button', popovertarget: 'products-filter-panel', popovertargetaction: 'toggle' },
+          attributes: {
+            type: 'button',
+            popovertarget: 'products-filter-panel',
+            popovertargetaction: 'toggle'
+          },
         } only %}
-          {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
+          {% block iconBefore %}{{ icon(name: 'lucide:list-filter') }}{% endblock %}
           {% block label %}Filters{% endblock %}
         {% endembed %}
 
-        {% include 'pages.products._filter-panel' with { filter: filter, categories: categories, brands: brands, minPrice: minPrice, maxPrice: maxPrice, pageParam: paginator.pageParam } only %}
+        {% include 'pages.products._filter-panel' with {
+          variant: 'primary',
+          filter: filter,
+          categories: categories,
+          brands: brands,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+          pageParam: paginator.pageParam
+        } only %}
       {% endblock %}
     {% endembed %}
 
-    {% include 'pages.products._products-table' with { items: items, paginator: paginator, filter: filter, activeImport: activeImport } only %}
+    {% include 'pages.products._products-table' with {
+      items: items,
+      paginator: paginator,
+      filter: filter,
+      activeImport: activeImport
+    } only %}
   </div>
 {% endblock %}

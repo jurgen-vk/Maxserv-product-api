@@ -1,3 +1,11 @@
+{% types {
+  paginator: 'MaxServ\\App\\Dto\\Pagination\\Paginator',
+  variant?: 'string|null',
+  attributes?: 'array|null',
+} %}
+{% set variant = variant|default(null) %}
+{% set attributes = attributes|default(null) %}
+
 <div {{ attrs(defaults: { class: 'c_ui_paginator', 'data-variant': variant }, attributes: attributes) }}
   data-page-param="{{ paginator.pageParam }}" data-per-page-param="{{ paginator.perPageParam }}">
   <label class="per-page">
@@ -19,10 +27,10 @@
     <nav class="pages">
       {% if paginator.hasPreviousPage %}
         <a href="#" class="page-link page-first" data-page="1">
-          {{ icon('lucide:chevrons-left') }}
+          {{ icon(name: 'lucide:chevrons-left') }}
         </a>
         <a href="#" class="page-link page-previous" data-page="{{ paginator.page - 1 }}">
-          {{ icon('lucide:chevron-left') }}
+          {{ icon(name: 'lucide:chevron-left') }}
         </a>
       {% endif %}
 
@@ -46,10 +54,10 @@
 
       {% if paginator.hasNextPage %}
         <a href="#" class="page-link page-next" data-page="{{ paginator.page + 1 }}">
-          {{ icon('lucide:chevron-right') }}
+          {{ icon(name: 'lucide:chevron-right') }}
         </a>
         <a href="#" class="page-link page-last" data-page="{{ paginator.totalPages }}">
-          {{ icon('lucide:chevrons-right') }}
+          {{ icon(name: 'lucide:chevrons-right') }}
         </a>
       {% endif %}
     </nav>

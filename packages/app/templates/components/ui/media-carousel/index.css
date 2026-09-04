@@ -16,7 +16,7 @@
         aspect-ratio: 1 / 1;
       }
 
-      .slides {
+      .image-display {
         display: flex;
         width: 100%;
         height: 100%;
@@ -44,19 +44,40 @@
       .arrow:focus-visible {
         opacity: 1;
       }
-    }
 
-    .placeholder {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-text-13);
+      .placeholder {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-13);
 
-      .icon {
-        width: 2.5rem;
-        height: 2.5rem;
+        .icon {
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+      }
+
+      .arrow {
+        position: absolute;
+        top: 50%;
+        z-index: var(--z-add-1);
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.1s ease;
+
+        &.prev {
+          left: 0.5rem;
+        }
+
+        &.next {
+          right: 0.5rem;
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(calc(-50% + 2px));
+        }
       }
     }
 
@@ -65,100 +86,82 @@
       padding: 0.25rem;
     }
 
-    .arrow {
-      position: absolute;
-      top: 50%;
-      z-index: var(--z-add-1);
-      transform: translateY(-50%);
-      opacity: 0;
-      transition: opacity 0.1s ease;
-
-      &:active:not(:disabled) {
-        transform: translateY(calc(-50% + 2px));
-      }
-    }
-
-    .arrow.prev {
-      left: 0.5rem;
-    }
-
-    .arrow.next {
-      right: 0.5rem;
-    }
-
     .thumbs-row {
       position: relative;
-    }
 
-    .thumbs-scroll {
-      position: absolute;
-      top: 50%;
-      z-index: var(--z-add-1);
-      transform: translateY(-50%);
+      .thumbs-scroll {
+        position: absolute;
+        top: 50%;
+        z-index: var(--z-add-1);
+        transform: translateY(-50%);
 
-      &:active:not(:disabled) {
-        transform: translateY(calc(-50% + 2px));
-      }
-    }
+        &.prev {
+          left: 0.5rem;
+        }
 
-    .thumbs-scroll.prev {
-      left: 0.5rem;
-    }
+        &.next {
+          right: 0.5rem;
+        }
 
-    .thumbs-scroll.next {
-      right: 0.5rem;
-    }
-
-    .thumbs {
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-behavior: smooth;
-      touch-action: pan-x;
-      scrollbar-width: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-
-    .thumb {
-      flex-shrink: 0;
-      overflow: hidden;
-      border-radius: var(--radius-default);
-      border: 1px solid var(--input-border-color);
-      padding: 0;
-      width: 6rem;
-      aspect-ratio: 4 / 3;
-      -webkit-tap-highlight-color: transparent;
-
-      @media (--under-lg) {
-        width: 4.5rem;
-        aspect-ratio: 1 / 1;
+        &:active:not(:disabled) {
+          transform: translateY(calc(-50% + 2px));
+        }
       }
 
-      &:active {
-        transform: scale(95%);
-      }
+      .thumbs {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        touch-action: pan-x;
+        scrollbar-width: none;
 
-      &[data-active], &:hover, &:active {
-        border-color: var(--input-border-color-active);
-      }
+        .thumb {
+          flex-shrink: 0;
+          overflow: hidden;
+          border-radius: var(--radius-default);
+          border: 1px solid var(--input-border-color);
+          padding: 0;
+          width: 6rem;
+          aspect-ratio: 4 / 3;
 
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+          @media (--under-lg) {
+            width: 4.5rem;
+            aspect-ratio: 1 / 1;
+          }
+
+          &:active {
+            transform: scale(95%);
+          }
+
+          &[data-active], &:hover, &:active {
+            border-color: var(--input-border-color-active);
+          }
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
       }
     }
 
     /* --- Variants --- */
 
     &[data-variant="primary"] {
-      .thumb {
-        &[data-active], &:hover, &:active {
-          border-color: var(--color-primary);
+      .thumbs-row {
+        .thumbs {
+          .thumb {
+            &[data-active], &:hover, &:active {
+              border-color: var(--color-primary);
+            }
+          }
         }
       }
     }

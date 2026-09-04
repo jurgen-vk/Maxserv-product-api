@@ -5,9 +5,13 @@ $.fn.outerHtml = function (value) {
     return this[0] ? this[0].outerHTML : undefined;
   }
 
-  return this.each(function () {
-    this.outerHTML = value;
-  });
+  if (typeof value === 'string') {
+    return this.each(function () {
+      this.outerHTML = value;
+    });
+  }
+
+  return this.replaceWith(value);
 };
 
 $.fn.innerHtml = function (value) {

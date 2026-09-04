@@ -1,8 +1,5 @@
 @layer main {
   .l_main__nav__sidebar__pin {
-    padding: 0;
-    background-color: transparent;
-
     .icon {
       width: var(--text-lg);
       height: var(--text-lg);

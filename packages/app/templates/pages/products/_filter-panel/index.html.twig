@@ -1,12 +1,24 @@
+{% types {
+  categories: 'array<MaxServ\\App\\Entity\\Category>',
+  brands: 'array<MaxServ\\App\\Entity\\Brand>',
+  maxPrice: 'float|null',
+  filter: 'MaxServ\\App\\Filter\\ProductFilter',
+  pageParam: 'string',
+  variant?: 'string|null',
+  attributes?: 'array',
+} %}
+
+{% set attributes = attributes|default(null) %}
 {% set categoryOptions = categories|map(c => { value: c.name, label: c.name }) %}
 {% set brandOptions = brands|map(b => { value: b.name, label: b.name }) %}
 {% set priceMax = maxPrice ?? 0 %}
+{% set variant = variant|default(null) %}
 
 <div {{ attrs(defaults: {
   class: 'p_products__filter-panel'
 }, attributes: attributes) }}>
   {% embed 'components.ui.filter-panel' with {
-    variant: 'primary',
+    variant: variant,
     id: 'products-filter-panel',
     pageParam: pageParam,
     filter: filter,
@@ -16,7 +28,7 @@
   } only %}
     {% block fields %}
       {% include 'components.ui.input.select' with {
-        variant: 'primary',
+        variant: variant,
         label: 'Category',
         name: 'category',
         value: filter.category,
@@ -26,13 +38,13 @@
         settings: {
           allowEmptyOption: false,
           plugins: {
-            clear_button
+            clear_button: {}
           }
         }
       } only %}
 
       {% include 'components.ui.input.select' with {
-        variant: 'primary',
+        variant: variant,
         label: 'Brand',
         name: 'brand',
         value: filter.brand,
@@ -42,13 +54,13 @@
         settings: {
           allowEmptyOption: false,
           plugins: {
-            clear_button
+            clear_button: {}
           }
         }
       } only %}
 
       {% include 'components.ui.input.range-slider' with {
-        variant: 'primary',
+        variant: variant,
         label: 'Price',
         min: 0,
         max: priceMax,
@@ -60,7 +72,7 @@
       } only %}
 
       {% include 'components.ui.input.number' with {
-        variant: 'primary',
+        variant: variant,
         label: 'Minimum rating',
         name: 'minRating',
         value: filter.minRating,

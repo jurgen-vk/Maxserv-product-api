@@ -4,12 +4,13 @@ import { fetchFragment } from '@core/api/fragmentFetcher';
 async function swapFragment(root, path, fragment, params, {signal} = {}) {
   const $root = $(root);
   const html = await fetchFragment(path, fragment, {params, signal});
+  const $new = $(html);
 
-  if (html != null) {
-    $root.replaceWith(html);
+  if ($new.exist) {
+    $root.replaceWith($new);
   }
 
-  return html;
+  return $new;
 }
 
 export { swapFragment };

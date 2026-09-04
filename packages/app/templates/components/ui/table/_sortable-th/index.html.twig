@@ -1,6 +1,16 @@
+{% types {
+  label: 'string',
+  column: 'string',
+  sortBy: 'string',
+  sortDir: 'string',
+  attributes?: 'array|null',
+  sortIconUp?: 'string',
+  sortIconDown?: 'string',
+} %}
+{% set attributes = attributes|default(null) %}
 {% set isSorted = sortBy == column %}
-{% set sortIconUp = sortIconUp|default(icon('lucide:arrow-up')) %}
-{% set sortIconDown = sortIconDown|default(icon('lucide:arrow-down')) %}
+{% set sortIconUp = sortIconUp|default(icon(name: 'lucide:arrow-up')) %}
+{% set sortIconDown = sortIconDown|default(icon(name: 'lucide:arrow-down')) %}
 
 <th {{ attrs(defaults: { class: 'c_ui_table__sortable-th', 'data-sorted': isSorted ? true : null }, attributes: attributes) }}>
   <a href="#" class="sort-link" data-column="{{ column }}" data-dir="{{ isSorted ? sortDir : '' }}">
@@ -8,7 +18,7 @@
     {% if isSorted %}
       {{ sortDir|upper == 'ASC' ? sortIconUp|raw : sortIconDown|raw }}
     {% else %}
-      {{ icon('lucide:chevrons-up-down') }}
+      {{ icon(name: 'lucide:chevrons-up-down') }}
     {% endif %}
   </a>
 </th>

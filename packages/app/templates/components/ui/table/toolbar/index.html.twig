@@ -1,3 +1,8 @@
+{% types {
+  attributes?: 'array|null',
+} %}
+{% set attributes = attributes|default(null) %}
+
 <div {{ attrs(defaults: { class: 'c_ui_table__toolbar' }, attributes: attributes) }}>
   {% block contentLeft %}{% endblock %}
   {% block contentRight %}{% endblock %}

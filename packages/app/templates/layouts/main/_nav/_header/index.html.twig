@@ -1,9 +1,15 @@
+{% types {
+  attributes?: 'array',
+} %}
+
+{% set attributes = attributes|default(null) %}
+
 <div {{ attrs(defaults: { class: 'l_main__nav__header' }, attributes: attributes) }}>
   <button type="button" class="hamburger-toggle" popovertarget="nav-sidebar" popovertargetaction="toggle">
-    <span class="hamburger-icon">{{ icon('lucide:menu') }}</span>
-    <span class="close-icon">{{ icon('lucide:x') }}</span>
+    <span class="hamburger-icon">{{ icon(name: 'lucide:menu') }}</span>
+    <span class="close-icon">{{ icon(name: 'lucide:x') }}</span>
   </button>
-  <a href="{{ path('home_index') }}" class="logo-link">
+  <a href="{{ path(name: 'home_index') }}" class="logo-link">
     {% include 'components.ui.brand.logo' %}
   </a>
 </div>

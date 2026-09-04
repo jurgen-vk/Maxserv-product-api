@@ -4,9 +4,6 @@
     container-name: nav-sidebar;
 
     position: static;
-    /*margin: 0;*/
-    /*border: none;*/
-
     display: flex;
     flex-direction: column;
     background-color: var(--color-main-1);
@@ -55,7 +52,7 @@
       }
     }
 
-    /* --- Collapsed state --- */
+    /*:::[ ▼ Collapsed State ▼ ]:::::*/
 
     &:hover, &:focus-within, &[data-pinned="true"] {
       width: 15rem;
@@ -84,7 +81,7 @@
     }
 
     @media (--under-lg) {
-      display: none; /* overridden by the higher-specificity rule below once open */
+      display: none;
       position: fixed;
       top: var(--nav-header-height);
       left: 0;
@@ -124,46 +121,38 @@
         }
       }
 
-      /* mobile: logo already lives in the header, pinning is desktop-only */
       .c_ui_brand_logo, .l_main__nav__sidebar__pin, .header + hr {
         display: none;
       }
 
-      /* mobile never counts as "collapsed" — there's no rail state to
-         speak of, the sidebar is either an offscreen popover or a fully
-         open drawer, so nothing here should react to it */
       --collapsed: false;
 
-      /* the rules below exist purely to reset the desktop
-         hover/focus/pin-driven mechanics above — mobile has no hover
-         concept and pinning doesn't apply, but those rules are now
-         unconditional defaults, so each reset here repeats the exact
-         same selector (matching specificity) rather than a plain one,
-         otherwise the higher-specificity desktop rule would still win
-         even inside this media query */
       &:hover, &:focus-within, &[data-pinned="true"] {
         width: 85%;
         max-width: 320px;
         transition-delay: 0s;
       }
 
-      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .footer {
-        justify-content: space-between;
-      }
+      &:not(:hover):not(:focus-within):not([data-pinned="true"]) {
+        .footer {
+          justify-content: space-between;
 
-      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .footer .theme-label {
-        transform: translateX(0);
-        max-width: initial;
-        opacity: 1;
-      }
+          .theme-label {
+            transform: translateX(0);
+            max-width: initial;
+            opacity: 1;
+          }
 
-      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .footer .theme-mode-toggle {
-        display: flex;
-      }
+          .theme-mode-toggle {
+            display: flex;
+          }
 
-      &:not(:hover):not(:focus-within):not([data-pinned="true"]) .label {
-        max-width: none;
-        opacity: 1;
+        }
+
+        .label {
+          max-width: none;
+          opacity: 1;
+        }
       }
     }
   }

@@ -10,7 +10,6 @@
     background-color: transparent;
     text-align: left;
     text-decoration: none;
-    /*color: var(--color-text-8);*/
     padding-left: 0;
     transition: background-color 0.15s var(--snap), color 0.15s var(--snap), padding-left 0.15s var(--snap);
     font-weight: var(--text-lg-weight);

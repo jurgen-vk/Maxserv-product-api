@@ -1,3 +1,11 @@
+{% types {
+  pageParam: 'string',
+  variant?: 'string|null',
+  attributes?: 'array|null',
+} %}
+{% set variant = variant|default(null) %}
+{% set attributes = attributes|default(null) %}
+
 {% set bodyContent %}{% block body %}{% endblock %}{% endset %}
 {% set emptyContent %}
   {% block empty %}

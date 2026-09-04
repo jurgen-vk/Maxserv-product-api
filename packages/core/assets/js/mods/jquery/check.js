@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 $.fn.found = function (callback) {
   if (this.length > 0) {
-    callback.call(this, this);
+    callback.call(this.toArray(), this);
   }
   return this;
 };

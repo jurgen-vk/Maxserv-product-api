@@ -143,10 +143,8 @@
       &.multi {
         .ts-control {
           gap: 0.375rem;
-          /*padding: var(--dd-padding-length) var(--dd-padding-width);*/
 
           .item {
-            /*display: flex;*/
             background-color: var(--input-color-item);
             padding: 0 var(--option-padding-width);
             line-height: 1.5rem;

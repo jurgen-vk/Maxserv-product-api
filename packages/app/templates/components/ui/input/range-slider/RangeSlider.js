@@ -54,13 +54,6 @@ class RangeSlider {
     return {min: this.#min, max: this.#max};
   }
 
-  destroy() {
-    this.#$minSlider.off('input');
-    this.#$maxSlider.off('input');
-    this.#$minNumber.off('input change');
-    this.#$maxNumber.off('input change');
-  }
-
   #bindEvents() {
     this.#$minSlider.on('input', (e) => {
       this.#setMin(parseFloat(e.target.value));

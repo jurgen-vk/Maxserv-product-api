@@ -2,10 +2,6 @@
   .p_imports__filter-panel {
     display: contents;
 
-    label {
-      /*border-bottom: 1px solid var(--border-color-main);*/
-    }
-
     .date-range {
       display: flex;
       align-items: center;

@@ -1,6 +1,34 @@
+{% types {
+  label?: 'string',
+  iconBefore?: 'string',
+  iconAfter?: 'string',
+  variant?: 'string|null',
+  attributes?: 'array|null',
+} %}
+
+{% set variant = variant|default(null) %}
+{% set attributes = attributes|default(null) %}
+{% set label = label|default('') %}
+{% set iconBefore = iconBefore|default('') %}
+{% set iconAfter = iconAfter|default('') %}
+
+{% set iconBeforeContent %}{% block iconBefore %}{{ iconBefore|raw }}{% endblock %}{% endset %}
+{% set labelContent %}{% block label %}{{ label }}{% endblock %}{% endset %}
+{% set iconAfterContent %}{% block iconAfter %}{{ iconAfter|raw }}{% endblock %}{% endset %}
+
 <span {{ attrs(
   defaults: { class: 'c_ui_badge', 'data-variant': variant },
   attributes: attributes
 ) }}>
-  {{ label }}
+  {% if iconBeforeContent|trim is not empty %}
+    <span class="icon-container icon--before">{{ iconBeforeContent }}</span>
+  {% endif %}
+
+  {% if labelContent|trim is not empty %}
+    <span class="label">{{ labelContent }}</span>
+  {% endif %}
+
+  {% if iconAfterContent|trim is not empty %}
+    <span class="icon-container icon--after">{{ iconAfterContent }}</span>
+  {% endif %}
 </span>

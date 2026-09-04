@@ -1,33 +1,63 @@
+{% types {
+  filter: 'MaxServ\\App\\Filter\\ImportFilter',
+  paginator: 'MaxServ\\App\\Dto\\Pagination\\Paginator',
+  types: 'array<string>',
+  statuses: 'array<MaxServ\\App\\Enum\\ImportStatus>',
+  imports: 'array<MaxServ\\App\\Entity\\Import>',
+} %}
+
 {% extends 'layouts.main' %}
 
 {% block title %}Imports{% endblock %}
 
 {% block content %}
   <div class="p_imports">
-    {% include 'components.ui.page-header' with { title: 'Imports', icon: icon('lucide:import') } only %}
+    {% include 'components.ui.page-header' with {
+      title: 'Imports',
+      icon: icon(name: 'lucide:import')
+    } only %}
 
     {% embed 'components.ui.table.toolbar' with {
       filter: filter,
       paginator: paginator,
       types: types,
-      statuses, statuses,
+      statuses: statuses,
       imports: imports
     } only %}
       {% block contentLeft %}
-        {% include 'components.ui.input.search' with { variant: 'primary', value: filter.search, placeholder: 'Search imports…', pageParam: paginator.pageParam } only %}
+        {% include 'components.ui.input.search' with {
+          variant: 'primary',
+          value: filter.search,
+          placeholder: 'Search imports…',
+          pageParam: paginator.pageParam
+        } only %}
       {% endblock %}
       {% block contentRight %}
         {% embed 'components.ui.button' with {
-          attributes: { type: 'button', popovertarget: 'imports-filter-panel', popovertargetaction: 'toggle' },
+          attributes: {
+            type: 'button',
+            popovertarget: 'imports-filter-panel',
+            popovertargetaction: 'toggle'
+          },
         } only %}
-          {% block iconBefore %}{{ icon('lucide:list-filter') }}{% endblock %}
+          {% block iconBefore %}{{ icon(name: 'lucide:list-filter') }}{% endblock %}
           {% block label %}Filters{% endblock %}
         {% endembed %}
 
-        {% include 'pages.imports._filter-panel' with { filter: filter, types: types, statuses: statuses, pageParam: paginator.pageParam } only %}
+        {% include 'pages.imports._filter-panel' with {
+          variant: 'primary',
+          filter: filter,
+          types: types,
+          statuses: statuses,
+          pageParam: paginator.pageParam
+        } only %}
       {% endblock %}
     {% endembed %}
 
-    {% include 'pages.imports._imports-table' with { imports: imports, paginator: paginator, filter: filter } only %}
+    {% include 'pages.imports._imports-table' with {
+      imports: imports,
+      paginator: paginator,
+      filter: filter
+    } only %}
   </div>
 {% endblock %}

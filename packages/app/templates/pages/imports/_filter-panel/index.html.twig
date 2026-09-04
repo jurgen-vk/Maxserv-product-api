@@ -1,11 +1,23 @@
+{% types {
+  types: 'array<string>',
+  statuses: 'array<MaxServ\\App\\Enum\\ImportStatus>',
+  filter: 'MaxServ\\App\\Filter\\ImportFilter',
+  pageParam?: 'string',
+  variant?: 'string',
+  attributes?: 'array',
+} %}
+
+{% set attributes = attributes|default(null) %}
 {% set typeOptions = types|map(t => { value: t, label: t|capitalize }) %}
 {% set statusOptions = statuses|map(s => { value: s.value, label: s.value|capitalize }) %}
+{% set variant = variant|default(null) %}
+{% set pageParam = pageParam|default('page') %}
 
 <div {{ attrs(defaults: {
   class: 'p_imports__filter-panel'
 }, attributes: attributes) }}>
   {% embed 'components.ui.filter-panel' with {
-    variant: 'primary',
+    variant: variant,
     id: 'imports-filter-panel',
     pageParam: pageParam,
     filter: filter,
@@ -14,7 +26,7 @@
   } only %}
     {% block fields %}
       {% include 'components.ui.input.select' with {
-        variant: 'primary',
+        variant: variant,
         label: 'Type',
         name: 'type',
         value: filter.type,
@@ -22,13 +34,13 @@
         options: typeOptions,
         settings: {
           plugins: {
-            clear_button,
+            clear_button: {},
           }
         },
       } only %}
 
       {% include 'components.ui.input.select' with {
-        variant: 'primary',
+        variant: variant,
         label: 'Status',
         name: 'statuses',
         value: filter.statuses,
@@ -37,8 +49,8 @@
         multiselect: true,
         settings: {
           plugins: {
-            remove_button,
-            clear_button
+            remove_button: {},
+            clear_button: {}
           }
         }
       } only %}
@@ -46,13 +58,13 @@
       <div class="date-range">
         <label>Started Range</label>
         {% include 'components.ui.input.date' with {
-          variant: 'primary',
+          variant: variant,
           name: 'startedFrom',
           value: filter.startedFrom,
         } only %}
 
         {% include 'components.ui.input.date' with {
-          variant: 'primary',
+          variant: variant,
           name: 'startedTo',
           value: filter.startedTo,
         } only %}
@@ -61,13 +73,13 @@
       <div class="date-range">
         <label>Ended Range</label>
         {% include 'components.ui.input.date' with {
-          variant: 'primary',
+          variant: variant,
           name: 'endedFrom',
           value: filter.endedFrom,
         } only %}
 
         {% include 'components.ui.input.date' with {
-          variant: 'primary',
+          variant: variant,
           name: 'endedTo',
           value: filter.endedTo,
         } only %}

@@ -1,7 +1,21 @@
-{% set hasActiveFilter = filter.hasActiveFilter %}
-{% set percent = activeImport and activeImport.total > 0 ? (activeImport.processed / activeImport.total * 100)|round : 0 %}
+{% types {
+  filter: 'MaxServ\\App\\Filter\\ProductFilter',
+  activeImport: 'MaxServ\\App\\Entity\\Import|null',
+  paginator: 'MaxServ\\App\\Dto\\Pagination\\Paginator',
+  items: 'array<MaxServ\\App\\Entity\\Product>',
+  attributes?: 'array',
+} %}
 
-<div {{ attrs(defaults: { class: 'p_products__products-table', 'data-active-import-id': activeImport ? activeImport.id : null }, attributes: attributes) }}>
+{% set attributes = attributes|default(null) %}
+{% set hasActiveFilter = filter.hasActiveFilter %}
+
+<div {{ attrs(
+  defaults: {
+    class: 'p_products__products-table',
+    'data-active-import-id': activeImport ? activeImport.id : null
+  },
+  attributes: attributes
+) }}>
   {% embed 'components.ui.table' with {
     pageParam: paginator.pageParam,
     filter: filter,
@@ -13,17 +27,64 @@
     {% block head %}
       <tr>
         <th></th>
-        {% include 'components.ui.table._sortable-th' with { label: 'Title', column: 'title', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
-        {% include 'components.ui.table._sortable-th' with { label: 'Brand', column: 'brand', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
-        {% include 'components.ui.table._sortable-th' with { label: 'Category', column: 'category', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
-        {% include 'components.ui.table._sortable-th' with { label: 'Price', column: 'price', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
-        {% include 'components.ui.table._sortable-th' with { label: 'Discount price', column: 'discounted', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
-        {% include 'components.ui.table._sortable-th' with { label: 'Rating', column: 'rating', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
-        {% include 'components.ui.table._sortable-th' with { label: 'Stock', column: 'stock', sortBy: filter.sortByColumn, sortDir: filter.sortInDirection } only %}
+        {% include 'components.ui.table._sortable-th' with {
+          label: 'Title',
+          column: 'title',
+          sortBy: filter.sortByColumn,
+          sortDir: filter.sortInDirection
+        } only %}
+
+        {% include 'components.ui.table._sortable-th' with {
+          label: 'Brand',
+          column: 'brand',
+          sortBy: filter.sortByColumn,
+          sortDir: filter.sortInDirection
+        } only %}
+
+        {% include 'components.ui.table._sortable-th' with {
+          label: 'Category',
+          column: 'category',
+          sortBy: filter.sortByColumn,
+          sortDir: filter.sortInDirection
+        } only %}
+
+        {% include 'components.ui.table._sortable-th' with {
+          label: 'Price',
+          column: 'price',
+          sortBy: filter.sortByColumn,
+          sortDir: filter.sortInDirection
+        } only %}
+
+        {% include 'components.ui.table._sortable-th' with {
+          label: 'Discount price',
+          column: 'discounted',
+          sortBy: filter.sortByColumn,
+          sortDir: filter.sortInDirection
+        } only %}
+
+        {% include 'components.ui.table._sortable-th' with {
+          label: 'Rating',
+          column: 'rating',
+          sortBy: filter.sortByColumn,
+          sortDir: filter.sortInDirection
+        } only %}
+
+        {% include 'components.ui.table._sortable-th' with {
+          label: 'Stock',
+          column: 'stock',
+          sortBy: filter.sortByColumn,
+          sortDir: filter.sortInDirection
+        } only %}
       </tr>
       <tr class="progress-row"{{ activeImport ? '' : ' hidden' }}>
         <td colspan="100">
-          {% include 'components.ui.progress-bar' with { attributes: { style: '--progress: ' ~ percent ~ '%' } } only %}
+          {% set percent = activeImport and activeImport.total > 0
+            ? (activeImport.processed / activeImport.total * 100)|round
+            : 0 %}
+
+          {% include 'components.ui.progress-bar' with {
+            attributes: { style: '--progress: ' ~ percent ~ '%' }
+          } only %}
         </td>
       </tr>
     {% endblock %}
@@ -36,29 +97,36 @@
             {% if thumbnail %}
               <img src="{{ thumbnail.url }}" alt="" class="thumb">
             {% else %}
-              <div class="thumb thumb--empty">{{ icon('lucide:image', { class: 'thumb-icon' }) }}</div>
+              <div class="thumb thumb--empty">
+                {{ icon(name: 'lucide:image', attributes: { class: 'thumb-icon' }) }}
+              </div>
             {% endif %}
           </td>
           <td class="product-td-title">
-            <a href="{{ path('products_show', { id: product.id }) }}" class="title-link">{{ product.title }}</a>
+            <a href="{{ path(name: 'products_show', parameters: { id: product.id }) }}" class="title-link">
+              {{ product.title }}
+            </a>
           </td>
           <td class="product-td-brand">{{ product.brand ? product.brand.name : '—' }}</td>
-          <td
-            class="product-td-category">{% include 'components.ui.badge' with { label: product.category.name } only %}</td>
+          <td class="product-td-category">
+            {% include 'components.ui.badge' with { label: product.category.name } only %}
+          </td>
           <td class="product-td-price">
-            <span class="{{ product.discountPercentage > 0 ? 'strike' : '' }}">
-              €{{ product.price|number_format(2) }}
+            <span class="{{ product.discountPercentage > 0 ? 'is-discounted' : '' }}">
+              € {{ product.price|number_format(decimal: 2) }}
             </span>
           </td>
           <td class="product-td-discount">
             {% if product.discountPercentage > 0 %}
-              <span class="discount">€{{ product.discountPrice|number_format(2) }}</span>
+              <span class="discount">€ {{ product.discountPrice|number_format(decimal: 2) }}</span>
             {% else %}
               —
             {% endif %}
           </td>
-          <td class="product-td-rating">{{ product.rating|number_format(1) }}</td>
-          <td class="product-td-stock"{{ product.stock < 10 ? ' data-low' : '' }}>{{ product.stock }}</td>
+          <td class="product-td-rating">{{ product.rating|number_format(decimal: 1) }}</td>
+          <td class="product-td-stock"{{ product.stock < 10 ? ' data-low' : '' }}>
+            {{ product.stock }}
+          </td>
         </tr>
       {% endfor %}
     {% endblock %}
@@ -68,12 +136,25 @@
         attributes: hasActiveFilter ? { 'data-variant': 'primary' } : {},
         hasActiveFilter: hasActiveFilter,
       } only %}
-        {% block icon %}{{ icon(hasActiveFilter ? 'lucide:search-x' : 'lucide:package-open') }}{% endblock %}
-        {% block title %}{{ hasActiveFilter ? 'No products match your filters' : 'No products yet' }}{% endblock %}
-        {% block description %}{{ hasActiveFilter ? 'Try widening your search or clearing a filter.' : 'Import products to get started.' }}{% endblock %}
+        {% block icon %}
+          {{ icon(name: hasActiveFilter ? 'lucide:search-x' : 'lucide:package-open') }}
+        {% endblock %}
+        {% block title %}
+          {{ hasActiveFilter ? 'No products match your filters' : 'No products yet' }}
+        {% endblock %}
+        {% block description %}
+          {{
+            hasActiveFilter
+              ? 'Try widening your search or clearing a filter.'
+              : 'Import products to get started.'
+          }}
+        {% endblock %}
         {% block action %}
           {% if hasActiveFilter %}
-            {% embed 'components.ui.filter-panel.clear-button' with { filterPanel: 'products-filter-panel', variant: 'primary' } only %}
+            {% embed 'components.ui.filter-panel.clear-button' with {
+              filterPanel: 'products-filter-panel',
+              variant: 'primary'
+            } only %}
               {% block label %}Clear filters{% endblock %}
             {% endembed %}
           {% endif %}

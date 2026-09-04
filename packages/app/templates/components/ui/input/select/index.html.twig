@@ -1,7 +1,24 @@
+{% types {
+  name: 'string',
+  value: 'mixed',
+  variant?: 'string|null',
+  label?: 'string',
+  placeholder?: 'string',
+  options?: 'array<{value: mixed, label: string}>',
+  multiselect?: 'bool',
+  settings?: 'array',
+  id?: 'string',
+  attributes?: 'array|null',
+} %}
+
+{% set variant = variant|default(null) %}
+{% set label = label|default('') %}
+{% set placeholder = placeholder|default('') %}
 {% set options = options|default([]) %}
 {% set multiselect = multiselect|default(false) %}
 {% set settings = settings|default({}) %}
 {% set id = id|default('select-' ~ random()) %}
+{% set attributes = attributes|default(null) %}
 
 {% set customOptions %}{% block options %}{% endblock %}{% endset %}
 

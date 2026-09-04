@@ -2,7 +2,7 @@
 <div class="l_main__nav__sidebar" id="nav-sidebar"
      popover="auto" data-pinned="{{ sidebarPinned }}">
   <div class="header">
-    <a href="{{ path('home_index') }}" class="logo-link">
+    <a href="{{ path(name: 'home_index') }}" class="logo-link">
       {% include 'components.ui.brand.logo' only %}
     </a>
 
@@ -13,14 +13,14 @@
 
   <div class="links">
     {% include 'layouts.main._nav._sidebar._link' with {
-      href: path('products_index'),
-      icon: icon('lucide:layout-grid'),
+      href: path(name: 'products_index'),
+      icon: icon(name: 'lucide:layout-grid'),
       label: 'Products'
     } only %}
 
     {% include 'layouts.main._nav._sidebar._link' with {
-      href: path('imports_index'),
-      icon: icon('lucide:import'),
+      href: path(name: 'imports_index'),
+      icon: icon(name: 'lucide:import'),
       label: 'Imports'
     } only %}
   </div>

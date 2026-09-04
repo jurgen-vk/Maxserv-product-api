@@ -34,6 +34,36 @@
           color: var(--color-text-13);
         }
 
+        .description {
+          line-height: 1.625;
+          text-wrap: pretty;
+          color: var(--color-text-1);
+        }
+
+        .rating {
+          display: flex;
+          align-items: center;
+          gap: 0.625rem;
+
+          .icon {
+            width: 1.125rem;
+            height: 1.125rem;
+            color: var(--color-main-8);
+          }
+
+          .icon[data-filled] {
+            fill: currentColor;
+            color: #B09439;
+          }
+
+          .value {
+            font-size: var(--text-sm);
+            font-weight: var(--text-2xl-weight);
+            font-family: var(--font-mono);
+            color: var(--color-text-1);
+          }
+        }
+
         .price-row {
           display: flex;
           align-items: center;
@@ -81,36 +111,6 @@
               color: var(--color-danger);
             }
           }
-        }
-      }
-
-      .description {
-        line-height: 1.625;
-        text-wrap: pretty;
-        color: var(--color-text-1);
-      }
-
-      .rating {
-        display: flex;
-        align-items: center;
-        gap: 0.625rem;
-
-        .icon {
-          width: 1.125rem;
-          height: 1.125rem;
-          color: var(--color-main-8);
-        }
-
-        .icon[data-filled] {
-          fill: currentColor;
-          color: #B09439;
-        }
-
-        .value {
-          font-size: var(--text-sm);
-          font-weight: var(--text-2xl-weight);
-          font-family: var(--font-mono);
-          color: var(--color-text-1);
         }
       }
 

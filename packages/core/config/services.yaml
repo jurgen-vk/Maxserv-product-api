@@ -117,6 +117,7 @@ services:
       - '@Twig\Loader\FilesystemLoader'
       - cache: '%application.root%/var/cache/twig'
         auto_reload: '%app.is_dev%'
+        strict_variables: '%app.is_dev%'
     calls:
       - method: addExtension
         arguments: [ '@UserFrosting\ViteTwig\ViteTwigExtension' ]

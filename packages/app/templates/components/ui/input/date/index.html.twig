@@ -1,3 +1,15 @@
+{% types {
+  variant?: 'string|null',
+  name?: 'string',
+  value?: 'string',
+  label?: 'string',
+  attributes?: 'array|null',
+} %}
+
+{% set label = label|default('') %}
+{% set attributes = attributes|default(null) %}
+{% set variant = variant|default(null) %}
+
 <label {{ attrs(
   defaults: { class: 'c_ui_input_date', 'data-variant': variant },
   attributes: attributes

@@ -14,48 +14,65 @@
     }
 
     .product-td-title {
-      /*width: 100%;*/
       min-width: 12rem;
       white-space: normal;
       overflow-wrap: break-word;
     }
 
-    /* this column should only ever be as big as the thumbnail itself, not
-       padded out like a text cell */
-
     .product-td-thumb {
-      /*padding: 0;*/
+      .thumb {
+        width: 2rem;
+        height: 2rem;
+        border-radius: var(--radius-default);
+        object-fit: contain;
+
+        &.thumb--empty {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--color-text-13);
+        }
+
+        .thumb-icon {
+          width: 0.9375rem;
+          height: 0.9375rem;
+        }
+      }
     }
 
-    .thumb {
-      /*margin: 0.4375rem;*/
-      width: 2rem;
-      height: 2rem;
-      border-radius: var(--radius-default);
-      object-fit: contain;
-      /*background-color: var(--color-main-2);*/
+    .product-td-title {
+      .title-link {
+        font-weight: var(--text-xl-weight);
+        text-decoration: none;
+        color: var(--color-text-1);
+
+        &:hover {
+          text-decoration: underline;
+          color: var(--color-text-12);
+        }
+      }
     }
 
-    .thumb--empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-text-13);
+    .product-td-discount {
+      .discount {
+        font-weight: var(--text-2xl-weight);
+        color: var(--color-success);
+      }
     }
 
-    .thumb-icon {
-      width: 0.9375rem;
-      height: 0.9375rem;
+    .product-td-price {
+      .is-discounted {
+        /*text-decoration: line-through;*/
+        /*text-decoration-color: var(--color-text-18);*/
+        /*text-decoration-thickness: 1px;*/
+        color: var(--color-text-10);
+      }
     }
 
-    .title-link {
-      font-weight: var(--text-xl-weight);
-      text-decoration: none;
-      color: var(--color-text-1);
-
-      &:hover {
-        text-decoration: underline;
-        color: var(--color-text-12);
+    .product-td-stock {
+      &[data-low] {
+        font-weight: var(--text-2xl-weight);
+        color: var(--color-danger);
       }
     }
 
@@ -64,23 +81,6 @@
     .product-td-rating,
     .product-td-stock {
       font-family: var(--font-mono);
-    }
-
-    .strike {
-      text-decoration: line-through;
-      text-decoration-color: var(--color-text-18);
-      text-decoration-thickness: 1px;
-      color: var(--color-text-10);
-    }
-
-    .discount {
-      font-weight: var(--text-2xl-weight);
-      color: var(--color-success);
-    }
-
-    [data-low] {
-      font-weight: var(--text-2xl-weight);
-      color: var(--color-danger);
     }
   }
 }
