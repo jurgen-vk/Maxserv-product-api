@@ -12,6 +12,19 @@ if [ "$APP_ENV" = "dev" ]; then
         usermod -u "$TARGET_UID" -g "$TARGET_GID" www-data
         chown -R www-data:www-data /var/www/html/var/cache 2>/dev/null || true
     fi
+
+    for composer in /var/www/html/packages/*/composer.json; do
+        name=$(php -r "echo json_decode(file_get_contents('$composer'))->name;")
+        link="/var/www/html/vendor/$name"
+
+        mkdir -p "$(dirname "$link")"
+
+        if [ ! -e "$link" ]; then
+            pkg_dir=$(dirname "$composer")
+            echo "Creating symlink: $link -> $pkg_dir"
+            ln -sf "$pkg_dir" "$link"
+        fi
+    done
 fi
 
 if [ "$1" = "apache2-foreground" ]; then
