@@ -6,7 +6,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'node:path';
 import fs from 'node:fs';
 
-export default defineConfig(({mode}) => {
+export default defineConfig(({mode, command}) => {
   const envDir = path.resolve(import.meta.dirname, '../..');
   const env = loadEnv(mode, envDir, '');
 
@@ -40,13 +40,13 @@ export default defineConfig(({mode}) => {
         '~core': path.resolve(import.meta.dirname, '../core/assets')
       }
     },
-    server: {
+    server: command === 'serve' ? {
       cors: {origin: env.APP_URL},
       https: {
         cert: fs.readFileSync(path.resolve(envDir, 'certs/localhost.pem')),
         key: fs.readFileSync(path.resolve(envDir, 'certs/localhost-key.pem')),
       },
-    },
+    } : undefined,
     build: {
       outDir: '../../public/assets',
       assetsDir: 'build',
