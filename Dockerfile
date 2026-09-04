@@ -42,13 +42,6 @@ COPY . .
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=assets /app/public/assets ./public/assets
 
-# Dev overrides both of these via docker-compose.yml's runtime `environment:` block regardless —
-# needed here as real, defined values (empty is fine, merely unset is not) because %env(...)%
-# throws EnvNotFoundException on a genuinely-absent var, and cache:warmup below actually
-# constructs Twig\Environment (for the template cache), which needs MERCURE_PUBLIC_URL
-# resolvable for its addGlobal() call. The value itself never gets baked into the compiled
-# cache — %env(...)% parameters are resolved lazily, at real request time, against whatever
-# the container's actual environment is then, not whatever existed here at build time.
 ENV APP_ENV=prod
 ENV MERCURE_HUB_URL=""
 ENV MERCURE_PUBLIC_URL=""
@@ -56,12 +49,6 @@ ENV MERCURE_PUBLISHER_JWT=""
 ENV VITE_SERVER_URL=""
 ENV APP_URL=""
 
-# Run as www-data, not root, so the resulting cache files are already correctly owned in the
-# image itself. This matters beyond the image: docker-compose.override.yml mounts a named
-# volume over var/cache for local dev, and Docker seeds a brand-new empty volume from whatever
-# the image already has at that path — including ownership. Baking a warm, www-data-owned cache
-# here means that seed is already correct in the common case; entrypoint.sh re-owns it on
-# startup for the dev case where www-data's id gets remapped after this point.
 USER www-data
 RUN php bin/console cache:warmup
 USER root

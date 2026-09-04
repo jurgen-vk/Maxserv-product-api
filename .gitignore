@@ -21,6 +21,7 @@
 !/.dockerignore
 !/Caddyfile
 !/Caddyfile.dev
+!/docker-entrypoint.sh
 
 # Configuration
 !.env.example
