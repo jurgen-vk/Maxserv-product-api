@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'migrate:init', description: 'Run migrations, but only against a genuinely uninitialized database — a no-op otherwise')]
+#[AsCommand(name: 'migrate:init', description: 'Run migrations, but only against a genuinely uninitialized database - a no-op otherwise')]
 final class MigrateInitCommand extends Command
 {
     public function __construct(
@@ -26,7 +26,7 @@ final class MigrateInitCommand extends Command
         $io = new SymfonyStyle(input: $input, output: $output);
 
         if ($this->migrator->isInitialized()) {
-            $io->note(message: 'Database already initialized — skipping.');
+            $io->note(message: 'Database already initialized - skipping.');
 
             return Command::SUCCESS;
         }

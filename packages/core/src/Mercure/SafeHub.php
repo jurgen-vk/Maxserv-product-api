@@ -46,8 +46,8 @@ final readonly class SafeHub implements HubInterface
             return $this->hub->publish($update);
         } catch (\Throwable $exception) {
             // A Mercure hiccup is a lost UI notification, not a failure the caller should
-            // have to handle — swallow and log instead of letting it propagate.
-            error_log((string) $exception);
+            // have to handle - swallow and log instead of letting it propagate.
+            error_log((string)$exception);
             return null;
         }
     }

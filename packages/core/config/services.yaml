@@ -190,7 +190,7 @@ services:
       - '%mercure.public_url%'
 
   # Decorates the Hub above so anything still typing plain HubInterface gets safe
-  # publishing as a fallback — new code should inject SafeHub directly instead, to
+  # publishing as a fallback - new code should inject SafeHub directly instead, to
   # get access to publishSafely().
   MaxServ\Core\Mercure\SafeHub:
     decorates: Symfony\Component\Mercure\HubInterface

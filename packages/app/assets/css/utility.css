@@ -1,5 +1,5 @@
 /* Small, generic, cross-component behavior classes with no component
-   identity of their own — never speculative, only added when a real
+   identity of their own - never speculative, only added when a real
    consumer needs them. */
 
 @layer utility {

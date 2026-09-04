@@ -3,7 +3,7 @@ import $ from 'jquery';
 // $.fn.fire dispatches a genuine native DOM event, unlike $.fn.trigger, which
 // only reaches jQuery-bound handlers and old-style onX properties, never
 // addEventListener-registered ones (confirmed directly in jQuery's own
-// trigger() source — it never calls dispatchEvent except via calling a
+// trigger() source - it never calls dispatchEvent except via calling a
 // same-named native method like .click()/.focus(), which 'change' has none of).
 //
 // Usage:

@@ -12,7 +12,7 @@ declare global {
 
     /**
      * Shows or hides every matched element based on `state`. If `state` is omitted, toggles
-     * based on the *first* matched element's current `hidden` property — for a multi-element
+     * based on the *first* matched element's current `hidden` property - for a multi-element
      * collection, every element still moves together, but the direction is decided by the
      * first one only.
      */

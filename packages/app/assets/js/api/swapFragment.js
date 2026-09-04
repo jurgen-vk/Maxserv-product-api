@@ -3,7 +3,7 @@ import { fetchFragment } from '@core/api/fragmentFetcher';
 
 /**
  * Fetches a single named fragment from the server and replaces `root` with the result in
- * the DOM. Returns the replacement content as a live `JQuery` object — empty if the server
+ * the DOM. Returns the replacement content as a live `JQuery` object - empty if the server
  * sent back nothing to swap in.
  * @param {string|HTMLElement|JQuery} root - the element (or selector) to replace.
  * @param {string} path - the URL to fetch the fragment from.

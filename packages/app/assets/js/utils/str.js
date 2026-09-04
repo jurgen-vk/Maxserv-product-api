@@ -4,7 +4,7 @@ const str = {
    * @param {number} length - how many characters the result should have.
    * @param {{caps?: boolean, smalls?: boolean, numbers?: boolean}} [options] - restricts which
    * character sets are used. If omitted, all three are used. If provided, only the sets
-   * explicitly set to `true` are included — if none are, an empty string is returned.
+   * explicitly set to `true` are included - if none are, an empty string is returned.
    * @returns {string}
    */
   random(length, options) {

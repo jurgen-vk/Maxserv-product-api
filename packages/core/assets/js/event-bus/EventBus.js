@@ -1,7 +1,7 @@
 /** @import { AppEvent } from '@core/event/AppEvent' */
 
 /**
- * A simple app-wide pub/sub bus built on the native `EventTarget`, unrelated to the DOM —
+ * A simple app-wide pub/sub bus built on the native `EventTarget`, unrelated to the DOM -
  * for broadcasting your own event classes (each extending `AppEvent`, like `NotificationEvent`)
  * to any part of the app.
  */

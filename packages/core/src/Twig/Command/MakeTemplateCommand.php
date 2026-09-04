@@ -189,7 +189,7 @@ final class MakeTemplateCommand extends Command
         }
 
         if ($failed !== []) {
-            $io->error(message: 'One or more files could not be written — check directory permissions.');
+            $io->error(message: 'One or more files could not be written - check directory permissions.');
 
             return Command::FAILURE;
         }

@@ -38,7 +38,7 @@ declare global {
 
     /**
      * Calls `callback` whenever a change matching `options` happens on an element matching
-     * `selector`, anywhere inside this element — including elements that don't exist yet
+     * `selector`, anywhere inside this element - including elements that don't exist yet
      * when you call `.watch()`, since matching happens live as changes occur. Calling this
      * again with the same selector and callback just updates what it's watching for, so
      * it's safe to call more than once without worrying about it firing twice.
@@ -47,14 +47,14 @@ declare global {
 
     /**
      * Same as the selector form, but watches this element itself rather than scoping to
-     * descendants — `$targets` is whatever the change directly reports (the node that was
+     * descendants - `$targets` is whatever the change directly reports (the node that was
      * added/removed, the element whose attribute changed, etc).
      */
     watch(options: WatchOptions, callback: WatchCallback): JQuery;
 
     /**
      * Adjusts the types being watched for an existing `.watch()` call (optionally scoped to
-     * `selector`) without needing to keep a reference to its original callback — handy for
+     * `selector`) without needing to keep a reference to its original callback - handy for
      * broadening or narrowing what an already-registered watch listens for. Does nothing
      * (and logs a warning) if there's nothing currently being watched that matches.
      */

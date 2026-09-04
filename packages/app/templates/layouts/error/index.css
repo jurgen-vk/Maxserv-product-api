@@ -14,7 +14,7 @@
   }
 
   /* .error-page styles live here rather than co-located with 404/500/default
-     — those are deliberately flat files with no dedicated CSS per the
+     - those are deliberately flat files with no dedicated CSS per the
      project's own file convention (error/404.html.twig, not a folder), and
      all three share this identical structure, so the wrapping layout is
      the natural common owner. */

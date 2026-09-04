@@ -9,7 +9,6 @@ use MaxServ\App\Event\Import\ImportCompletedEvent;
 use MaxServ\App\Event\Import\ImportFailedEvent;
 use MaxServ\App\Event\Import\ImportProgressEvent;
 use MaxServ\App\Event\Import\ImportStartedEvent;
-use MaxServ\App\Interface\ImporterInterface;
 use MaxServ\App\Repository\ImportRepository;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

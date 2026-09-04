@@ -17,15 +17,15 @@
 
     /* --toggle-orientation is set explicitly by the attribute rules below,
        or inherited ambiently from an ancestor (e.g. theme-mode-toggle
-       reacting to the sidebar's collapsed state) — either way, the
+       reacting to the sidebar's collapsed state) - either way, the
        @container query further down is the single place that interprets
        it, so there's only one source of truth for the actual geometry. */
 
-    &[data-orientation='vertical'] {
+    &[data-orientation="vertical"] {
       --toggle-orientation: vertical;
     }
 
-    &[data-orientation='horizontal'] {
+    &[data-orientation="horizontal"] {
       --toggle-orientation: horizontal;
     }
 
@@ -101,7 +101,7 @@
 
     /* --- Variants --- */
 
-    &[data-variant='primary'] {
+    &[data-variant="primary"] {
       &:active .slider:before {
         background-color: var(--color-primary-add-1);
       }

@@ -423,7 +423,7 @@ $.fn.unwatch = function (options, selector) {
 
   if (!Object.keys(removeTypes).length) {
     console.error('$.fn.unwatch: no valid types given, nothing to remove');
-    return this; // bail before .each() — nothing would change anyway, skip the wasted pass
+    return this; // bail before .each() - nothing would change anyway, skip the wasted pass
   }
 
   return this.each(function () {

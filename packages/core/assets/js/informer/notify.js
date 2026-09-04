@@ -2,7 +2,7 @@ import bus from '@core/event-bus/EventBus';
 import { NotificationEvent } from '@core/event/NotificationEvent';
 
 /**
- * Convenience wrappers for showing a toaster notification, one per variant — each just
+ * Convenience wrappers for showing a toaster notification, one per variant - each just
  * builds a `NotificationEvent` and emits it on the shared `EventBus`.
  */
 const notify = {

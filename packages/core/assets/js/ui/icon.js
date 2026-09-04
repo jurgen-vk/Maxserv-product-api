@@ -30,12 +30,12 @@ function applyAttributes(svg, attributes) {
  * Fetches (and caches) an SVG icon by name and returns its markup with the given attributes
  * applied to the root `<svg>` element. Any error (missing name, fetch failure, malformed SVG)
  * is logged to the console and resolves to an empty string rather than rejecting.
- * @param {string} name - icon identifier, e.g. `'lucide:message-square-check'` — maps to
+ * @param {string} name - icon identifier, e.g. `'lucide:message-square-check'` - maps to
  * `/assets/icons/lucide/message-square-check.svg`.
  * @param {Record<string, string|boolean|number>} [attributes] - attributes to set on the
  * `<svg>` root. `class` is appended to the icon's own base class rather than replacing it.
  * A boolean value adds or removes the attribute entirely (`true` sets it with no value,
- * `false` removes it) — pass the string `'true'`/`'false'` instead if you need the attribute
+ * `false` removes it) - pass the string `'true'`/`'false'` instead if you need the attribute
  * present with that literal value, e.g. `aria-hidden`. Anything else is stringified.
  * @returns {Promise<string>} the icon's SVG markup, or `''` if it couldn't be loaded.
  */

@@ -3,7 +3,7 @@ declare global {
     /**
      * Runs `callback` once, immediately (before `.found()` itself returns), if this
      * collection matched at least one element. `this` and the first argument are both the
-     * same collection — `this` as a plain array (via `.toArray()`), the argument as the
+     * same collection - `this` as a plain array (via `.toArray()`), the argument as the
      * original `JQuery` object.
      */
     found(callback: (this: HTMLElement[], $root: JQuery) => void): JQuery;
