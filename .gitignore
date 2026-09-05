@@ -5,6 +5,7 @@
 !/.gitignore
 !/.gitattributes
 !/README.md
+!/RETROSPECTIVE.md
 !/public
 !/public/index.php
 !/public/.htaccess
