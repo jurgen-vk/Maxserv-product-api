@@ -36,6 +36,8 @@ packages/libraries are.
 - **Composer** - required, for the same reason: the bind mount also shadows the image's own `vendor/`, so dependencies
   need to be installed on your host too.
 
+_**Note:** I would recommend placing / running the application inside of wsl / linux. Placing / running the application in windows adds a very large delay when viewing the website in the web browser, because of the translation that needs to be done between windows and the docker environment in linux._
+
 ### 1. Clone the repository
 
 Clone the repository:
