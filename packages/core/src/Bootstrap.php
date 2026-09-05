@@ -21,7 +21,7 @@ final readonly class Bootstrap
         $isDev = getenv(name: 'APP_ENV') !== 'prod';
         $this->container = (new ContainerProvider(
             assembler: new ContainerAssembler(),
-            cacher: new ContainerCacher($isDev),
+            cacher: new ContainerCacher(debug: $isDev),
         ))->retrieve();
     }
 }
