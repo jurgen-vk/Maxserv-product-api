@@ -330,52 +330,51 @@ as its own option instead of forwarding it to the command.
 
 The framework-less foundation: DI container, routing, Twig rendering, database/migrations, caching, and messaging, all built on Symfony components rather than a framework. Boot logic itself (building the container) lives directly in `src/Bootstrap.php`, invoked by both real entry points (`public/index.php` for HTTP, `bin/console` for CLI).
 
-| Path | Description                                                                                                  |
-| --- |--------------------------------------------------------------------------------------------------------------|
-| `src/Container/` | Builds and caches the dependency-injection container, plus its `container:cache`/`container:clear` commands. |
-| `src/Routing/` | Attribute-based route loading and matching, plus route caching and its `route:cache`/`route:clear` commands. |
-| `src/Twig/` | Template rendering, HTML/JSON error pages, Twig extensions, and the `template:*`/`make:template` commands.   |
-| `src/Database/` | The database connection and migration runner, plus all `migrate:*` and `make:migration` commands.            |
-| `src/Cache/` | The shared interface every cache layer implements, plus the aggregate `cache:clear`/`cache:warmup` commands. |
+| Path                       | Description                                                                                                  |
+|----------------------------|--------------------------------------------------------------------------------------------------------------|
+| `src/Container/`           | Builds and caches the dependency-injection container, plus its `container:cache`/`container:clear` commands. |
+| `src/Routing/`             | Attribute-based route loading and matching, plus route caching and its `route:cache`/`route:clear` commands. |
+| `src/Twig/`                | Template rendering, HTML/JSON error pages, Twig extensions, and the `template:*`/`make:template` commands.   |
+| `src/Database/`            | The database connection and migration runner, plus all `migrate:*` and `make:migration` commands.            |
+| `src/Cache/`               | The shared interface every cache layer implements, plus the aggregate `cache:clear`/`cache:warmup` commands. |
 | `src/DependencyInjection/` | Compiler passes and environment-variable processing used while building the container.                       |
-| `src/Messenger/` | Integration code for Symfony Messenger, the async message bus.                                               |
-| `src/Mercure/` | A wrapper around the Mercure hub for pushing real-time updates to the browser.                               |
-| `src/Notification/` | In-app notification events and the subscriber that broadcasts them.                                          |
-| `src/Http/` | HTTP-related utilities used across the app.                                                                  |
-| `src/FileSystem/` | Filesystem-related utilities used across the app.                                                            |
-| `src/Runtime/` | Environment/runtime configuration applied during boot.                                                       |
-| `src/Event/` | The base event class other packages' events extend.                                                          |
-| `src/Time/` | Time/date-related utilities used across the app.                                                             |
-| `config/` | This package's own DI service definitions.                                                                   |
-| `templates/` | Shared base templates (error pages, layouts) other packages build on.                                        |
-| `assets/` | Shared frontend code and icons.                                                                              |
+| `src/Messenger/`           | Integration code for Symfony Messenger, the async message bus.                                               |
+| `src/Mercure/`             | A wrapper around the Mercure hub for pushing real-time updates to the browser.                               |
+| `src/Notification/`        | In-app notification events and the subscriber that broadcasts them.                                          |
+| `src/Http/`                | HTTP-related utilities used across the app.                                                                  |
+| `src/FileSystem/`          | Filesystem-related utilities used across the app.                                                            |
+| `src/Runtime/`             | Environment/runtime configuration applied during boot.                                                       |
+| `src/Event/`               | The base event class other packages' events extend.                                                          |
+| `src/Time/`                | Time/date-related utilities used across the app.                                                             |
+| `config/`                  | This package's own DI service definitions.                                                                   |
+| `templates/`               | Shared base templates (error pages, layouts) other packages build on.                                        |
+| `assets/`                  | Shared frontend code and icons.                                                                              |
 
 ### App
 
 The actual assignment: a product catalog with brands/categories, media, filtering/search/pagination, and an import pipeline that pulls products from an external API in the background.
 
-| Path | Description |
-| --- | --- |
-| `src/Controller/` | HTTP controllers: read the request, delegate to the domain, and return a response. |
-| `src/Entity/` | Plain domain objects representing the app's core concepts. |
-| `src/Repository/` | Database query logic, one repository per entity. |
-| `src/Filter/` | Translates a listing endpoint's request query parameters into SQL `WHERE`/search/sort clauses. |
-| `src/Hydrator/` | Maps raw external data (database rows, API payloads) into entity objects. |
-| `src/Importer/` | Fetches data from an external source and persists it into the database. |
-| `src/Extractor/` | Extracts and normalizes raw data out of a payload before it's hydrated. |
-| `src/Interface/` | Contracts implemented by classes elsewhere in this package, enabling swappable implementations. |
-| `src/Service/` | Self-contained, reusable business logic that doesn't belong on an entity, repository, or controller. |
-| `src/Utility/` | Small, stateless helper functions with no business logic of their own. |
-| `src/Message/` / `src/MessageHandler/` | Message/handler pairs dispatched onto the async message bus for background processing. |
-| `src/Event/` | Domain events dispatched at points of interest, namespaced per feature. |
-| `src/EventSubscriber/` | Listeners that react to dispatched domain events, namespaced per feature. |
-| `src/Command/` | Custom Symfony Console commands for this package. |
-| `src/Dto/` | Small, immutable value objects that carry data between layers without behavior. |
-| `src/Enum/` | PHP enums representing a fixed set of domain values. |
-| `config/` | This package's own DI service definitions. |
-| `migrations/` | SQL migration files for this package's database schema. |
-| `templates/` | The reusable UI component library, plus this package's pages, layouts, and error templates. |
-| `assets/` | This package's own frontend code and static files (styles, scripts, icons, fonts, and other static assets). |
+| Path                                   | Description                                                                                                 |
+|----------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| `src/Controller/`                      | HTTP controllers: read the request, delegate to the domain, and return a response.                          |
+| `src/Entity/`                          | Plain domain objects representing the app's core concepts.                                                  |
+| `src/Repository/`                      | Database query logic, one repository per entity.                                                            |
+| `src/Filter/`                          | Translates a listing endpoint's request query parameters into SQL `WHERE`/search/sort clauses.              |
+| `src/Hydrator/`                        | Maps raw external data (database rows, API payloads) into entity objects.                                   |
+| `src/Importer/`                        | Fetches data from an external source and persists it into the database.                                     |
+| `src/Extractor/`                       | Extracts and normalizes raw data out of a payload before it's hydrated.                                     |
+| `src/Service/`                         | Self-contained, reusable business logic that doesn't belong on an entity, repository, or controller.        |
+| `src/Utility/`                         | Small, stateless helper functions with no business logic of their own.                                      |
+| `src/Message/` / `src/MessageHandler/` | Message/handler pairs dispatched onto the async message bus for background processing.                      |
+| `src/Event/`                           | Domain events dispatched at points of interest, namespaced per feature.                                     |
+| `src/EventSubscriber/`                 | Listeners that react to dispatched domain events, namespaced per feature.                                   |
+| `src/Command/`                         | Custom Symfony Console commands for this package.                                                           |
+| `src/Dto/`                             | Small, immutable value objects that carry data between layers without behavior.                             |
+| `src/Enum/`                            | PHP enums representing a fixed set of domain values.                                                        |
+| `config/`                              | This package's own DI service definitions.                                                                  |
+| `migrations/`                          | SQL migration files for this package's database schema.                                                     |
+| `templates/`                           | The reusable UI component library, plus this package's pages, layouts, and error templates.                 |
+| `assets/`                              | This package's own frontend code and static files (styles, scripts, icons, fonts, and other static assets). |
 
 ---
 
@@ -383,59 +382,59 @@ The actual assignment: a product catalog with brands/categories, media, filterin
 
 ### PHP (Composer)
 
-**`packages/core`**
+**Core**
 
-| Package | Description |
-| --- | --- |
-| `symfony/console` | The CLI framework behind `bin/console`. |
-| `symfony/dependency-injection` | The DI container. |
-| `symfony/routing` | Route matching/generation. |
-| `symfony/http-foundation` | Request/response abstraction. |
-| `symfony/config` | Loading/validating configuration. |
-| `symfony/yaml` | YAML parsing (used for `services.yaml`). |
-| `symfony/event-dispatcher` | The event bus events/subscribers run on. |
-| `symfony/messenger` + `symfony/doctrine-messenger` | The async message bus and its Doctrine DBAL transport. |
-| `symfony/mercure` | Publishing real-time updates over Mercure. |
+| Package                                             | Description                                                        |
+|-----------------------------------------------------|--------------------------------------------------------------------|
+| `symfony/console`                                   | The CLI framework behind `bin/console`.                            |
+| `symfony/dependency-injection`                      | The DI container.                                                  |
+| `symfony/routing`                                   | Route matching/generation.                                         |
+| `symfony/http-foundation`                           | Request/response abstraction.                                      |
+| `symfony/config`                                    | Loading/validating configuration.                                  |
+| `symfony/yaml`                                      | YAML parsing (used for `services.yaml`).                           |
+| `symfony/event-dispatcher`                          | The event bus events/subscribers run on.                           |
+| `symfony/messenger` + `symfony/doctrine-messenger`  | The async message bus and its Doctrine DBAL transport.             |
+| `symfony/mercure`                                   | Publishing real-time updates over Mercure.                         |
 | `symfony/property-access` / `symfony/property-info` | Reading/writing object properties and their type info dynamically. |
-| `symfony/serializer` | (De)serializing data structures. |
-| `symfony/twig-bridge` | Symfony's Twig integration extensions. |
-| `symfony/finder` | Locating files/directories (e.g. templates, migrations). |
-| `symfony/filesystem` | Filesystem operations. |
-| `doctrine/dbal` | The database abstraction layer used by `Connection`/`Migrator`. |
-| `twig/twig` | The template engine. |
-| `userfrosting/vite-php-twig` | Resolves Vite-built asset paths/tags from Twig. |
+| `symfony/serializer`                                | (De)serializing data structures.                                   |
+| `symfony/twig-bridge`                               | Symfony's Twig integration extensions.                             |
+| `symfony/finder`                                    | Locating files/directories (e.g. templates, migrations).           |
+| `symfony/filesystem`                                | Filesystem operations.                                             |
+| `doctrine/dbal`                                     | The database abstraction layer used by `Connection`/`Migrator`.    |
+| `twig/twig`                                         | The template engine.                                               |
+| `userfrosting/vite-php-twig`                        | Resolves Vite-built asset paths/tags from Twig.                    |
 
-**`packages/app`**
+**App**
 
-| Package | Description |
-| --- | --- |
+| Package             | Description                                                               |
+|---------------------|---------------------------------------------------------------------------|
 | `guzzlehttp/guzzle` | The HTTP client used by `ProductImporter` to fetch from the external API. |
-| `maxserv/core` | This project's own `core` package. |
+| `maxserv/core`      | This project's own `core` package.                                        |
 
 `packages/app` also uses `symfony/http-foundation`, `symfony/mercure`, and `symfony/messenger` directly.
 
 ### JavaScript (npm)
 
-**root**
+**Root**
 
-| Package | Description |
-| --- | --- |
-| `ci` | Detects whether code is currently running in a CI environment. |
-| `@types/jquery` / `navigation-api-types` | TypeScript type definitions for editor support. |
+| Package                                  | Description                                                    |
+|------------------------------------------|----------------------------------------------------------------|
+| `ci`                                     | Detects whether code is currently running in a CI environment. |
+| `@types/jquery` / `navigation-api-types` | TypeScript type definitions for editor support.                |
 
-**`packages/app`**
+**App**
 
-| Package | Description |
-| --- | --- |
-| `jquery` | DOM/event handling used throughout the component JS. |
-| `tom-select` | The library behind the custom select/dropdown component. |
-| `maxserv-core` | This project's own `core` package's frontend assets. |
-| `vite` + `vite-plugin-static-copy` | The dev server/bundler and its static-asset-copying plugin. |
-| `postcss` + `postcss-custom-media` | CSS processing and the `--under-lg`-style custom media breakpoints used across component CSS. |
-| `picomatch` / `tinyglobby` | Glob matching, used by the project's custom Vite plugins (e.g. auto-discovering component CSS/JS). |
+| Package                            | Description                                                                                        |
+|------------------------------------|----------------------------------------------------------------------------------------------------|
+| `jquery`                           | DOM/event handling used throughout the component JS.                                               |
+| `tom-select`                       | The library behind the custom select/dropdown component.                                           |
+| `maxserv-core`                     | This project's own `core` package's frontend assets.                                               |
+| `vite` + `vite-plugin-static-copy` | The dev server/bundler and its static-asset-copying plugin.                                        |
+| `postcss` + `postcss-custom-media` | CSS processing and the `--under-lg`-style custom media breakpoints used across component CSS.      |
+| `picomatch` / `tinyglobby`         | Glob matching, used by the project's custom Vite plugins (e.g. auto-discovering component CSS/JS). |
 
-**`packages/core`**
+**Core**
 
-| Package | Description |
-| --- | --- |
+| Package  | Description                                   |
+|----------|-----------------------------------------------|
 | `jquery` | Used by `core`'s own shared frontend helpers. |

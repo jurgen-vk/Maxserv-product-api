@@ -7,7 +7,7 @@ services:
     public: false
 
   _instanceof:
-    MaxServ\App\Interface\ImporterInterface:
+    MaxServ\App\Importer\ImporterInterface:
       tags: ['app.resource_importer']
 
   # ==========================================================================
